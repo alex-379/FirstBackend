@@ -1,8 +1,9 @@
 ﻿using FirstBackend.Core.Dtos;
+using FirstBackend.DataLayer.Interfaces;
 
 namespace FirstBackend.DataLayer.Repositories;
 
-public class UsersRepository
+public class UsersRepository : IUsersRepository
 {
     public UsersRepository()
     {

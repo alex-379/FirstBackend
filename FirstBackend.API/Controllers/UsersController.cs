@@ -1,4 +1,4 @@
-﻿using FirstBackend.Buiseness;
+﻿using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +9,11 @@ namespace FirstBackend.Controllers;
 public class UsersController : Controller
 {
     private const string _author = "Lx";
-    private readonly UsersService _userService;
+    private readonly IUsersService _userService;
 
-    public UsersController()
+    public UsersController(IUsersService usersService)
     {
-        _userService = new ();
+        _userService = usersService;
     }
 
     [HttpGet("author")]

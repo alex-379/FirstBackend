@@ -1,4 +1,5 @@
-﻿using FirstBackend.Buiseness;
+﻿using FirstBackend.Buiseness.Interfaces;
+using FirstBackend.Buiseness.Services;
 using FirstBackend.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,11 @@ namespace FirstBackend.Controllers;
 [Route("[controller]")]
 public class OrdersController:Controller
 {
-    private readonly OrdersService _orderService;
+    private readonly IOrdersService _orderService;
 
-    public OrdersController()
+    public OrdersController(IOrdersService ordersService)
     {
-        _orderService = new ();
+        _orderService = ordersService;
     }
 
     [HttpGet("data")]
