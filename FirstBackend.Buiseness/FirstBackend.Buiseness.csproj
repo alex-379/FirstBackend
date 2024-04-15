@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FirstBackend.Core\FirstBackend.Core.csproj" />
+    <ProjectReference Include="..\FirstBackend.DataLayer\FirstBackend.DataLayer.csproj" />
+  </ItemGroup>
+
 </Project>

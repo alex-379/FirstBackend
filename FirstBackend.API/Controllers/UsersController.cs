@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FirstBackend.Buiseness;
+using FirstBackend.Core.Dtos;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FirstBackend.Controllers;
 
@@ -7,14 +9,28 @@ namespace FirstBackend.Controllers;
 public class UsersController : Controller
 {
     private const string _author = "Lx";
+    private readonly UsersService _userService;
+
     public UsersController()
     {
-        
+        _userService = new ();
     }
 
-    [HttpGet("GetUser")]
+    [HttpGet("author")]
     public string GetAuthor()
     {
         return _author;
+    }
+
+    [HttpGet]
+    public List<UserDto> GetAllUsers()
+    {
+        return _userService.GetAllUsers();
+    }
+
+    [HttpGet("user")]
+    public UserDto GetUserById()
+    {
+        return _userService.GetUserById(Guid.NewGuid());
     }
 }
