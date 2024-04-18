@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FirstBackend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("/orders")]
 public class OrdersController:Controller
 {
     private readonly IOrdersService _orderService;
@@ -28,8 +28,8 @@ public class OrdersController:Controller
         return _orderService.GetAllOrders();
     }
 
-    [HttpGet("user")]
-    public OrderDto GetUserById()
+    [HttpGet("{id}")]
+    public OrderDto GetOrderById()
     {
         return _orderService.GetOrderById(Guid.NewGuid());
     }

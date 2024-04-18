@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FirstBackend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("/users")]
 public class UsersController : Controller
 {
     private const string _author = "Lx";
@@ -28,9 +28,27 @@ public class UsersController : Controller
         return _userService.GetAllUsers();
     }
 
-    [HttpGet("user")]
-    public UserDto GetUserById()
+    [HttpGet("{id}")]
+    public UserDto GetUserById(Guid id)
     {
         return _userService.GetUserById(Guid.NewGuid());
+    }
+
+    [HttpPost]
+    public Guid CreateUser(object request)
+    {
+        return Guid.NewGuid();
+    }
+
+    [HttpPut("{id}")]
+    public Guid UpdateUser([FromRoute]Guid id, [FromBody]object request)
+    {
+        return Guid.NewGuid();
+    }
+
+    [HttpDelete("{id}")]
+    public void DeleteUserById(Guid id)
+    {
+
     }
 }

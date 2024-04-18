@@ -1,10 +1,9 @@
 ﻿using FirstBackend.Core.Dtos;
 
-namespace FirstBackend.Buiseness.Interfaces
+namespace FirstBackend.Buiseness.Interfaces;
+
+public interface IOrdersService
 {
-    public interface IOrdersService
-    {
-        List<OrderDto> GetAllOrders();
-        OrderDto GetOrderById(Guid id);
-    }
+    List<OrderDto> GetAllOrders();
+    OrderDto GetOrderById(Guid id);
 }

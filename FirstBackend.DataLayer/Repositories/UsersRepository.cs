@@ -3,16 +3,16 @@ using FirstBackend.DataLayer.Interfaces;
 
 namespace FirstBackend.DataLayer.Repositories;
 
-public class UsersRepository : IUsersRepository
+public class UsersRepository : BaseRepository, IUsersRepository
 {
-    public UsersRepository()
+    public UsersRepository(MainerLxContext context) : base(context)
     {
 
     }
 
     public List<UserDto> GetAllUsers()
     {
-        return [];
+        return _ctx.Users.ToList();
     }
 
     public UserDto GetUserById(Guid id)

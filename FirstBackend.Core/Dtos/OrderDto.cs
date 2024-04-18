@@ -1,7 +1,8 @@
-﻿namespace FirstBackend.Core.Dtos
+﻿namespace FirstBackend.Core.Dtos;
+
+public class OrderDto:IdContainer
 {
-    public class OrderDto:IdContainer
-    {
-        public string Description { get; set; }
-    }
+    public string Description { get; set; }
+
+    public UserDto Customer { get; set; }
 }
