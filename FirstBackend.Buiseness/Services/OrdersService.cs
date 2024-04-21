@@ -13,13 +13,7 @@ public class OrdersService : IOrdersService
         _ordersRepository = ordersRepository;
     }
 
-    public List<OrderDto> GetAllOrders()
-    {
-        return _ordersRepository.GetAllOrders();
-    }
+    public List<OrderDto> GetAllOrders() => _ordersRepository.GetAllOrders();
 
-    public OrderDto GetOrderById(Guid id)
-    {
-        return _ordersRepository.GetOrderById(id);
-    }
+    public OrderDto GetOrderById(Guid id) => _ordersRepository.GetOrderById(id);
 }

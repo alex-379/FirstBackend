@@ -10,18 +10,12 @@ public class UsersRepository : BaseRepository, IUsersRepository
 
     }
 
-    public List<UserDto> GetAllUsers()
-    {
-        return _ctx.Users.ToList();
-    }
+    //public List<UserDto> AddUser()
+    //{
+    //    return _ctx.Users.Add();
+    //}
 
-    public UserDto GetUserById(Guid id)
-    {
-        return new()
-        {
-            Id = id,
-            UserName = "Lx",
-            Mail = "lx@ya.ru"
-        };
-    }
+    public List<UserDto> GetAllUsers() => [.. _ctx.Users];
+
+    public UserDto GetUserById(Guid id) => _ctx.Users.FirstOrDefault(u => u.Id == id);
 }

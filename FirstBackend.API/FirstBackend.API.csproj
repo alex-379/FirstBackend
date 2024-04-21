@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FirstBackend.Buiseness\FirstBackend.Buiseness.csproj" />
     <ProjectReference Include="..\FirstBackend.Core\FirstBackend.Core.csproj" />
+    <ProjectReference Include="..\FirstBackend.DataLayer\FirstBackend.DataLayer.csproj" />
   </ItemGroup>
 
 </Project>

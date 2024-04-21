@@ -3,25 +3,14 @@ using FirstBackend.DataLayer.Interfaces;
 
 namespace FirstBackend.DataLayer.Repositories;
 
-public class OrdersRepository : IOrdersRepository
+public class OrdersRepository : BaseRepository, IOrdersRepository
 {
-    public OrdersRepository()
+    public OrdersRepository(MainerLxContext context) : base(context)
     {
 
     }
 
-    public List<OrderDto> GetAllOrders()
-    {
-        return [];
-    }
+    public List<OrderDto> GetAllOrders() => [.. _ctx.Orders];
 
-    public OrderDto GetOrderById(Guid id)
-    {
-        return new()
-        {
-            Id = id,
-            Description = "OrderTest",
-        };
-    }
-
+    public OrderDto GetOrderById(Guid id) => _ctx.Orders.FirstOrDefault(o => o.Id == id);
 }

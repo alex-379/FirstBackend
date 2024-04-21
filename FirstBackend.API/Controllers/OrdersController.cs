@@ -1,13 +1,12 @@
 ﻿using FirstBackend.Buiseness.Interfaces;
-using FirstBackend.Buiseness.Services;
 using FirstBackend.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FirstBackend.Controllers;
+namespace FirstBackend.API.Controllers;
 
 [ApiController]
-[Route("/orders")]
-public class OrdersController:Controller
+[Route("/api/orders")]
+public class OrdersController : Controller
 {
     private readonly IOrdersService _orderService;
 
@@ -16,21 +15,9 @@ public class OrdersController:Controller
         _orderService = ordersService;
     }
 
-    [HttpGet("data")]
-    public int[] GetData()
-    {
-        return [10, 20];
-    }
-
     [HttpGet]
-    public List<OrderDto> GetAllOrders()
-    {
-        return _orderService.GetAllOrders();
-    }
+    public List<OrderDto> GetAllOrders() => _orderService.GetAllOrders();
 
     [HttpGet("{id}")]
-    public OrderDto GetOrderById()
-    {
-        return _orderService.GetOrderById(Guid.NewGuid());
-    }
+    public OrderDto GetOrderById() => _orderService.GetOrderById(Guid.NewGuid());
 }

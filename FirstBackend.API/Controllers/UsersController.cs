@@ -2,13 +2,12 @@
 using FirstBackend.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FirstBackend.Controllers;
+namespace FirstBackend.API.Controllers;
 
 [ApiController]
-[Route("/users")]
+[Route("/api/users")]
 public class UsersController : Controller
 {
-    private const string _author = "Lx";
     private readonly IUsersService _userService;
 
     public UsersController(IUsersService usersService)
@@ -16,39 +15,24 @@ public class UsersController : Controller
         _userService = usersService;
     }
 
-    [HttpGet("author")]
-    public string GetAuthor()
-    {
-        return _author;
-    }
-
     [HttpGet]
-    public List<UserDto> GetAllUsers()
-    {
-        return _userService.GetAllUsers();
-    }
+    public List<UserDto> GetAllUsers() => _userService.GetAllUsers();
 
     [HttpGet("{id}")]
-    public UserDto GetUserById(Guid id)
-    {
-        return _userService.GetUserById(Guid.NewGuid());
-    }
+    public UserDto GetUserById(Guid id) => _userService.GetUserById(Guid.NewGuid());
 
     [HttpPost]
-    public Guid CreateUser(object request)
-    {
-        return Guid.NewGuid();
-    }
+    public Guid CreateUser(object request) => Guid.NewGuid();
 
     [HttpPut("{id}")]
-    public Guid UpdateUser([FromRoute]Guid id, [FromBody]object request)
+    public ActionResult UpdateUser([FromRoute]Guid id, [FromBody]object request)
     {
-        return Guid.NewGuid();
-    }
+        return NoContent();
+    } 
 
     [HttpDelete("{id}")]
-    public void DeleteUserById(Guid id)
+    public ActionResult DeleteUserById(Guid id)
     {
-
+        return NoContent();
     }
 }

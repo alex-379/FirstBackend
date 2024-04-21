@@ -13,13 +13,7 @@ public class UsersService : IUsersService
         _usersRepository = usersRepository;
     }
 
-    public List<UserDto> GetAllUsers()
-    {
-        return _usersRepository.GetAllUsers();
-    }
+    public List<UserDto> GetAllUsers() => _usersRepository.GetAllUsers();
 
-    public UserDto GetUserById(Guid id)
-    {
-        return _usersRepository.GetUserById(id);
-    }
+    public UserDto GetUserById(Guid id) => _usersRepository.GetUserById(id);
 }
