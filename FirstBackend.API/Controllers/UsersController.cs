@@ -24,7 +24,7 @@ public class UsersController : Controller
     public UserDto GetUserById(Guid id) => _usersService.GetUserById(Guid.NewGuid());
 
     [HttpGet("{userId}/devices")]
-    public DeviceDto GetDeviceByUserId(Guid id) => _devicesService.GetDeviceByUserId(Guid.NewGuid());
+    public DeviceDto GetDeviceByUserId(Guid userId) => _devicesService.GetDeviceByUserId(Guid.NewGuid());
 
     [HttpPost]
     public Guid CreateUser(object request) => Guid.NewGuid();
