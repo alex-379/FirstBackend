@@ -6,4 +6,5 @@ public interface IUsersService
 {
     List<UserDto> GetAllUsers();
     UserDto GetUserById(Guid id);
+    void DeleteUserById(Guid id);
 }

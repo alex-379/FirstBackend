@@ -8,16 +8,16 @@ namespace FirstBackend.API.Controllers;
 [Route("/api/orders")]
 public class OrdersController : Controller
 {
-    private readonly IOrdersService _orderService;
+    private readonly IOrdersService _ordersService;
 
     public OrdersController(IOrdersService ordersService)
     {
-        _orderService = ordersService;
+        _ordersService = ordersService;
     }
 
     [HttpGet]
-    public List<OrderDto> GetAllOrders() => _orderService.GetAllOrders();
+    public List<OrderDto> GetAllOrders() => _ordersService.GetAllOrders();
 
     [HttpGet("{id}")]
-    public OrderDto GetOrderById() => _orderService.GetOrderById(Guid.NewGuid());
+    public OrderDto GetOrderById() => _ordersService.GetOrderById(Guid.NewGuid());
 }

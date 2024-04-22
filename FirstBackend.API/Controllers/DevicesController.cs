@@ -27,10 +27,4 @@ public class DevicesController : Controller
 
         return Ok(device);
     }
-
-    //[HttpGet("{id}")]
-    //public DeviceDto GetDevice([FromQuery]Guid id, )
-    //{
-    //    return _deviceService.GetDeviceById(id);
-    //}
 }
