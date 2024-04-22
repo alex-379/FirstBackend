@@ -1,3 +1,4 @@
+using FirstBackend.API;
 using FirstBackend.API.Extensions;
 using FirstBackend.Buiseness;
 using FirstBackend.DataLayer;
@@ -9,6 +10,8 @@ builder.Services.ConfigureApiServices();
 builder.Services.ConfigureBllServices();
 builder.Services.ConfigureDalServices();
 builder.Services.ConfigureDataBase();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -18,6 +21,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
