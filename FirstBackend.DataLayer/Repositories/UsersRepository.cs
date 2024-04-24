@@ -1,10 +1,13 @@
 ﻿using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Interfaces;
+using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
 
 public class UsersRepository : BaseRepository, IUsersRepository
 {
+    private readonly ILogger _logger = Log.ForContext<UsersRepository>();
+
     public UsersRepository(MainerLxContext context) : base(context)
     {
 
@@ -19,7 +22,12 @@ public class UsersRepository : BaseRepository, IUsersRepository
 
     public List<UserDto> GetAllUsers() => [.. _ctx.Users];
 
-    public UserDto GetUserById(Guid id) => _ctx.Users.FirstOrDefault(u => u.Id == id);
+    public UserDto GetUserById(Guid id)
+    {
+        _logger.Information("Идём в базу данных и ищем пользователя по ID {id}", id);
+        return _ctx.Users.FirstOrDefault(u => u.Id == id);
+    }
+
 
     public void UpdateUser(UserDto user) => _ctx.Users.Update(user);
 

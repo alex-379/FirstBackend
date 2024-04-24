@@ -6,4 +6,5 @@ public interface IOrdersService
 {
     List<OrderDto> GetAllOrders();
     OrderDto GetOrderById(Guid id);
+    OrderDto GetOrderByUserId(Guid userId);
 }

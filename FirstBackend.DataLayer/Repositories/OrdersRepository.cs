@@ -13,4 +13,6 @@ public class OrdersRepository : BaseRepository, IOrdersRepository
     public List<OrderDto> GetAllOrders() => [.. _ctx.Orders];
 
     public OrderDto GetOrderById(Guid id) => _ctx.Orders.FirstOrDefault(o => o.Id == id);
+
+    public OrderDto GetOrderByUserId(Guid userId) => _ctx.Orders.FirstOrDefault(o => o.Customer.Id == userId);
 }

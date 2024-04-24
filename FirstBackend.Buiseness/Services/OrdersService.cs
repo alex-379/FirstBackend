@@ -16,4 +16,6 @@ public class OrdersService : IOrdersService
     public List<OrderDto> GetAllOrders() => _ordersRepository.GetAllOrders();
 
     public OrderDto GetOrderById(Guid id) => _ordersRepository.GetOrderById(id);
+
+    public OrderDto GetOrderByUserId(Guid userId) => _ordersRepository.GetOrderByUserId(userId);
 }
