@@ -37,8 +37,6 @@ try
 
     app.UseSerilogRequestLogging();
 
-    app.UseStatusCodePages();
-
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
