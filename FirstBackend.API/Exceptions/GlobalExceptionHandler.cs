@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using System.ComponentModel.DataAnnotations;
 
 namespace FirstBackend.API.Exceptions;
 
-public class GlobalExceptionHandler : IExceptionHandler
+internal sealed class GlobalExceptionHandler : IExceptionHandler
 {
     private readonly Serilog.ILogger _logger = Log.ForContext<GlobalExceptionHandler>();
 
@@ -32,6 +31,14 @@ public class GlobalExceptionHandler : IExceptionHandler
                 {
                     problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
                     problemDetails.Title = "Ошибка валидации";
+                };
+
+                break;
+
+            case "NotFoundException":
+                {
+                    problemDetails.Status = StatusCodes.Status404NotFound;
+                    problemDetails.Title = "Не найдены данные по запросу";
                 };
 
                 break;

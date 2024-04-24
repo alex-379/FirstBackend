@@ -40,13 +40,19 @@ public class UsersService : IUsersService
     public UserDto GetUserById(Guid id)
     {
         _logger.Information($"Обращаемся к методу репозитория Получение пользователя по ID {id}");
-        return _usersRepository.GetUserById(id);
+        var user = _usersRepository.GetUserById(id) ?? throw new NotFoundException($"Пользователь с ID {id} не найден");
+
+        return user;
     }
 
-    public void UpdateUser(UserDto user)
+    public void UpdateUser(Guid userId, UserDto userUpdate)
     {
-        _logger.Information($"Проверяем существует ли пользователь с ID {user.Id}");
-        user = _usersRepository.GetUserById(user.Id) ?? throw new NotFoundException($"Пользователь с ID {user.Id} не найден");
+        _logger.Information($"Проверяем существует ли пользователь с ID {userId}");
+        var user = _usersRepository.GetUserById(userId) ?? throw new NotFoundException($"Пользователь с ID {userId} не найден");
+        _logger.Information($"Обновляем данные пользователя с ID {userId} из запроса");
+        user.UserName = userUpdate.UserName;
+        user.Mail = userUpdate.Mail;
+        user.Password = userUpdate.Password;
         _logger.Information($"Обращаемся к методу репозитория Обновление пользователя с ID {user.Id}");
         _usersRepository.UpdateUser(user);
     }

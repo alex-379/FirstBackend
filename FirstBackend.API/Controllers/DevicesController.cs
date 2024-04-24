@@ -1,6 +1,7 @@
 ﻿using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace FirstBackend.API.Controllers;
 
@@ -9,6 +10,7 @@ namespace FirstBackend.API.Controllers;
 public class DevicesController : Controller
 {
     private readonly IDevicesService _deviceService;
+    private readonly Serilog.ILogger _logger = Log.ForContext<DevicesController>();
 
     public DevicesController(IDevicesService deviceService)
     {
@@ -18,13 +20,8 @@ public class DevicesController : Controller
     [HttpGet("{id}")]
     public ActionResult<DeviceDto> GetDeviceById(Guid id)
     {
-        var device = _deviceService.GetDeviceById(id);
+        _logger.Information($"Получаем устройство по ID {id}");
 
-        if (device is null)
-        {
-            return NotFound($"Устройство с ID {id} не найдено");
-        }
-
-        return Ok(device);
+        return Ok(_deviceService.GetDeviceById(id));
     }
 }

@@ -35,11 +35,11 @@ public class OrdersRepository : BaseRepository, IOrdersRepository
         return _ctx.Orders.FirstOrDefault(o => o.Id == id);
     }
 
-    public OrderDto GetOrderByUserId(Guid userId)
+    public List<OrderDto> GetOrdersByUserId(Guid userId)
     {
-        _logger.Information("Идём в базу данных и ищем заказ по ID пользователя {userId}", userId);
+        _logger.Information("Идём в базу данных и ищем заказы по ID пользователя {userId}", userId);
 
-        return _ctx.Orders.FirstOrDefault(o => o.Customer.Id == userId);
+        return [.. _ctx.Orders.Where(o => o.Customer.Id == userId)];
     }
 
     public void DeleteOrder(OrderDto order)

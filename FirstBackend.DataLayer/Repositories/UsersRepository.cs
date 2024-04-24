@@ -16,6 +16,7 @@ public class UsersRepository : BaseRepository, IUsersRepository
     public Guid AddUser(UserDto user)
     {
         _ctx.Users.Add(user);
+        _ctx.SaveChanges();
         _logger.Information("Вносим в базу данных пользователя с ID {id}", user.Id);
 
         return user.Id;
@@ -39,11 +40,13 @@ public class UsersRepository : BaseRepository, IUsersRepository
     {
         _logger.Information("Идём в базу данных и обновляем пользователя с ID {id}", user.Id);
         _ctx.Users.Update(user);
+        _ctx.SaveChanges();
     } 
 
     public void DeleteUser(UserDto user)
     {
         _logger.Information("Идём в базу данных и удаляем пользователя с ID {id}", user.Id);
         _ctx.Users.Remove(user);
+        _ctx.SaveChanges();
     }
 }

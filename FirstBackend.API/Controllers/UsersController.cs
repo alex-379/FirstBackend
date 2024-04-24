@@ -1,6 +1,7 @@
 ﻿using FirstBackend.API.Models.Requests;
 using FirstBackend.API.Models.Responses;
 using FirstBackend.Buiseness.Interfaces;
+using FirstBackend.Buiseness.Services;
 using FirstBackend.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -26,29 +27,39 @@ public class UsersController : Controller
     [HttpGet]
     public ActionResult<List<UserResponse>> GetAllUsers()
     {
-        _usersService.GetAllUsers();
-        return Ok(new List<UserResponse>());
-    }
+        _logger.Information($"Получаем всех пользователей");
 
+        return Ok(_usersService.GetAllUsers());
+    }
 
     [HttpGet("{id}")]
     public ActionResult<UserFullResponse> GetUserById(Guid id)
     {
         _logger.Information($"Получаем пользователя по ID {id}");
-        _usersService.GetUserById(Guid.NewGuid());
-        return Ok(new UserFullResponse());
+
+        return Ok(_usersService.GetUserById(id));
     }
 
     [HttpGet("{userId}/devices")]
-    public DeviceDto GetDeviceByUserId(Guid userId) => _devicesService.GetDeviceByUserId(Guid.NewGuid());
+    public ActionResult<List<DeviceDto>> GetDevicesByUserId(Guid userId)
+    {
+        _logger.Information($"Получаем устройства по ID пользователя {userId}");
+
+        return Ok(_devicesService.GetDevicesByUserId(userId));
+    }
 
     [HttpGet("{userId}/orders")]
-    public OrderDto GetOrderByUserId(Guid userId) => _ordersService.GetOrderByUserId(Guid.NewGuid());
+    public ActionResult<List<OrderDto>> GetOrdersByUserId(Guid userId)
+    {
+        _logger.Information($"Получаем заказы по ID пользователя {userId}");
+
+        return Ok(_ordersService.GetOrdersByUserId(userId));
+    }
 
     [HttpPost]
     public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
     {
-        _logger.Information($"{request.UserName} {request.Mail}");
+        _logger.Information($"Создаём пользователя с логином {request.UserName}, почтой {request.Mail}");
         var id = _usersService.AddUser(new()
         {
             UserName = request.UserName,
@@ -60,22 +71,34 @@ public class UsersController : Controller
     }
 
     [HttpPut("{id}")]
-    public ActionResult UpdateUser([FromRoute]Guid id, [FromBody]object request)
+    public ActionResult UpdateUserData([FromRoute] Guid id, [FromBody] UpdateUserDataRequest request)
     {
+        _logger.Information($"Обновляем данные пользователя с ID {id}");
+        _usersService.UpdateUser(id, new()
+        {
+            UserName = request.UserName,
+            Mail = request.Mail,
+        });
+
         return NoContent();
-    } 
+    }
 
     [HttpDelete("{id}")]
     public ActionResult DeleteUserById(Guid id)
     {
-        try
+        _usersService.DeleteUserById(id);
+
+        return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    public ActionResult UpdateUserPassword([FromRoute] Guid id, [FromBody] UpdateUserPasswordRequest request)
+    {
+        _logger.Information($"Обновляем пароль пользователя с ID {id}");
+        _usersService.UpdateUser(id, new()
         {
-            _usersService.DeleteUserById(id);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+            Password = request.Password,
+        });
 
         return NoContent();
     }

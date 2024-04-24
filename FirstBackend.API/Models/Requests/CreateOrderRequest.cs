@@ -1,4 +1,6 @@
-﻿namespace FirstBackend.API.Models.Requests
+﻿using FirstBackend.Core.Dtos;
+
+namespace FirstBackend.API.Models.Requests
 {
     public class CreateOrderRequest
     {

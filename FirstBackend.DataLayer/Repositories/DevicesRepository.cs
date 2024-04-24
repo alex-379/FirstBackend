@@ -17,6 +17,7 @@ public class DevicesRepository : BaseRepository, IDevicesRepository
     {
         _ctx.Devices.Add(device);
         _logger.Information("Вносим в базу данных устройство с ID {id}", device.Id);
+        _ctx.SaveChanges();
 
         return device.Id;
     }
@@ -29,16 +30,17 @@ public class DevicesRepository : BaseRepository, IDevicesRepository
     }
 
 
-    public DeviceDto GetDeviceByUserId(Guid userId)
+    public List<DeviceDto> GetDevicesByUserId(Guid userId)
     {
-        _logger.Information("Идём в базу данных и ищем устройство по ID пользователя {userId}", userId);
+        _logger.Information("Идём в базу данных и ищем устройства по ID пользователя {userId}", userId);
 
-        return _ctx.Devices.FirstOrDefault(d => d.Owner.Id == userId);
+        return [.. _ctx.Devices.Where(d => d.Owner.Id == userId)];
     }
 
     public void DeleteDevice(DeviceDto device)
     {
         _logger.Information("Идём в базу данных и удаляем заказ с ID {id}", device.Id);
         _ctx.Devices.Remove(device);
+        _ctx.SaveChanges();
     }
 }

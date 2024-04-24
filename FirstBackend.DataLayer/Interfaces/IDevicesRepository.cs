@@ -6,6 +6,6 @@ public interface IDevicesRepository
 {
     Guid AddDevice(DeviceDto device);
     DeviceDto GetDeviceById(Guid id);
-    DeviceDto GetDeviceByUserId(Guid userId);
+    List<DeviceDto> GetDevicesByUserId(Guid userId);
     void DeleteDevice(DeviceDto device);
 }
