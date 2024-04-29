@@ -12,11 +12,13 @@ using System.Text;
 
 namespace FirstBackend.Buiseness.Services;
 
-public class UsersService(IUsersRepository usersRepository, ISaltsRepository saltsRepository, IPasswordsService passwordsService) : IUsersService
+public class UsersService(IUsersRepository usersRepository, ISaltsRepository saltsRepository, IPasswordsService passwordsService, ITokensService tokensService)
+    : IUsersService
 {
     private readonly IUsersRepository _usersRepository = usersRepository;
     private readonly ISaltsRepository _saltsRepository = saltsRepository;
     private readonly IPasswordsService _passwordsService = passwordsService;
+    private readonly ITokensService _tokensService = tokensService;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
 
     public Guid AddUser(string secret, UserDto user)
@@ -73,23 +75,13 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
             throw new UnauthorizedException("Не пройдена аутентификация");
         }
 
-        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretToken));
-        var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha512);
-
         var claims = new List<Claim>
         {
-        new(ClaimTypes.Name, user.UserName),
-        new(ClaimTypes.Role, user.Role.ToString()),
+        new(ClaimTypes.Email, userDb.Mail),
+        new(ClaimTypes.Role, userDb.Role.ToString()),
         };
 
-        var tokenOptions = new JwtSecurityToken(
-            issuer: TokenValidationConstants.ValidIssuer,
-            audience: TokenValidationConstants.ValidAudience,
-            claims: claims,
-            expires: DateTime.Now.AddDays(1),
-            signingCredentials: signinCredentials
-        );
-        var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        var tokenString = _tokensService.GenerateAccessToken(secretToken, claims);
 
         return tokenString;
     }

@@ -12,6 +12,7 @@ namespace FirstBackend.Buiseness
             services.AddScoped<IOrdersService, OrdersService>();
             services.AddScoped<IDevicesService, DevicesService>();
             services.AddScoped<IPasswordsService, PasswordsService>();
+            services.AddScoped<ITokensService, TokensService>();
         }
     }
 }
