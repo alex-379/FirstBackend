@@ -2,6 +2,6 @@
 {
     public interface IPasswordsService
     {
-        string HashPasword(string password, out byte[] salt);
+        string HashPasword(string secret, string password, out byte[] salt);
     }
 }

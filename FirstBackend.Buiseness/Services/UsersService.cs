@@ -13,7 +13,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     private readonly IPasswordsService _passwordsService = passwordsService;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
 
-    public Guid AddUser(UserDto user)
+    public Guid AddUser(string secret, UserDto user)
     {
         _logger.Information($"Проверяем соответствует ли пароль требуемой длине");
         if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
@@ -27,7 +27,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
             throw new ValidationException("Такой e-mail уже существует");
         }
 
-        user.Password = _passwordsService.HashPasword(user.Password, out var salt);
+        user.Password = _passwordsService.HashPasword(secret, user.Password, out var salt);
         _logger.Information($"Обращаемся к методу репозитория Создание нового пользователя");
         _usersRepository.AddUser(user);
         _logger.Information($"Создан новый пользователь с ID {user.Id}");

@@ -1,4 +1,5 @@
-﻿using FirstBackend.API.Models.Requests;
+﻿using FirstBackend.API.Configuration;
+using FirstBackend.API.Models.Requests;
 using FirstBackend.API.Models.Responses;
 using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Core.Dtos;
@@ -9,11 +10,12 @@ namespace FirstBackend.API.Controllers;
 
 [ApiController]
 [Route("/api/users")]
-public class UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService) : Controller
+public class UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService, EnviromentVariables enviromentVariables) : Controller
 {
     private readonly IUsersService _usersService = usersService;
     private readonly IDevicesService _devicesService = devicesService;
     private readonly IOrdersService _ordersService = ordersService;
+    private readonly EnviromentVariables _enviromentVariables = enviromentVariables;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
     [HttpGet]
@@ -51,8 +53,9 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     [HttpPost]
     public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
     {
+        var secret = _enviromentVariables.SecretPassword;
         _logger.Information($"Создаём пользователя с логином {request.UserName}, почтой {request.Mail}");
-        var id = _usersService.AddUser(new()
+        var id = _usersService.AddUser(secret, new()
         {
             UserName = request.UserName,
             Mail = request.Mail,
