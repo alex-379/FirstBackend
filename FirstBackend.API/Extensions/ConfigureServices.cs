@@ -9,8 +9,9 @@ public static class ConfigureServices
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddExeptionsHandler();
         services.AddScoped<EnviromentVariables>();
         services.AddDataBases(enviromentVariables);
-        services.AddExeptionsHandler();
+        services.AddAuthenticationService(enviromentVariables);
     }
 }

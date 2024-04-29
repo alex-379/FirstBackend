@@ -1,6 +1,6 @@
 ﻿namespace FirstBackend.API.Models.Requests;
 
-public class LoginRequest
+public class LoginUserRequest
 {
     public string Mail { get; set; }
     public string Password { get; set; }

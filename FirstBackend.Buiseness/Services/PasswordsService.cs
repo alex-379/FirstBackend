@@ -1,5 +1,4 @@
 ﻿using FirstBackend.Buiseness.Interfaces;
-using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -25,9 +24,11 @@ public class PasswordsService() : IPasswordsService
         return Convert.ToHexString(hash);
     }
 
-    public bool VerifyPassword(string password, string hash, byte[] salt)
+    public bool VerifyPassword(string secret, string password, string hash, byte[] salt)
     {
+        password = $"{password}{secret}";
         var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, hashAlgorithm, keySize);
+
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
     }
 }

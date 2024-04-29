@@ -16,4 +16,11 @@ public class SaltsRepository(SaltLxContext context) : ISaltsRepository
         _ctx.SaveChanges();
         _logger.Information("Вносим в базу данных соль пользователя с ID {id}", salt.UserId);
     }
+
+    public SaltDto GetSaltByUserId(Guid userId)
+    {
+        _logger.Information("Идём в базу данных и ищем соль по ID пользователя {userId}", userId);
+
+        return _ctx.Salts.FirstOrDefault(s => s.UserId == userId);
+    }
 }

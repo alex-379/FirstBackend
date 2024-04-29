@@ -3,6 +3,7 @@ using FirstBackend.API.Models.Requests;
 using FirstBackend.API.Models.Responses;
 using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Core.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -18,6 +19,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     private readonly EnviromentVariables _enviromentVariables = enviromentVariables;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
+    [Authorize(Roles = "Administrator")]
     [HttpGet]
     public ActionResult<List<UserResponse>> GetAllUsers()
     {
@@ -26,6 +28,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
         return Ok(_usersService.GetAllUsers());
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpGet("{id}")]
     public ActionResult<UserFullResponse> GetUserById(Guid id)
     {
@@ -53,9 +56,9 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     [HttpPost]
     public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
     {
-        var secret = _enviromentVariables.SecretPassword;
+        var secretPassword = _enviromentVariables.SecretPassword;
         _logger.Information($"Создаём пользователя с логином {request.UserName}, почтой {request.Mail}");
-        var id = _usersService.AddUser(secret, new()
+        var id = _usersService.AddUser(secretPassword, new()
         {
             UserName = request.UserName,
             Mail = request.Mail,
@@ -63,6 +66,21 @@ public class UsersController(IUsersService usersService, IDevicesService devices
         });
 
         return Ok(id);
+    }
+
+    [HttpPost("login")]
+    public ActionResult<AuthenticatedResponse> Login([FromBody] LoginUserRequest request)
+    {
+        var secretPassword = _enviromentVariables.SecretPassword;
+        var secretToken = _enviromentVariables.SecretToken;
+        _logger.Information($"Авторизация пользователя");
+        var tokenString = _usersService.LoginUser(secretPassword, secretToken, new()
+        {
+            Mail = request.Mail,
+            Password = request.Password,
+        });
+
+        return Ok(new AuthenticatedResponse { Token = tokenString });
     }
 
     [HttpPut("{id}")]

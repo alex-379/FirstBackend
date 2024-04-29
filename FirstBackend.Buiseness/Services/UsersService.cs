@@ -1,8 +1,14 @@
 ﻿using FirstBackend.Buiseness.Interfaces;
+using FirstBackend.Core.Constants;
 using FirstBackend.Core.Dtos;
 using FirstBackend.Core.Exeptions;
+using FirstBackend.Core.Enums;
 using FirstBackend.DataLayer.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace FirstBackend.Buiseness.Services;
 
@@ -15,6 +21,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
 
     public Guid AddUser(string secret, UserDto user)
     {
+        _logger.Information($"Устанавливаем роль Клиент");
+        user.Role = UserRole.Client;
         _logger.Information($"Проверяем соответствует ли пароль требуемой длине");
         if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
         {
@@ -22,7 +30,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         }
 
         _logger.Information($"Проверяем был ли зарегестрирован пользователь с такой почтой ранее");
-        if (_usersRepository.GetAllUsers().Any(u => u.Mail == user.Mail))
+        if (_usersRepository.GetAllUsers().Any(u => u.Mail.Equals(user.Mail, StringComparison.CurrentCultureIgnoreCase)))
         {
             throw new ValidationException("Такой e-mail уже существует");
         }
@@ -43,6 +51,47 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         _logger.Information($"Добавлена соль для пользователя с ID {user.Id}");
 
         return user.Id;
+    }
+
+    public string LoginUser(string secretPassword, string secretToken, UserDto user)
+    {
+        _logger.Information($"Проверяем переданы ли данные");
+        if (user is null)
+        {
+            throw new BadRequestException("Передайте входные данные");
+        }
+
+        _logger.Information($"Проверяем есть ли такой пользователь в базе данных");
+        var userDb = _usersRepository.GetAllUsers().FirstOrDefault(u => u.Mail.Equals(user.Mail, StringComparison.CurrentCultureIgnoreCase))
+            ?? throw new UnauthorizedException("Не пройдена аутентификация");
+
+        _logger.Information($"Проверка аутентификационных данных");
+        var salt = Convert.FromHexString(_saltsRepository.GetSaltByUserId(userDb.Id).Salt);
+        var confirmPassword = _passwordsService.VerifyPassword(secretPassword, user.Password, userDb.Password, salt);
+        if (!confirmPassword)
+        {
+            throw new UnauthorizedException("Не пройдена аутентификация");
+        }
+
+        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretToken));
+        var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha512);
+
+        var claims = new List<Claim>
+        {
+        new(ClaimTypes.Name, user.UserName),
+        new(ClaimTypes.Role, user.Role.ToString()),
+        };
+
+        var tokenOptions = new JwtSecurityToken(
+            issuer: TokenValidationConstants.ValidIssuer,
+            audience: TokenValidationConstants.ValidAudience,
+            claims: claims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: signinCredentials
+        );
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+        return tokenString;
     }
 
     public List<UserDto> GetAllUsers()

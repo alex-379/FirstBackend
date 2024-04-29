@@ -9,6 +9,7 @@ public static class UseApplication
         app.UseExceptionHandler();
         app.UseSerilogRequestLogging();
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseAuthorization();
     }
 }
