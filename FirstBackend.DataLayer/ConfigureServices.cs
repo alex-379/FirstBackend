@@ -11,6 +11,7 @@ namespace FirstBackend.DataLayer
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IOrdersRepository, OrdersRepository>();
             services.AddScoped<IDevicesRepository, DevicesRepository>();
+            services.AddScoped<ISaltsRepository, SaltsRepository>();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using FirstBackend.API.Models.Requests;
 using FirstBackend.API.Models.Responses;
 using FirstBackend.Buiseness.Interfaces;
-using FirstBackend.Buiseness.Services;
 using FirstBackend.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -10,19 +9,12 @@ namespace FirstBackend.API.Controllers;
 
 [ApiController]
 [Route("/api/users")]
-public class UsersController : Controller
+public class UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService) : Controller
 {
-    private readonly IUsersService _usersService;
-    private readonly IDevicesService _devicesService;
-    private readonly IOrdersService _ordersService;
+    private readonly IUsersService _usersService = usersService;
+    private readonly IDevicesService _devicesService = devicesService;
+    private readonly IOrdersService _ordersService = ordersService;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
-
-    public UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService)
-    {
-        _usersService = usersService;
-        _devicesService = devicesService;
-        _ordersService = ordersService;
-    }
 
     [HttpGet]
     public ActionResult<List<UserResponse>> GetAllUsers()

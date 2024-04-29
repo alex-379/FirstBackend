@@ -1,11 +1,6 @@
 ﻿namespace FirstBackend.DataLayer.Repositories;
 
-public class BaseRepository
+public class BaseRepository(MainerLxContext context)
 {
-    protected readonly MainerLxContext _ctx;
-
-    public BaseRepository(MainerLxContext context)
-    {
-        _ctx = context;
-    }
+    protected readonly MainerLxContext _ctx = context;
 }

@@ -3,16 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FirstBackend.DataLayer;
 
-public class MainerLxContext:DbContext
+public class MainerLxContext(DbContextOptions<MainerLxContext> options) : DbContext(options)
 {
     public DbSet<UserDto> Users { get; set; }
     public DbSet<DeviceDto> Devices { get; set; }
     public DbSet<OrderDto> Orders { get; set; }
-
-    public MainerLxContext(DbContextOptions<MainerLxContext> options) : base(options)
-    {
-        
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

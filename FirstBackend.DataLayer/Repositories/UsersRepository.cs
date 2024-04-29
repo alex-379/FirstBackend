@@ -4,14 +4,9 @@ using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
 
-public class UsersRepository : BaseRepository, IUsersRepository
+public class UsersRepository(MainerLxContext context) : BaseRepository(context), IUsersRepository
 {
     private readonly ILogger _logger = Log.ForContext<UsersRepository>();
-
-    public UsersRepository(MainerLxContext context) : base(context)
-    {
-
-    }
 
     public Guid AddUser(UserDto user)
     {

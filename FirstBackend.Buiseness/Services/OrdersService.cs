@@ -2,20 +2,14 @@
 using FirstBackend.Core.Dtos;
 using FirstBackend.Core.Exeptions;
 using FirstBackend.DataLayer.Interfaces;
-using FirstBackend.DataLayer.Repositories;
 using Serilog;
 
 namespace FirstBackend.Buiseness.Services;
 
-public class OrdersService : IOrdersService
+public class OrdersService(IOrdersRepository ordersRepository) : IOrdersService
 {
-    private readonly IOrdersRepository _ordersRepository;
+    private readonly IOrdersRepository _ordersRepository = ordersRepository;
     private readonly ILogger _logger = Log.ForContext<OrdersService>();
-
-    public OrdersService(IOrdersRepository ordersRepository)
-    {
-        _ordersRepository = ordersRepository;
-    }
 
     public Guid AddOrder(OrderDto order)
     {

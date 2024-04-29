@@ -6,15 +6,10 @@ using Serilog;
 
 namespace FirstBackend.Buiseness.Services;
 
-public class DevicesService : IDevicesService
+public class DevicesService(IDevicesRepository devicesRepository) : IDevicesService
 {
-    private readonly IDevicesRepository _devicesRepository;
+    private readonly IDevicesRepository _devicesRepository = devicesRepository;
     private readonly ILogger _logger = Log.ForContext<OrdersService>();
-
-    public DevicesService(IDevicesRepository devicesRepository)
-    {
-        _devicesRepository = devicesRepository;
-    }
 
     public Guid AddDevice(DeviceDto device)
     {

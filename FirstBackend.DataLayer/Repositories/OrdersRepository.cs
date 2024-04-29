@@ -4,18 +4,14 @@ using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
 
-public class OrdersRepository : BaseRepository, IOrdersRepository
+public class OrdersRepository(MainerLxContext context) : BaseRepository(context), IOrdersRepository
 {
     private readonly ILogger _logger = Log.ForContext<OrdersRepository>();
-
-    public OrdersRepository(MainerLxContext context) : base(context)
-    {
-
-    }
 
     public Guid AddOrder(OrderDto order)
     {
         _ctx.Orders.Add(order);
+        _ctx.SaveChanges();
         _logger.Information("Вносим в базу данных заказ с ID {id}", order.Id);
 
         return order.Id;
@@ -46,5 +42,6 @@ public class OrdersRepository : BaseRepository, IOrdersRepository
     {
         _logger.Information("Идём в базу данных и удаляем заказ с ID {id}", order.Id);
         _ctx.Orders.Remove(order);
+        _ctx.SaveChanges();
     }
 }

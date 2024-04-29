@@ -4,14 +4,9 @@ using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
 
-public class DevicesRepository : BaseRepository, IDevicesRepository
+public class DevicesRepository(MainerLxContext context) : BaseRepository(context), IDevicesRepository
 {
     private readonly ILogger _logger = Log.ForContext<DevicesRepository>();
-
-    public DevicesRepository(MainerLxContext context) : base(context)
-    {
-
-    }
 
     public Guid AddDevice(DeviceDto device)
     {

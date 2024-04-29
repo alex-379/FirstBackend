@@ -7,15 +7,10 @@ namespace FirstBackend.API.Controllers;
 
 [ApiController]
 [Route("/api/devices")]
-public class DevicesController : Controller
+public class DevicesController(IDevicesService deviceService) : Controller
 {
-    private readonly IDevicesService _deviceService;
+    private readonly IDevicesService _deviceService = deviceService;
     private readonly Serilog.ILogger _logger = Log.ForContext<DevicesController>();
-
-    public DevicesController(IDevicesService deviceService)
-    {
-        _deviceService = deviceService;
-    }
 
     [HttpGet("{id}")]
     public ActionResult<DeviceDto> GetDeviceById(Guid id)

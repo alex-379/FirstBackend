@@ -6,26 +6,41 @@ using Serilog;
 
 namespace FirstBackend.Buiseness.Services;
 
-public class UsersService : IUsersService
+public class UsersService(IUsersRepository usersRepository, ISaltsRepository saltsRepository, IPasswordsService passwordsService) : IUsersService
 {
-    private readonly IUsersRepository _usersRepository;
+    private readonly IUsersRepository _usersRepository = usersRepository;
+    private readonly ISaltsRepository _saltsRepository = saltsRepository;
+    private readonly IPasswordsService _passwordsService = passwordsService;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
 
-    public UsersService(IUsersRepository usersRepository)
-    {
-        _usersRepository = usersRepository;
-    }
-
-    public Guid AddUser (UserDto user)
+    public Guid AddUser(UserDto user)
     {
         _logger.Information($"Проверяем соответствует ли пароль требуемой длине");
-        if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8) 
+        if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
         {
             throw new ValidationException("Пароль должен быть не менее 8 символов");
         }
 
+        _logger.Information($"Проверяем был ли зарегестрирован пользователь с такой почтой ранее");
+        if (_usersRepository.GetAllUsers().Any(u => u.Mail == user.Mail))
+        {
+            throw new ValidationException("Такой e-mail уже существует");
+        }
+
+        user.Password = _passwordsService.HashPasword(user.Password, out var salt);
+        _logger.Information($"Обращаемся к методу репозитория Создание нового пользователя");
         _usersRepository.AddUser(user);
-        _logger.Information($"Обращаемся к методу репозитория Создание нового пользователя с ID {user.Id}");
+        _logger.Information($"Создан новый пользователь с ID {user.Id}");
+
+        SaltDto saltDto = new()
+        {
+            Salt = Convert.ToHexString(salt),
+            UserId = user.Id
+        };
+
+        _logger.Information($"Обращаемся к методу репозитория Добавление соли для пользователя");
+        _saltsRepository.AddSalt(saltDto);
+        _logger.Information($"Добавлена соль для пользователя с ID {user.Id}");
 
         return user.Id;
     }
@@ -35,7 +50,7 @@ public class UsersService : IUsersService
         _logger.Information($"Обращаемся к методу репозитория Получение всех пользователей");
 
         return _usersRepository.GetAllUsers();
-    } 
+    }
 
     public UserDto GetUserById(Guid id)
     {

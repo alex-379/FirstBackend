@@ -1,10 +1,5 @@
-﻿namespace FirstBackend.Core.Exeptions
+﻿namespace FirstBackend.Core.Exeptions;
+
+public class NotFoundException(string message) : Exception(message)
 {
-    public class NotFoundException:Exception
-    {
-        public NotFoundException(string message) : base(message)
-        {
-            
-        }
-    }
 }

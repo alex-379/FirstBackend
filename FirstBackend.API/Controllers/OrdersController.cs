@@ -7,15 +7,10 @@ namespace FirstBackend.API.Controllers;
 
 [ApiController]
 [Route("/api/orders")]
-public class OrdersController : Controller
+public class OrdersController(IOrdersService ordersService) : Controller
 {
-    private readonly IOrdersService _ordersService;
+    private readonly IOrdersService _ordersService = ordersService;
     private readonly Serilog.ILogger _logger = Log.ForContext<OrdersController>();
-
-    public OrdersController(IOrdersService ordersService)
-    {
-        _ordersService = ordersService;
-    }
 
     [HttpGet]
     public ActionResult<List<OrderDto>> GetAllOrders()

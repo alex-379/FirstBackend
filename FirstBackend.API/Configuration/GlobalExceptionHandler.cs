@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
-namespace FirstBackend.API.Exceptions;
+namespace FirstBackend.API.Configuration;
 
-internal sealed class GlobalExceptionHandler : IExceptionHandler
+public class GlobalExceptionHandler : IExceptionHandler
 {
     private readonly Serilog.ILogger _logger = Log.ForContext<GlobalExceptionHandler>();
 
