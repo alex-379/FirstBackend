@@ -1,3 +1,4 @@
+using FirstBackend.API.Configuration;
 using FirstBackend.API.Extensions;
 using FirstBackend.Buiseness;
 using FirstBackend.DataLayer;
@@ -6,6 +7,7 @@ using Serilog;
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    var enviromentVariables = new EnviromentVariables(builder.Configuration);
     builder.Logging.ClearProviders();
 
     Log.Logger = new LoggerConfiguration()
@@ -14,7 +16,7 @@ try
 
     builder.Host.UseSerilog();
     // Add services to the container.
-    builder.Services.ConfigureApiServices(builder.Configuration);
+    builder.Services.ConfigureApiServices(enviromentVariables);
     builder.Services.ConfigureBllServices();
     builder.Services.ConfigureDalServices();
 
@@ -27,10 +29,7 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseExceptionHandler();
-    app.UseSerilogRequestLogging();
-    app.UseHttpsRedirection();
-    app.UseAuthorization();
+    app.UseApp();
     app.MapControllers();
     app.Run();
 }
