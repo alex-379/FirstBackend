@@ -1,6 +1,4 @@
-﻿using FirstBackend.Core.Enums;
-
-namespace FirstBackend.API.Models.Requests;
+﻿namespace FirstBackend.Buiseness.Models.Users.Requests;
 
 public class LoginUserRequest
 {

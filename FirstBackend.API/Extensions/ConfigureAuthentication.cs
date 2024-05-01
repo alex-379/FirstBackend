@@ -28,6 +28,5 @@ public static class ConfigureAuthentication
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(enviromentVariables.SecretToken))
             };
         });
-
     }
 }

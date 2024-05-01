@@ -1,28 +1,28 @@
-﻿using FirstBackend.Buiseness.Interfaces;
-using FirstBackend.Core.Constants;
+﻿using AutoMapper;
+using FirstBackend.Buiseness.Interfaces;
+using FirstBackend.Buiseness.Models.Users.Requests;
 using FirstBackend.Core.Dtos;
-using FirstBackend.Core.Exeptions;
 using FirstBackend.Core.Enums;
+using FirstBackend.Core.Exeptions;
 using FirstBackend.DataLayer.Interfaces;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace FirstBackend.Buiseness.Services;
 
-public class UsersService(IUsersRepository usersRepository, ISaltsRepository saltsRepository, IPasswordsService passwordsService, ITokensService tokensService)
+public class UsersService(IUsersRepository usersRepository, ISaltsRepository saltsRepository, IPasswordsService passwordsService, ITokensService tokensService, IMapper mapper)
     : IUsersService
 {
     private readonly IUsersRepository _usersRepository = usersRepository;
     private readonly ISaltsRepository _saltsRepository = saltsRepository;
     private readonly IPasswordsService _passwordsService = passwordsService;
     private readonly ITokensService _tokensService = tokensService;
+    private readonly IMapper _mapper = mapper;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
 
-    public Guid AddUser(string secret, UserDto user)
+    public Guid AddUser(string secret, CreateUserRequest request)
     {
+        UserDto user = _mapper.Map<UserDto>(request);
         _logger.Information($"Устанавливаем роль Клиент");
         user.Role = UserRole.Client;
         _logger.Information($"Проверяем соответствует ли пароль требуемой длине");

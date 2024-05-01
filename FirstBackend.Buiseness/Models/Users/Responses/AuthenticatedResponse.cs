@@ -1,4 +1,4 @@
-﻿namespace FirstBackend.API.Models.Responses;
+﻿namespace FirstBackend.Buiseness.Models.Users.Responses;
 
 public class AuthenticatedResponse
 {

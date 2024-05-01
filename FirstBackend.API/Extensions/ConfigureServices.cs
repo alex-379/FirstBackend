@@ -1,5 +1,6 @@
 ﻿using FirstBackend.API.Configuration;
-using Microsoft.OpenApi.Models;
+using FirstBackend.Buiseness.Models.Devices;
+using FluentValidation;
 
 namespace FirstBackend.API.Extensions;
 
@@ -14,5 +15,7 @@ public static class ConfigureServices
         services.AddScoped<EnviromentVariables>();
         services.AddDataBases(enviromentVariables);
         services.AddAuthenticationService(enviromentVariables);
+        services.AddAutoMapper(typeof(DevicesMappingProfile).Assembly);
+        //services.AddValidatorsFromAssemblyContaining<UserValidator>();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace FirstBackend.API.Models.Requests;
+﻿namespace FirstBackend.Buiseness.Models.Users.Requests;
 
 public class UpdateUserDataRequest
 {

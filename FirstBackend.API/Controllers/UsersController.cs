@@ -1,11 +1,11 @@
 ﻿using FirstBackend.API.Configuration;
-using FirstBackend.API.Models.Requests;
-using FirstBackend.API.Models.Responses;
 using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Core.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using FirstBackend.Buiseness.Models.Users.Requests;
+using FirstBackend.Buiseness.Models.Users.Responses;
 
 namespace FirstBackend.API.Controllers;
 
@@ -58,12 +58,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     {
         var secretPassword = _enviromentVariables.SecretPassword;
         _logger.Information($"Создаём пользователя с логином {request.UserName}, почтой {request.Mail}");
-        var id = _usersService.AddUser(secretPassword, new()
-        {
-            UserName = request.UserName,
-            Mail = request.Mail,
-            Password = request.Password
-        });
+        var id = _usersService.AddUser(secretPassword, request);
 
         return Ok(id);
     }

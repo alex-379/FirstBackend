@@ -1,10 +1,9 @@
 ﻿using FirstBackend.Core.Enums;
 
-namespace FirstBackend.API.Models.Responses;
+namespace FirstBackend.Buiseness.Models.Devices.Requests;
 
-public class DeviceResponse
+public class CreateDeviceRequest
 {
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public DeviceType DeviceType { get; set; }
     public string Address { get; set; }
