@@ -1,9 +1,12 @@
-﻿using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Buiseness.Models.Devices.Requests;
+using FirstBackend.Buiseness.Models.Devices.Responses;
 
 namespace FirstBackend.Buiseness.Interfaces;
 
 public interface IDevicesService
 {
-    DeviceDto GetDeviceById(Guid id);
-    List<DeviceDto> GetDevicesByUserId(Guid userId);
+    List<DeviceResponse> GetAllDevices();
+    DeviceFullResponse GetDeviceById(Guid id);
+    List<DeviceResponse> GetDevicesByUserId(Guid userId);
+    Guid AddDevice(CreateDeviceRequest request);
 }

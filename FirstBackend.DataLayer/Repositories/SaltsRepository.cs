@@ -1,4 +1,5 @@
 ﻿using FirstBackend.Core.Dtos;
+using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
 using Serilog;
 
@@ -22,5 +23,12 @@ public class SaltsRepository(SaltLxContext context) : ISaltsRepository
         _logger.Information("Идём в базу данных и ищем соль по ID пользователя {userId}", userId);
 
         return _ctx.Salts.FirstOrDefault(s => s.UserId == userId);
+    }
+
+    public void UpdateSalt(SaltDto salt)
+    {
+        _ctx.Salts.Update(salt);
+        _ctx.SaveChanges();
+        _logger.Information("Обновляем в базе данных соль пользователя с ID {id}", salt.UserId);
     }
 }

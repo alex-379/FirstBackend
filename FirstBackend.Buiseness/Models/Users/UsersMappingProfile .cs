@@ -10,7 +10,8 @@ public class UsersMappingProfile : Profile
     public UsersMappingProfile()
     {
         CreateMap<CreateUserRequest, UserDto>();
-
+        CreateMap<LoginUserRequest, UserDto>();
+        
         CreateMap<UserDto, UserResponse>();
         CreateMap<UserDto, UserFullResponse>();
     }

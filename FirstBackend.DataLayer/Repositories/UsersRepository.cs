@@ -1,4 +1,5 @@
 ﻿using FirstBackend.Core.Dtos;
+using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
 using Serilog;
 
@@ -29,6 +30,20 @@ public class UsersRepository(MainerLxContext context) : BaseRepository(context),
         _logger.Information("Идём в базу данных и ищем пользователя по ID {id}", id);
 
         return _ctx.Users.FirstOrDefault(u => u.Id == id);
+    }
+
+    public UserDto GetUserByMail(string mail)
+    {
+        _logger.Information("Идём в базу данных и ищем пользователя по почте {mail}", mail);
+
+        return _ctx.Users.FirstOrDefault(u => u.Mail == mail);
+    }
+
+    public UserDto GetUserByUserName(string userName)
+    {
+        _logger.Information("Идём в базу данных и ищем пользователя по имени {username}", userName);
+
+        return _ctx.Users.FirstOrDefault(u => u.UserName == userName);
     }
 
     public void UpdateUser(UserDto user)

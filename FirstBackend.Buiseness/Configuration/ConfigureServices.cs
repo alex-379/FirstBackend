@@ -2,7 +2,7 @@
 using FirstBackend.Buiseness.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FirstBackend.Buiseness
+namespace FirstBackend.Buiseness.Configuration
 {
     public static class ConfigureServices
     {

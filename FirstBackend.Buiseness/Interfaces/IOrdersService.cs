@@ -1,10 +1,12 @@
-﻿using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Buiseness.Models.Orders.Requests;
+using FirstBackend.Buiseness.Models.Orders.Responses;
 
 namespace FirstBackend.Buiseness.Interfaces;
 
 public interface IOrdersService
 {
-    List<OrderDto> GetAllOrders();
-    OrderDto GetOrderById(Guid id);
-    List<OrderDto> GetOrdersByUserId(Guid userId);
+    List<OrderResponse> GetAllOrders();
+    OrderFullResponse GetOrderById(Guid id);
+    List<OrdersByUserResponse> GetOrdersByUserId(Guid userId);
+    Guid AddOrder(CreateOrderRequest request);
 }

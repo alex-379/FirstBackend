@@ -1,7 +1,7 @@
 ﻿using FirstBackend.Core.Dtos;
 using Microsoft.EntityFrameworkCore;
 
-namespace FirstBackend.DataLayer;
+namespace FirstBackend.DataLayer.Contexts;
 
 public class SaltLxContext(DbContextOptions<SaltLxContext> options) : DbContext(options)
 {

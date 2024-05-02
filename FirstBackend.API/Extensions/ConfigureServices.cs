@@ -1,21 +1,21 @@
-﻿using FirstBackend.API.Configuration;
-using FirstBackend.Buiseness.Models.Devices;
+﻿using FirstBackend.Buiseness.Models.Users;
+using FirstBackend.Buiseness.Validators;
 using FluentValidation;
 
 namespace FirstBackend.API.Extensions;
 
 public static class ConfigureServices
 {
-    public static void ConfigureApiServices(this IServiceCollection services, EnviromentVariables enviromentVariables)
+    public static void ConfigureApiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwager();
         services.AddExeptionsHandler();
-        services.AddScoped<EnviromentVariables>();
-        services.AddDataBases(enviromentVariables);
-        services.AddAuthenticationService(enviromentVariables);
-        services.AddAutoMapper(typeof(DevicesMappingProfile).Assembly);
-        //services.AddValidatorsFromAssemblyContaining<UserValidator>();
+        services.AddDataBases(configuration);
+        services.AddAuthenticationService(configuration);
+        services.AddAutoMapper(typeof(UsersMappingProfile).Assembly);
+        services.AddValidatorsFromAssemblyContaining<UsersValidator>();
+        services.AddConfigurationFromJson(configuration);
     }
 }

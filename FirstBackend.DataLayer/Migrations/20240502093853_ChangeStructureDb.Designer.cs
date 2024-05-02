@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FirstBackend.DataLayer.Migrations
 {
     [DbContext(typeof(MainerLxContext))]
-    [Migration("20240417233330_Initial")]
-    partial class Initial
+    [Migration("20240502093853_ChangeStructureDb")]
+    partial class ChangeStructureDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,25 @@ namespace FirstBackend.DataLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("DeviceDtoOrderDto", b =>
+                {
+                    b.Property<Guid>("DevicesId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("devices_id");
+
+                    b.Property<Guid>("OrdersId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("orders_id");
+
+                    b.HasKey("DevicesId", "OrdersId")
+                        .HasName("pk_device_dto_order_dto");
+
+                    b.HasIndex("OrdersId")
+                        .HasDatabaseName("ix_device_dto_order_dto_orders_id");
+
+                    b.ToTable("device_dto_order_dto", (string)null);
+                });
 
             modelBuilder.Entity("FirstBackend.Core.Dtos.DeviceDto", b =>
                 {
@@ -44,15 +63,8 @@ namespace FirstBackend.DataLayer.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<Guid?>("OwnerId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("owner_id");
-
                     b.HasKey("Id")
                         .HasName("pk_devices");
-
-                    b.HasIndex("OwnerId")
-                        .HasDatabaseName("ix_devices_owner_id");
 
                     b.ToTable("devices", (string)null);
                 });
@@ -96,6 +108,18 @@ namespace FirstBackend.DataLayer.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text")
+                        .HasColumnName("refresh_token");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("refresh_token_expiry_time");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer")
+                        .HasColumnName("role");
+
                     b.Property<string>("UserName")
                         .HasColumnType("text")
                         .HasColumnName("user_name");
@@ -106,14 +130,21 @@ namespace FirstBackend.DataLayer.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("FirstBackend.Core.Dtos.DeviceDto", b =>
+            modelBuilder.Entity("DeviceDtoOrderDto", b =>
                 {
-                    b.HasOne("FirstBackend.Core.Dtos.UserDto", "Owner")
-                        .WithMany("Devices")
-                        .HasForeignKey("OwnerId")
-                        .HasConstraintName("fk_devices_users_owner_id");
+                    b.HasOne("FirstBackend.Core.Dtos.DeviceDto", null)
+                        .WithMany()
+                        .HasForeignKey("DevicesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_device_dto_order_dto_devices_devices_id");
 
-                    b.Navigation("Owner");
+                    b.HasOne("FirstBackend.Core.Dtos.OrderDto", null)
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_device_dto_order_dto_orders_orders_id");
                 });
 
             modelBuilder.Entity("FirstBackend.Core.Dtos.OrderDto", b =>
@@ -128,8 +159,6 @@ namespace FirstBackend.DataLayer.Migrations
 
             modelBuilder.Entity("FirstBackend.Core.Dtos.UserDto", b =>
                 {
-                    b.Navigation("Devices");
-
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

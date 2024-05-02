@@ -1,10 +1,14 @@
-﻿using System.Security.Claims;
+﻿using FirstBackend.Buiseness.Models.Tokens.Requests;
+using FirstBackend.Buiseness.Models.Users.Responses;
+using System.Security.Claims;
 
 namespace FirstBackend.Buiseness.Interfaces;
 
 public interface ITokensService
 {
-    string GenerateAccessToken(string secretToken, IEnumerable<Claim> claims);
+    string GenerateAccessToken(IEnumerable<Claim> claims);
     string GenerateRefreshToken();
-    ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
+    AuthenticatedResponse Refresh(RefreshTokenRequest request);
+    void Revoke(string username);
+    string GetAccessToken(string authorizationHeader);
 }

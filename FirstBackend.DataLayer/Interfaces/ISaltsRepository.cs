@@ -6,4 +6,5 @@ public interface ISaltsRepository
 {
     void AddSalt(SaltDto salt);
     SaltDto GetSaltByUserId(Guid userId);
+    void UpdateSalt(SaltDto salt);
 }

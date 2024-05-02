@@ -18,8 +18,4 @@
     <ProjectReference Include="..\FirstBackend.DataLayer\FirstBackend.DataLayer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validators\" />
-  </ItemGroup>
-
 </Project>

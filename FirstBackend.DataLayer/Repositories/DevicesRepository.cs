@@ -1,5 +1,7 @@
 ﻿using FirstBackend.Core.Dtos;
+using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
@@ -16,6 +18,12 @@ public class DevicesRepository(MainerLxContext context) : BaseRepository(context
 
         return device.Id;
     }
+    public List<DeviceDto> GetAllDevices()
+    {
+        _logger.Information("Идём в базу данных и ищем все устройства");
+
+        return [.. _ctx.Devices];
+    }
 
     public DeviceDto GetDeviceById(Guid id)
     {
@@ -24,12 +32,16 @@ public class DevicesRepository(MainerLxContext context) : BaseRepository(context
         return _ctx.Devices.FirstOrDefault(d => d.Id == id);
     }
 
-
     public List<DeviceDto> GetDevicesByUserId(Guid userId)
     {
         _logger.Information("Идём в базу данных и ищем устройства по ID пользователя {userId}", userId);
+        var a = _ctx.Devices
+            .Include(d => d.Orders).ToList();
 
-        return [.. _ctx.Devices.Where(d => d.Owner.Id == userId)];
+        return [.. _ctx.Devices
+            .Include(d => d.Orders
+            .Where(o => o.Customer.Id == userId)
+            )];
     }
 
     public void DeleteDevice(DeviceDto device)

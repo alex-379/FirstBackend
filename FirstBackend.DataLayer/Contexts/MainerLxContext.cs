@@ -1,7 +1,7 @@
 ﻿using FirstBackend.Core.Dtos;
 using Microsoft.EntityFrameworkCore;
 
-namespace FirstBackend.DataLayer;
+namespace FirstBackend.DataLayer.Contexts;
 
 public class MainerLxContext(DbContextOptions<MainerLxContext> options) : DbContext(options)
 {
@@ -13,8 +13,8 @@ public class MainerLxContext(DbContextOptions<MainerLxContext> options) : DbCont
     {
         modelBuilder
             .Entity<DeviceDto>()
-            .HasOne(d => d.Owner)
-            .WithMany(u => u.Devices);
+            .HasMany(d => d.Orders)
+            .WithMany(o => o.Devices);
 
         modelBuilder
             .Entity<OrderDto>()

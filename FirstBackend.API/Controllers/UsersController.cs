@@ -1,22 +1,22 @@
-﻿using FirstBackend.API.Configuration;
-using FirstBackend.Buiseness.Interfaces;
-using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Buiseness.Interfaces;
+using FirstBackend.Buiseness.Models.Devices.Responses;
+using FirstBackend.Buiseness.Models.Orders.Responses;
+using FirstBackend.Buiseness.Models.Users.Requests;
+using FirstBackend.Buiseness.Models.Users.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using FirstBackend.Buiseness.Models.Users.Requests;
-using FirstBackend.Buiseness.Models.Users.Responses;
 
 namespace FirstBackend.API.Controllers;
 
 [ApiController]
 [Route("/api/users")]
-public class UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService, EnviromentVariables enviromentVariables) : Controller
+public class UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService, ITokensService tokensService) : Controller
 {
     private readonly IUsersService _usersService = usersService;
     private readonly IDevicesService _devicesService = devicesService;
     private readonly IOrdersService _ordersService = ordersService;
-    private readonly EnviromentVariables _enviromentVariables = enviromentVariables;
+    private readonly ITokensService _tokensService = tokensService;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
     [Authorize(Roles = "Administrator")]
@@ -37,16 +37,18 @@ public class UsersController(IUsersService usersService, IDevicesService devices
         return Ok(_usersService.GetUserById(id));
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpGet("{userId}/devices")]
-    public ActionResult<List<DeviceDto>> GetDevicesByUserId(Guid userId)
+    public ActionResult<List<DeviceResponse>> GetDevicesByUserId(Guid userId)
     {
         _logger.Information($"Получаем устройства по ID пользователя {userId}");
 
         return Ok(_devicesService.GetDevicesByUserId(userId));
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpGet("{userId}/orders")]
-    public ActionResult<List<OrderDto>> GetOrdersByUserId(Guid userId)
+    public ActionResult<List<OrderResponse>> GetOrdersByUserId(Guid userId)
     {
         _logger.Information($"Получаем заказы по ID пользователя {userId}");
 
@@ -56,9 +58,8 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     [HttpPost]
     public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
     {
-        var secretPassword = _enviromentVariables.SecretPassword;
         _logger.Information($"Создаём пользователя с логином {request.UserName}, почтой {request.Mail}");
-        var id = _usersService.AddUser(secretPassword, request);
+        var id = _usersService.AddUser(request);
 
         return Ok(id);
     }
@@ -66,47 +67,50 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     [HttpPost("login")]
     public ActionResult<AuthenticatedResponse> Login([FromBody] LoginUserRequest request)
     {
-        var secretPassword = _enviromentVariables.SecretPassword;
-        var secretToken = _enviromentVariables.SecretToken;
         _logger.Information($"Авторизация пользователя");
-        var tokenString = _usersService.LoginUser(secretPassword, secretToken, new()
-        {
-            Mail = request.Mail,
-            Password = request.Password,
-        });
+        var authenticatedResponse = _usersService.LoginUser(request);
 
-        return Ok(new AuthenticatedResponse { Token = tokenString });
+        return Ok(authenticatedResponse);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public ActionResult UpdateUserData([FromRoute] Guid id, [FromBody] UpdateUserDataRequest request)
     {
         _logger.Information($"Обновляем данные пользователя с ID {id}");
-        _usersService.UpdateUser(id, new()
-        {
-            UserName = request.UserName,
-            Mail = request.Mail,
-        });
+        _usersService.UpdateUser(id, request);
 
         return NoContent();
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public ActionResult DeleteUserById(Guid id)
     {
+        _logger.Information($"Удаляем пользователя с ID {id}");
         _usersService.DeleteUserById(id);
 
         return NoContent();
     }
 
-    [HttpPatch("{id}")]
+    [Authorize]
+    [HttpPatch("{id}/password")]
     public ActionResult UpdateUserPassword([FromRoute] Guid id, [FromBody] UpdateUserPasswordRequest request)
     {
+        var authorizationHeader = HttpContext.Request.Headers.Authorization;
+        var accessToken = _tokensService.GetAccessToken(authorizationHeader);
         _logger.Information($"Обновляем пароль пользователя с ID {id}");
-        _usersService.UpdateUser(id, new()
-        {
-            Password = request.Password,
-        });
+        var authenticatedResponse = _usersService.UpdateUserPassword(id, request, accessToken);
+
+        return Ok(authenticatedResponse);
+    }
+
+    [Authorize]
+    [HttpPatch("{id}/mail")]
+    public ActionResult UpdateUserMail([FromRoute] Guid id, [FromBody] UpdateUserMailRequest request)
+    {
+        _logger.Information($"Обновляем email пользователя с ID {id}");
+        _usersService.UpdateUserMail(id, request);
 
         return NoContent();
     }

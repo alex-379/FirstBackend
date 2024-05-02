@@ -12,5 +12,6 @@ public class DevicesMappingProfile : Profile
         CreateMap<CreateDeviceRequest, DeviceDto>();
 
         CreateMap<DeviceDto, DeviceResponse>();
+        CreateMap<DeviceDto, DeviceFullResponse>();
     }
 }

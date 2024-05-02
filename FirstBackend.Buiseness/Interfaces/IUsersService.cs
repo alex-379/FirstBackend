@@ -1,14 +1,16 @@
 ﻿using FirstBackend.Buiseness.Models.Users.Requests;
-using FirstBackend.Core.Dtos;
+using FirstBackend.Buiseness.Models.Users.Responses;
 
 namespace FirstBackend.Buiseness.Interfaces;
 
 public interface IUsersService
 {
-    Guid AddUser(string secret, CreateUserRequest request);
-    string LoginUser(string secretPassword, string secretToken, UserDto user);
-    List<UserDto> GetAllUsers();
-    UserDto GetUserById(Guid id);
-    void UpdateUser(Guid userId, UserDto userUpdate);
+    Guid AddUser(CreateUserRequest request);
+    AuthenticatedResponse LoginUser(LoginUserRequest request);
+    List<UserResponse> GetAllUsers();
+    UserFullResponse GetUserById(Guid id);
+    void UpdateUser(Guid userId, UpdateUserDataRequest request);
     void DeleteUserById(Guid id);
+    AuthenticatedResponse UpdateUserPassword(Guid userId, UpdateUserPasswordRequest request, string accessToken);
+    void UpdateUserMail(Guid userId, UpdateUserMailRequest request);
 }

@@ -1,4 +1,6 @@
-﻿namespace FirstBackend.DataLayer.Repositories;
+﻿using FirstBackend.DataLayer.Contexts;
+
+namespace FirstBackend.DataLayer.Repositories;
 
 public class BaseRepository(MainerLxContext context)
 {
