@@ -2,18 +2,17 @@
 using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Buiseness.Models.Devices.Requests;
 using FirstBackend.Buiseness.Models.Devices.Responses;
-using FirstBackend.Buiseness.Models.Users.Responses;
 using FirstBackend.Core.Dtos;
 using FirstBackend.Core.Exeptions;
 using FirstBackend.DataLayer.Interfaces;
-using FirstBackend.DataLayer.Repositories;
 using Serilog;
 
 namespace FirstBackend.Buiseness.Services;
 
-public class DevicesService(IDevicesRepository devicesRepository, IMapper mapper) : IDevicesService
+public class DevicesService(IDevicesRepository devicesRepository, IOrdersRepository ordersRepository, IMapper mapper) : IDevicesService
 {
     private readonly IDevicesRepository _devicesRepository = devicesRepository;
+    private readonly IOrdersRepository _ordersRepository = ordersRepository;
     private readonly IMapper _mapper = mapper;
     private readonly ILogger _logger = Log.ForContext<OrdersService>();
 
@@ -39,6 +38,7 @@ public class DevicesService(IDevicesRepository devicesRepository, IMapper mapper
         _logger.Information($"Обращаемся к методу репозитория Получение устройства по ID {id}");
         var device = _devicesRepository.GetDeviceById(id) ?? throw new NotFoundException($"Устройство с ID {id} не найдено");
         var devicerResponse = _mapper.Map<DeviceFullResponse>(device);
+        devicerResponse.NumberOrders = _ordersRepository.GetOrdersByDeviceId(id).Count;
 
         return devicerResponse;
     }

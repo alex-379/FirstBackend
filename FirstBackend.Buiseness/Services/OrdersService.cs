@@ -7,7 +7,6 @@ using FirstBackend.Core.Exeptions;
 using FirstBackend.DataLayer.Interfaces;
 using Serilog;
 using System.Data;
-using System.Linq;
 
 namespace FirstBackend.Buiseness.Services;
 
@@ -33,6 +32,7 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
         order.Devices = devices;
         order.Customer = _usersRepository.GetUserById(request.Customer);
         _logger.Information($"Обращаемся к методу репозитория Создание нового заказа с ID {order.Id}");
+        _ordersRepository.AddOrder(order);
 
         return order.Id;
     }

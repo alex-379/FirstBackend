@@ -8,5 +8,6 @@ public interface IOrdersRepository
     List<OrderDto> GetAllOrders();
     OrderDto GetOrderById(Guid id);
     List<OrderDto> GetOrdersByUserId(Guid userId);
+    List<OrderDto> GetOrdersByDeviceId(Guid deviceId);
     void DeleteOrder(OrderDto order);
 }

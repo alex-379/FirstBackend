@@ -1,6 +1,7 @@
 ﻿using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
@@ -29,7 +30,10 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository(context)
     {
         _logger.Information("Идём в базу данных и ищем заказ по ID {id}", id);
 
-        return _ctx.Orders.FirstOrDefault(o => o.Id == id);
+        return _ctx.Orders
+            .Include(o => o.Customer)
+            .Include(o => o.Devices)
+            .FirstOrDefault(o => o.Id == id);
     }
 
     public List<OrderDto> GetOrdersByUserId(Guid userId)
@@ -37,6 +41,13 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository(context)
         _logger.Information("Идём в базу данных и ищем заказы по ID пользователя {userId}", userId);
 
         return [.. _ctx.Orders.Where(o => o.Customer.Id == userId)];
+    }
+
+    public List<OrderDto> GetOrdersByDeviceId(Guid deviceId)
+    {
+        _logger.Information("Идём в базу данных и ищем заказы по ID пользователя {deviceId}", deviceId);
+
+        return [.. _ctx.Orders.Where(o => o.Devices.Any(d=>d.Id == deviceId))];
     }
 
     public void DeleteOrder(OrderDto order)

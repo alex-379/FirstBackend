@@ -35,12 +35,11 @@ public class DevicesRepository(MainerLxContext context) : BaseRepository(context
     public List<DeviceDto> GetDevicesByUserId(Guid userId)
     {
         _logger.Information("Идём в базу данных и ищем устройства по ID пользователя {userId}", userId);
-        var a = _ctx.Devices
-            .Include(d => d.Orders).ToList();
 
         return [.. _ctx.Devices
-            .Include(d => d.Orders
-            .Where(o => o.Customer.Id == userId)
+            .Include(d => d.Orders)
+            .Where(d => d.Orders
+            .Any(o => o.Customer.Id == userId)
             )];
     }
 

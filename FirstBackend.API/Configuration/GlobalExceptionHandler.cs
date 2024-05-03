@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using FirstBackend.Core.Exeptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         switch (problemDetails.Type)
         {
-            case "ValidationException":
+            case nameof(ValidationException):
                 {
                     problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
                     problemDetails.Title = "Ошибка валидации";
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler : IExceptionHandler
 
                 break;
 
-            case "NotFoundException":
+            case nameof(NotFoundException):
                 {
                     problemDetails.Status = StatusCodes.Status404NotFound;
                     problemDetails.Title = "Не найдены данные по запросу";
@@ -43,7 +44,7 @@ public class GlobalExceptionHandler : IExceptionHandler
 
                 break;
 
-            case "BadRequestException":
+            case nameof(BadRequestException):
                 {
                     problemDetails.Status = StatusCodes.Status400BadRequest;
                     problemDetails.Title = "Некорректные входные данные";
@@ -51,7 +52,7 @@ public class GlobalExceptionHandler : IExceptionHandler
 
                 break;
 
-            case "UnauthorizedException":
+            case nameof(UnauthorizedException):
                 {
                     problemDetails.Status = StatusCodes.Status401Unauthorized;
                     problemDetails.Title = "Неверные аутентификационные данные";

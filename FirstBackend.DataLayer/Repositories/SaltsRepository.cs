@@ -7,7 +7,7 @@ namespace FirstBackend.DataLayer.Repositories;
 
 public class SaltsRepository(SaltLxContext context) : ISaltsRepository
 {
-    protected readonly SaltLxContext _ctx = context;
+    private readonly SaltLxContext _ctx = context;
     private readonly ILogger _logger = Log.ForContext<UsersRepository>();
 
     public void AddSalt(SaltDto salt)
@@ -30,5 +30,12 @@ public class SaltsRepository(SaltLxContext context) : ISaltsRepository
         _ctx.Salts.Update(salt);
         _ctx.SaveChanges();
         _logger.Information("Обновляем в базе данных соль пользователя с ID {id}", salt.UserId);
+    }
+
+    public void DeleteSalt(SaltDto salt)
+    {
+        _ctx.Salts.Remove(salt);
+        _ctx.SaveChanges();
+        _logger.Information("Удаляем из базы данных соль пользователя с ID {id}", salt.UserId);
     }
 }
