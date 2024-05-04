@@ -1,4 +1,5 @@
-﻿using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Core.Constants;
+using FirstBackend.Core.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirstBackend.DataLayer.Contexts;
@@ -12,5 +13,9 @@ public class SaltLxContext(DbContextOptions<SaltLxContext> options) : DbContext(
         modelBuilder
             .Entity<SaltDto>()
             .HasKey(s => s.UserId);
+
+        modelBuilder
+            .Entity<SaltDto>()
+            .Property(s => s.Salt).IsRequired().HasMaxLength(DatabasesProperties.SaltLength);
     }
 }

@@ -9,6 +9,8 @@ using FirstBackend.Core.Enums;
 using FirstBackend.Core.Exeptions;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
+using FluentValidation;
+using FluentValidation.Results;
 using Serilog;
 using System.Security.Claims;
 using System.Transactions;
@@ -16,7 +18,7 @@ using System.Transactions;
 namespace FirstBackend.Buiseness.Services;
 
 public class UsersService(IUsersRepository usersRepository, ISaltsRepository saltsRepository, IPasswordsService passwordsService, ITokensService tokensService, IMapper mapper, JwtToken jwt,
-    SaltLxContext contextSalt, MainerLxContext contextMainer)
+    SaltLxContext contextSalt, MainerLxContext contextMainer, IValidator<UserDto> validator)
     : IUsersService
 {
     private readonly IUsersRepository _usersRepository = usersRepository;
@@ -27,31 +29,31 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     private readonly JwtToken _jwt = jwt;
     private readonly SaltLxContext _ctxSalt = contextSalt;
     private readonly MainerLxContext _ctxMainer = contextMainer;
+    private readonly IValidator<UserDto> _validator = validator;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
 
     public Guid AddUser(CreateUserRequest request)
     {
-        using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
-        using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
         var user = _mapper.Map<UserDto>(request);
-        _logger.Information($"Устанавливаем роль Клиент");
+        _logger.Information("Устанавливаем роль Клиент");
         user.Role = UserRole.Client;
-        _logger.Information($"Переводим почту и имя в нижний регистр");
+        _logger.Information("Переводим почту и имя в нижний регистр");
         user.Mail = user.Mail.ToLower();
-        user.UserName = user.UserName.ToLower();
-        _logger.Information($"Проверяем соответствует ли пароль требуемой длине");
-        if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
-        {
-            throw new ValidationException("Пароль должен быть не менее 8 символов");
-        }
-
+        user.Name = user.Name.ToLower();
         _logger.Information("Проверяем был ли зарегестрирован пользователь с такой почтой ранее");
         if (_usersRepository.GetUserByMail(user.Mail) is not null)
         {
-            throw new ValidationException("Такой e-mail уже существует");
+            throw new ValidationDataException("Такой e-mail уже существует");
         }
 
         user.Password = _passwordsService.HashPasword(user.Password, out var salt);
+        var validationResult = _validator.Validate(user);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+        using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
+        using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
         try
         {
             _logger.Information("Обращаемся к методу репозитория Создание нового пользователя");
@@ -102,7 +104,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
 
         var claims = new List<Claim>
         {
-        new(ClaimTypes.Name, userDb.UserName),
+        new(ClaimTypes.Name, userDb.Name),
         new(ClaimTypes.Email, userDb.Mail),
         new(ClaimTypes.Role, userDb.Role.ToString()),
         };
@@ -142,26 +144,26 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         _logger.Information($"Проверяем существует ли пользователь с ID {userId}");
         var user = _usersRepository.GetUserById(userId) ?? throw new NotFoundException($"Пользователь с ID {userId} не найден");
         _logger.Information($"Обновляем данные пользователя с ID {userId} из запроса");
-        user.UserName = request.UserName.ToLower();
+        user.Name = request.UserName.ToLower();
         _logger.Information($"Обращаемся к методу репозитория Обновление пользователя с ID {user.Id}");
         _usersRepository.UpdateUser(user);
     }
 
     public AuthenticatedResponse UpdateUserPassword(Guid userId, UpdateUserPasswordRequest request, string accessToken)
     {
-        using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
-        using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
         _logger.Information($"Проверяем существует ли пользователь с ID {userId}");
         var user = _usersRepository.GetUserById(userId) ?? throw new NotFoundException($"Пользователь с ID {userId} не найден");
         _logger.Information("Проверяем соответствует ли пароль требуемой длине");
         if (string.IsNullOrEmpty(request.Password) || request.Password.Length < 8)
         {
-            throw new ValidationException("Пароль должен быть не менее 8 символов");
+            throw new ValidationDataException("Пароль должен быть не менее 8 символов");
         }
 
         _logger.Information($"Обновляем пароль пользователя с ID {userId} из запроса");
         user.Password = request.Password;
         user.Password = _passwordsService.HashPasword(user.Password, out var salt);
+        using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
+        using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
         try
         {
             _logger.Information($"Обращаемся к методу репозитория Обновление пользователя с ID {user.Id}");
@@ -201,7 +203,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         _logger.Information($"Проверяем есть ли пользователь c почтой из запроса в базе данных");
         if ((_usersRepository.GetUserByMail(request.Mail.ToLower()) is not null))
         {
-            throw new ValidationException("Такой e-mail уже существует");
+            throw new ValidationDataException("Такой e-mail уже существует");
         }
 
         _logger.Information($"Обновляем почту пользователя с ID {userId}");
@@ -212,10 +214,10 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
 
     public void DeleteUserById(Guid id)
     {
-        using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
-        using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
         _logger.Information($"Проверяем существует ли пользователь с ID {id}");
         var user = _usersRepository.GetUserById(id) ?? throw new NotFoundException($"Пользователь с ID {id} не найден");
+        using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
+        using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
         try
         {
             _logger.Information($"Обращаемся к методу репозитория Удаление пользователя по ID {id}");

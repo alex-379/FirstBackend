@@ -1,4 +1,5 @@
-﻿using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Core.Constants;
+using FirstBackend.Core.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirstBackend.DataLayer.Contexts;
@@ -20,5 +21,37 @@ public class MainerLxContext(DbContextOptions<MainerLxContext> options) : DbCont
             .Entity<OrderDto>()
             .HasOne(o => o.Customer)
             .WithMany(u => u.Orders);
+
+        modelBuilder
+            .Entity<UserDto>()
+            .Property(u => u.Name).IsRequired().HasMaxLength(DatabasesProperties.UserNameLength);
+
+        modelBuilder
+            .Entity<UserDto>()
+            .Property(u => u.Mail).IsRequired().HasMaxLength(DatabasesProperties.MailLength);
+
+        modelBuilder
+            .Entity<UserDto>()
+            .Property(u => u.Password).IsRequired().HasMaxLength(DatabasesProperties.PasswordLength);
+
+        modelBuilder
+            .Entity<UserDto>()
+            .Property(u => u.Role).IsRequired();
+
+        modelBuilder
+            .Entity<OrderDto>()
+            .Property(o => o.Description).IsRequired().HasMaxLength(DatabasesProperties.DeviceNameLength);
+
+        modelBuilder
+            .Entity<DeviceDto>()
+            .Property(d => d.Name).IsRequired().HasMaxLength(DatabasesProperties.DeviceNameLength);
+
+        modelBuilder
+            .Entity<DeviceDto>()
+            .Property(d => d.Type).IsRequired();
+
+        modelBuilder
+            .Entity<DeviceDto>()
+            .Property(d => d.Address).IsRequired().HasMaxLength(DatabasesProperties.DeviceAddressLength);
     }
 }

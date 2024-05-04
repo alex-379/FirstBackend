@@ -43,7 +43,7 @@ public class UsersRepository(MainerLxContext context) : BaseRepository(context),
     {
         _logger.Information("Идём в базу данных и ищем пользователя по имени {username}", userName);
 
-        return _ctx.Users.FirstOrDefault(u => u.UserName == userName);
+        return _ctx.Users.FirstOrDefault(u => u.Name == userName);
     }
 
     public void UpdateUser(UserDto user)

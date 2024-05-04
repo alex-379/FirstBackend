@@ -28,7 +28,7 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         switch (problemDetails.Type)
         {
-            case nameof(ValidationException):
+            case nameof(ValidationDataException):
                 {
                     problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
                     problemDetails.Title = "Ошибка валидации";

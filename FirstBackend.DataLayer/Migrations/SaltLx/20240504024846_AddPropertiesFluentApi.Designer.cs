@@ -3,6 +3,7 @@ using System;
 using FirstBackend.DataLayer.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FirstBackend.DataLayer.Migrations.SaltLx
 {
     [DbContext(typeof(SaltLxContext))]
-    partial class SaltLxContextModelSnapshot : ModelSnapshot
+    [Migration("20240504024846_AddPropertiesFluentApi")]
+    partial class AddPropertiesFluentApi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
