@@ -1,5 +1,4 @@
 ﻿using FirstBackend.Buiseness.Models.Users.Requests;
-using FirstBackend.Core.Constants;
 using FirstBackend.DataLayer.Interfaces;
 using FluentValidation;
 
@@ -21,8 +20,7 @@ public class CreateUserValidator : AbstractValidator<CreateUserRequest>
             .Must(IsMailUnique)
             .WithMessage("Такой e-mail уже существует");
         RuleFor(r => r.Password)
-            .MinimumLength(ValidationSettings.PasswordLength)
-            .WithMessage($"Пароль должен быть не менее {ValidationSettings.PasswordLength} символов");
+            .MatchPasswordRule();
     }
 
     public bool IsMailUnique(string mail)
