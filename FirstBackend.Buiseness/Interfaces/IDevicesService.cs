@@ -9,4 +9,5 @@ public interface IDevicesService
     DeviceFullResponse GetDeviceById(Guid id);
     List<DeviceResponse> GetDevicesByUserId(Guid userId);
     Guid AddDevice(CreateDeviceRequest request);
+    void DeleteDeviceById(Guid id);
 }

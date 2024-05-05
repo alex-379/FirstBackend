@@ -23,7 +23,7 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository(context)
     {
         _logger.Information("Идём в базу данных и ищем все заказы");
 
-        return [.._ctx.Orders] ;
+        return [.. _ctx.Orders];
     }
 
     public OrderDto GetOrderById(Guid id)
@@ -47,7 +47,7 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository(context)
     {
         _logger.Information("Идём в базу данных и ищем заказы по ID пользователя {deviceId}", deviceId);
 
-        return [.. _ctx.Orders.Where(o => o.Devices.Any(d=>d.Id == deviceId))];
+        return [.. _ctx.Orders.Where(o => o.Devices.Any(d => d.Id == deviceId))];
     }
 
     public void DeleteOrder(OrderDto order)

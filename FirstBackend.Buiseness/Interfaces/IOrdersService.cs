@@ -9,4 +9,5 @@ public interface IOrdersService
     OrderFullResponse GetOrderById(Guid id);
     List<OrdersByUserResponse> GetOrdersByUserId(Guid userId);
     Guid AddOrder(CreateOrderRequest request);
+    void DeleteOrderById(Guid id);
 }

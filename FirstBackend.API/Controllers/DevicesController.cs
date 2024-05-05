@@ -39,4 +39,14 @@ public class DevicesController(IDevicesService deviceService) : Controller
 
         return Ok(id);
     }
+
+    [Authorize]
+    [HttpDelete("{id}")]
+    public ActionResult DeleteDeviceById(Guid id)
+    {
+        _logger.Information($"Удаляем устройство с ID {id}");
+        _deviceService.DeleteDeviceById(id);
+
+        return NoContent();
+    }
 }

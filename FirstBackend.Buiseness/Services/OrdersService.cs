@@ -62,4 +62,12 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
 
         return ordersResponse;
     }
+
+    public void DeleteOrderById(Guid id)
+    {
+        _logger.Information($"Проверяем существует ли заказ с ID {id}");
+        var order = _ordersRepository.GetOrderById(id) ?? throw new NotFoundException($"Заказ с ID {id} не найден");
+        _logger.Information($"Обращаемся к методу репозитория Удаление заказа c ID {id}");
+        _ordersRepository.DeleteOrder(order);
+    }
 }

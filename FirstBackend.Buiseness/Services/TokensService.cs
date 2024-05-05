@@ -7,7 +7,6 @@ using FirstBackend.DataLayer.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -42,6 +41,7 @@ namespace FirstBackend.Buiseness.Services
             var randomNumber = new byte[32];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
+
             return Convert.ToBase64String(randomNumber);
         }
 
@@ -67,18 +67,12 @@ namespace FirstBackend.Buiseness.Services
 
         public AuthenticatedResponse Refresh(RefreshTokenRequest request)
         {
-            _logger.Information($"Проверяем переданы ли данные");
-            if (request is null)
-            {
-                throw new BadRequestException("Передайте входные данные");
-            }
-
             var principal = GetPrincipalFromExpiredToken(request.AccessToken);
-            var userName = principal.Identity.Name;
-            var user = _usersRepository.GetUserByName(userName);
+            var mail = principal.FindFirst(ClaimTypes.Email).Value;
+            var user = _usersRepository.GetUserByMail(mail);
             if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                throw new BadRequestException("Передайте входные данные");
+                throw new ValidationDataException("Ошибка проверки токена пользователя");
             }
 
             var newAccessToken = GenerateAccessToken(principal.Claims);
@@ -93,9 +87,9 @@ namespace FirstBackend.Buiseness.Services
             };
         }
 
-        public void Revoke(string userName)
+        public void Revoke(string mail)
         {
-            var user = _usersRepository.GetUserByName(userName) ?? throw new BadRequestException("Передайте входные данные");
+            var user = _usersRepository.GetUserByMail(mail) ?? throw new NotFoundException($"Пользователь с почтой {mail} не найден");
             user.RefreshToken = null;
             _usersRepository.UpdateUser(user);
         }

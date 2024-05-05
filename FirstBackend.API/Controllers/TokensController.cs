@@ -4,6 +4,7 @@ using FirstBackend.Buiseness.Models.Users.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Security.Claims;
 
 namespace FirstBackend.API.Controllers;
 
@@ -28,9 +29,9 @@ public class TokensController(ITokensService tokensService) : Controller
     [Route("revoke")]
     public ActionResult Revoke()
     {
-        var userName = User.Identity.Name;
+        var mail = User.FindFirst(ClaimTypes.Email).Value;
         _logger.Information($"Отзыв токена пользователя");
-        _tokenService.Revoke(userName);
+        _tokenService.Revoke(mail);
 
         return NoContent();
     }

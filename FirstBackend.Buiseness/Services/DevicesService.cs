@@ -51,4 +51,13 @@ public class DevicesService(IDevicesRepository devicesRepository, IOrdersReposit
 
         return devicesResponse;
     }
+
+    public void DeleteDeviceById(Guid id)
+    {
+        _logger.Information($"Проверяем существует ли устройство с ID {id}");
+        var device = _devicesRepository.GetDeviceById(id) ?? throw new NotFoundException($"Устройство с ID {id} не найдено");
+        _logger.Information($"Обращаемся к методу репозитория Удаление устройства c ID {id}");
+        _devicesRepository.DeleteDevice(device);
+    }
 }
+

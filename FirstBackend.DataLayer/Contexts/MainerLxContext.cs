@@ -24,11 +24,19 @@ public class MainerLxContext(DbContextOptions<MainerLxContext> options) : DbCont
 
         modelBuilder
             .Entity<UserDto>()
+            .HasIndex(u => u.Id).IsUnique();
+
+        modelBuilder
+            .Entity<UserDto>()
             .Property(u => u.Name).IsRequired().HasMaxLength(DatabasesProperties.UserNameLength);
 
         modelBuilder
             .Entity<UserDto>()
             .Property(u => u.Mail).IsRequired().HasMaxLength(DatabasesProperties.MailLength);
+
+        modelBuilder
+            .Entity<UserDto>()
+            .HasIndex(u => u.Mail).IsUnique();
 
         modelBuilder
             .Entity<UserDto>()
@@ -40,7 +48,15 @@ public class MainerLxContext(DbContextOptions<MainerLxContext> options) : DbCont
 
         modelBuilder
             .Entity<OrderDto>()
+            .HasIndex(o => o.Id).IsUnique();
+
+        modelBuilder
+            .Entity<OrderDto>()
             .Property(o => o.Description).IsRequired().HasMaxLength(DatabasesProperties.DeviceNameLength);
+
+        modelBuilder
+            .Entity<DeviceDto>()
+            .HasIndex(d => d.Id).IsUnique();
 
         modelBuilder
             .Entity<DeviceDto>()

@@ -39,19 +39,12 @@ public class UsersRepository(MainerLxContext context) : BaseRepository(context),
         return _ctx.Users.FirstOrDefault(u => u.Mail == mail);
     }
 
-    public UserDto GetUserByName(string name)
-    {
-        _logger.Information("Идём в базу данных и ищем пользователя по имени {name}", name);
-
-        return _ctx.Users.FirstOrDefault(u => u.Name == name);
-    }
-
     public void UpdateUser(UserDto user)
     {
         _logger.Information("Идём в базу данных и обновляем пользователя с ID {id}", user.Id);
         _ctx.Users.Update(user);
         _ctx.SaveChanges();
-    } 
+    }
 
     public void DeleteUser(UserDto user)
     {

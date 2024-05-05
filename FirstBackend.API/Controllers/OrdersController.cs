@@ -40,4 +40,14 @@ public class OrdersController(IOrdersService ordersService) : Controller
 
         return Ok(id);
     }
+
+    [Authorize]
+    [HttpDelete("{id}")]
+    public ActionResult DeleteOrderById(Guid id)
+    {
+        _logger.Information($"Удаляем заказ с ID {id}");
+        _ordersService.DeleteOrderById(id);
+
+        return NoContent();
+    }
 }

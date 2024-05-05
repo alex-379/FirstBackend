@@ -17,5 +17,9 @@ public class SaltLxContext(DbContextOptions<SaltLxContext> options) : DbContext(
         modelBuilder
             .Entity<SaltDto>()
             .Property(s => s.Salt).IsRequired().HasMaxLength(DatabasesProperties.SaltLength);
+
+        modelBuilder
+            .Entity<SaltDto>()
+            .HasIndex(s => s.UserId).IsUnique();
     }
 }

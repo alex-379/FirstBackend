@@ -2,7 +2,7 @@
 
 namespace FirstBackend.Core.Dtos;
 
-public class DeviceDto:IdContainer
+public class DeviceDto : IdContainer
 {
     public string Name { get; set; }
     public DeviceType Type { get; set; }

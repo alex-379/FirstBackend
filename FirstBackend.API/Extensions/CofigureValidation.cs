@@ -1,6 +1,6 @@
 ﻿using FirstBackend.Buiseness.Validators;
 using FluentValidation;
-using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace FirstBackend.API.Extensions
 {
@@ -9,7 +9,7 @@ namespace FirstBackend.API.Extensions
         public static void AddValidation(this IServiceCollection services)
         {
             services.AddFluentValidationAutoValidation();
-            services.AddValidatorsFromAssemblyContaining<UsersValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
         }
     }
 }
