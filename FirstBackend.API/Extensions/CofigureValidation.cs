@@ -1,15 +1,18 @@
-﻿using FirstBackend.Buiseness.Validators;
+﻿using FirstBackend.API.Configuration;
+using FirstBackend.Buiseness.Validators;
 using FluentValidation;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
-namespace FirstBackend.API.Extensions
+namespace FirstBackend.API.Extensions;
+
+public static class CofigureValidation
 {
-    public static class CofigureValidation
+    public static void AddValidation(this IServiceCollection services)
     {
-        public static void AddValidation(this IServiceCollection services)
+        services.AddFluentValidationAutoValidation(configuration =>
         {
-            services.AddFluentValidationAutoValidation();
-            services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
-        }
+            configuration.OverrideDefaultResultFactoryWith<ValidationResultFactory>();
+        });
+        services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
     }
 }

@@ -6,7 +6,7 @@ public static class ConfigureServices
 {
     public static void ConfigureApiServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddControllers(/*options => options.Filters.Add(typeof(ValidationFilter))*/);
+        services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwager();
         services.AddExeptionsHandler();
