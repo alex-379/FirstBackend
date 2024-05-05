@@ -1,10 +1,10 @@
-﻿using FirstBackend.Core.Constants;
-using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Buiseness.Models.Users.Requests;
+using FirstBackend.Core.Constants;
 using FluentValidation;
 
 namespace FirstBackend.Buiseness.Validators;
 
-public class UsersValidator:AbstractValidator<UserDto>
+public class UsersValidator : AbstractValidator<CreateUserRequest>
 {
     public UsersValidator()
     {

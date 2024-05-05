@@ -8,7 +8,7 @@ public interface IUsersRepository
     List<UserDto> GetAllUsers();
     UserDto GetUserById(Guid id);
     UserDto GetUserByMail(string mail);
-    UserDto GetUserByUserName(string userName);
+    UserDto GetUserByName(string name);
     void UpdateUser(UserDto user);
     void DeleteUser(UserDto user);
 }

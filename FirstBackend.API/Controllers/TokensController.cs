@@ -28,9 +28,9 @@ public class TokensController(ITokensService tokensService) : Controller
     [Route("revoke")]
     public ActionResult Revoke()
     {
-        var username = User.Identity.Name;
+        var userName = User.Identity.Name;
         _logger.Information($"Отзыв токена пользователя");
-        _tokenService.Revoke(username);
+        _tokenService.Revoke(userName);
 
         return NoContent();
     }

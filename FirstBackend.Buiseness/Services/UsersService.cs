@@ -18,7 +18,7 @@ using System.Transactions;
 namespace FirstBackend.Buiseness.Services;
 
 public class UsersService(IUsersRepository usersRepository, ISaltsRepository saltsRepository, IPasswordsService passwordsService, ITokensService tokensService, IMapper mapper, JwtToken jwt,
-    SaltLxContext contextSalt, MainerLxContext contextMainer, IValidator<UserDto> validator)
+    SaltLxContext contextSalt, MainerLxContext contextMainer)
     : IUsersService
 {
     private readonly IUsersRepository _usersRepository = usersRepository;
@@ -29,7 +29,6 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     private readonly JwtToken _jwt = jwt;
     private readonly SaltLxContext _ctxSalt = contextSalt;
     private readonly MainerLxContext _ctxMainer = contextMainer;
-    private readonly IValidator<UserDto> _validator = validator;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
 
     public Guid AddUser(CreateUserRequest request)
@@ -47,11 +46,11 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         }
 
         user.Password = _passwordsService.HashPasword(user.Password, out var salt);
-        var validationResult = _validator.Validate(user);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
+        //var validationResult = _validator.Validate(user);
+        //if (!validationResult.IsValid)
+        //{
+        //    throw new ValidationException(validationResult.Errors);
+        //}
         using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
         using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
         try
@@ -144,7 +143,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         _logger.Information($"Проверяем существует ли пользователь с ID {userId}");
         var user = _usersRepository.GetUserById(userId) ?? throw new NotFoundException($"Пользователь с ID {userId} не найден");
         _logger.Information($"Обновляем данные пользователя с ID {userId} из запроса");
-        user.Name = request.UserName.ToLower();
+        user.Name = request.Name.ToLower();
         _logger.Information($"Обращаемся к методу репозитория Обновление пользователя с ID {user.Id}");
         _usersRepository.UpdateUser(user);
     }

@@ -1,6 +1,4 @@
-﻿using FirstBackend.API.Configuration;
-using FirstBackend.Buiseness.Configuration;
-using Microsoft.Extensions.Configuration;
+﻿using FirstBackend.Buiseness.Configuration;
 
 namespace FirstBackend.API.Extensions;
 

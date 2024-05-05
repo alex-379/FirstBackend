@@ -9,6 +9,6 @@ public interface ITokensService
     string GenerateAccessToken(IEnumerable<Claim> claims);
     string GenerateRefreshToken();
     AuthenticatedResponse Refresh(RefreshTokenRequest request);
-    void Revoke(string username);
+    void Revoke(string userName);
     string GetAccessToken(string authorizationHeader);
 }

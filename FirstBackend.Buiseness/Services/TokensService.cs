@@ -74,8 +74,8 @@ namespace FirstBackend.Buiseness.Services
             }
 
             var principal = GetPrincipalFromExpiredToken(request.AccessToken);
-            var username = principal.Identity.Name;
-            var user = _usersRepository.GetUserByUserName(username);
+            var userName = principal.Identity.Name;
+            var user = _usersRepository.GetUserByName(userName);
             if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
                 throw new BadRequestException("Передайте входные данные");
@@ -93,9 +93,9 @@ namespace FirstBackend.Buiseness.Services
             };
         }
 
-        public void Revoke(string username)
+        public void Revoke(string userName)
         {
-            var user = _usersRepository.GetUserByUserName(username) ?? throw new BadRequestException("Передайте входные данные");
+            var user = _usersRepository.GetUserByName(userName) ?? throw new BadRequestException("Передайте входные данные");
             user.RefreshToken = null;
             _usersRepository.UpdateUser(user);
         }

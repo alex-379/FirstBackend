@@ -58,7 +58,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     [HttpPost]
     public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
     {
-        _logger.Information($"Создаём пользователя с логином {request.UserName}, почтой {request.Mail}");
+        _logger.Information($"Создаём пользователя с логином {request.Name}, почтой {request.Mail}");
         var id = _usersService.AddUser(request);
 
         return Ok(id);
