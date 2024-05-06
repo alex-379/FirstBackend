@@ -83,7 +83,8 @@ namespace FirstBackend.Buiseness.Services
             return new AuthenticatedResponse()
             {
                 Token = newAccessToken,
-                RefreshToken = newRefreshToken
+                RefreshToken = newRefreshToken,
+                RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwt.LifeTimeRefreshToken)
             };
         }
 
@@ -91,6 +92,7 @@ namespace FirstBackend.Buiseness.Services
         {
             var user = _usersRepository.GetUserByMail(mail) ?? throw new NotFoundException($"Пользователь с почтой {mail} не найден");
             user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified);
             _usersRepository.UpdateUser(user);
         }
 

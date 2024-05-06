@@ -84,7 +84,6 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
 
         var claims = new List<Claim>
         {
-        new(ClaimTypes.Name, userDb.Name),
         new(ClaimTypes.Email, userDb.Mail),
         new(ClaimTypes.Role, userDb.Role.ToString()),
         };
@@ -98,7 +97,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         return new AuthenticatedResponse
         {
             Token = accessToken,
-            RefreshToken = refreshToken
+            RefreshToken = refreshToken,
+            RefreshTokenExpiryTime = userDb.RefreshTokenExpiryTime
         };
     }
 

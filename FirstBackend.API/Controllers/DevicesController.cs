@@ -23,6 +23,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
         return Ok(_deviceService.GetAllDevices());
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpGet("{id}")]
     public ActionResult<DeviceFullResponse> GetDeviceById(Guid id)
     {
@@ -31,6 +32,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
         return Ok(_deviceService.GetDeviceById(id));
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpPost]
     public ActionResult<Guid> CreateDevice([FromBody] CreateDeviceRequest request)
     {
@@ -40,7 +42,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
         return Ok(id);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     [HttpDelete("{id}")]
     public ActionResult DeleteDeviceById(Guid id)
     {
