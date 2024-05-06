@@ -2,7 +2,7 @@
 using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Buiseness.Models.Tokens.Requests;
 using FirstBackend.Buiseness.Models.Users.Responses;
-using FirstBackend.Core.Exeptions;
+using FirstBackend.Core.Exсeptions;
 using FirstBackend.DataLayer.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;

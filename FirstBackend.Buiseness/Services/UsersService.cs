@@ -6,7 +6,7 @@ using FirstBackend.Buiseness.Models.Users.Requests;
 using FirstBackend.Buiseness.Models.Users.Responses;
 using FirstBackend.Core.Dtos;
 using FirstBackend.Core.Enums;
-using FirstBackend.Core.Exeptions;
+using FirstBackend.Core.Exсeptions;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
 using Serilog;

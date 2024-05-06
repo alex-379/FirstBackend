@@ -3,7 +3,7 @@ using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Buiseness.Models.Orders.Requests;
 using FirstBackend.Buiseness.Models.Orders.Responses;
 using FirstBackend.Core.Dtos;
-using FirstBackend.Core.Exeptions;
+using FirstBackend.Core.Exсeptions;
 using FirstBackend.DataLayer.Interfaces;
 using Serilog;
 using System.Data;

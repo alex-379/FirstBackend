@@ -1,4 +1,4 @@
-﻿using FirstBackend.Core.Exeptions;
+﻿using FirstBackend.Core.Exсeptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
