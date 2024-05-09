@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace FirstBackend.API.Extensions;
+namespace FirstBackend.API.Configuration.Extensions;
 
 public static class ConfigureAuthentication
 {

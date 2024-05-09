@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace FirstBackend.API.Extensions;
+namespace FirstBackend.API.Configuration.Extensions;
 
 public static class UseApplication
 {

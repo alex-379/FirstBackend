@@ -8,5 +8,5 @@ public interface IDevicesRepository
     List<DeviceDto> GetAllDevices();
     DeviceDto GetDeviceById(Guid id);
     List<DeviceDto> GetDevicesByUserId(Guid userId);
-    void DeleteDevice(DeviceDto device);
+    void UpdateDevice(DeviceDto device);
 }

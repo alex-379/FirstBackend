@@ -3,6 +3,7 @@ using System;
 using FirstBackend.DataLayer.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FirstBackend.DataLayer.Migrations
 {
     [DbContext(typeof(MainerLxContext))]
-    partial class MainerLxContextModelSnapshot : ModelSnapshot
+    [Migration("20240508055222_UnmergeOnEntityTypeConfiguration")]
+    partial class UnmergeOnEntityTypeConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,12 +57,6 @@ namespace FirstBackend.DataLayer.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("address");
 
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -93,12 +90,6 @@ namespace FirstBackend.DataLayer.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("description");
 
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
-
                     b.HasKey("Id")
                         .HasName("pk_orders");
 
@@ -114,12 +105,6 @@ namespace FirstBackend.DataLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Mail")
                         .IsRequired()
@@ -153,6 +138,10 @@ namespace FirstBackend.DataLayer.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_users");
+
+                    b.HasIndex("Mail")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_mail");
 
                     b.ToTable("users", (string)null);
                 });

@@ -1,6 +1,4 @@
-﻿using FirstBackend.API.Configuration;
-
-namespace FirstBackend.API.Extensions;
+﻿namespace FirstBackend.API.Configuration.Extensions;
 
 public static class ConfigureExeptionsHandler
 {

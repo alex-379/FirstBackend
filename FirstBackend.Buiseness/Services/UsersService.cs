@@ -32,6 +32,10 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     public Guid AddUser(CreateUserRequest request)
     {
         var user = _mapper.Map<UserDto>(request);
+        if (_usersRepository.GetUserByMail(user.Mail.ToLower()) is not null)
+        {
+            throw new ConflictException("Такой e-mail уже существует");
+        }
         _logger.Information("Устанавливаем роль Клиент");
         user.Role = UserRole.Client;
         _logger.Information("Переводим почту и имя в нижний регистр");
@@ -57,7 +61,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
             transactionMainerContext.Commit();
             transactionSaltContext.Commit();
         }
-        catch (TransactionException ex)
+        catch (Exception ex)
         {
             transactionMainerContext.Rollback();
             transactionSaltContext.Rollback();
@@ -97,8 +101,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         return new AuthenticatedResponse
         {
             Token = accessToken,
-            RefreshToken = refreshToken,
-            RefreshTokenExpiryTime = userDb.RefreshTokenExpiryTime
+            RefreshToken = refreshToken
         };
     }
 
@@ -188,8 +191,10 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
         try
         {
-            _logger.Information($"Обращаемся к методу репозитория Удаление пользователя c ID {id}");
-            _usersRepository.DeleteUser(user);
+            _logger.Information($"Устанавливаем IsDeleted=true для пользователя c ID {id}");
+            user.IsDeleted = true;
+            _logger.Information($"Обращаемся к методу репозитория Обновление пользователя c ID {id}");
+            _usersRepository.UpdateUser(user);
 
             _logger.Information($"Обращаемся к методу репозитория Получение соли пользователя с ID {user.Id}");
             var salt = _saltsRepository.GetSaltByUserId(user.Id);

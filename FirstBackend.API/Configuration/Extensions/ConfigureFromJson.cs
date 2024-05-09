@@ -1,6 +1,6 @@
 ﻿using FirstBackend.Buiseness.Configuration;
 
-namespace FirstBackend.API.Extensions;
+namespace FirstBackend.API.Configuration.Extensions;
 
 public static class ConfigureFromJson
 {

@@ -1,6 +1,6 @@
 ﻿using FirstBackend.Buiseness.Models.Users;
 
-namespace FirstBackend.API.Extensions;
+namespace FirstBackend.API.Configuration.Extensions;
 
 public static class ConfigureServices
 {
@@ -8,7 +8,7 @@ public static class ConfigureServices
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwager();
+        services.AddSwager(configuration);
         services.AddExeptionsHandler();
         services.AddDataBases(configuration);
         services.AddAuthenticationService(configuration);

@@ -72,7 +72,7 @@ namespace FirstBackend.Buiseness.Services
             var user = _usersRepository.GetUserByMail(mail);
             if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                throw new ValidationDataException("Ошибка проверки токена пользователя");
+                throw new UnauthorizedException("Ошибка проверки токена пользователя");
             }
 
             var newAccessToken = GenerateAccessToken(principal.Claims);
@@ -84,7 +84,6 @@ namespace FirstBackend.Buiseness.Services
             {
                 Token = newAccessToken,
                 RefreshToken = newRefreshToken,
-                RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwt.LifeTimeRefreshToken)
             };
         }
 

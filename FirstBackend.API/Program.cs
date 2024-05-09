@@ -1,6 +1,7 @@
-using FirstBackend.API.Extensions;
+using FirstBackend.API.Configuration;
+using FirstBackend.API.Configuration.Extensions;
 using FirstBackend.Buiseness.Configuration;
-using FirstBackend.DataLayer;
+using FirstBackend.DataLayer.Configuration;
 using Serilog;
 
 try
@@ -12,6 +13,7 @@ try
         .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 
+    builder.Configuration.ReadSettingsFromEnviroment();
     builder.Host.UseSerilog();
     // Add services to the container.
     builder.Services.ConfigureApiServices(builder.Configuration);

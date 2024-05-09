@@ -25,7 +25,7 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
 
         if (devices.Count != request.Devices.Count)
         {
-            throw new ValidationDataException("Не все устройста есть в базе");
+            throw new ConflictException("Не все устройста есть в базе");
         }
 
         var order = _mapper.Map<OrderDto>(request);
@@ -67,7 +67,9 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
     {
         _logger.Information($"Проверяем существует ли заказ с ID {id}");
         var order = _ordersRepository.GetOrderById(id) ?? throw new NotFoundException($"Заказ с ID {id} не найден");
-        _logger.Information($"Обращаемся к методу репозитория Удаление заказа c ID {id}");
-        _ordersRepository.DeleteOrder(order);
+        _logger.Information($"Устанавливаем IsDeleted=true для заказа c ID {id}");
+        order.IsDeleted = true;
+        _logger.Information($"Обращаемся к методу репозитория Обновление заказа c ID {id}");
+        _ordersRepository.UpdateOrder(order);
     }
 }

@@ -2,7 +2,7 @@
 using FirstBackend.DataLayer.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FirstBackend.DataLayer
+namespace FirstBackend.DataLayer.Configuration
 {
     public static class ConfigureServices
     {

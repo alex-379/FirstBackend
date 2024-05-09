@@ -9,5 +9,4 @@ public interface IUsersRepository
     UserDto GetUserById(Guid id);
     UserDto GetUserByMail(string mail);
     void UpdateUser(UserDto user);
-    void DeleteUser(UserDto user);
 }

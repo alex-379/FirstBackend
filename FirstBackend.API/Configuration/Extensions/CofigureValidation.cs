@@ -1,9 +1,8 @@
-﻿using FirstBackend.API.Configuration;
-using FirstBackend.Buiseness.Validators;
+﻿using FirstBackend.Buiseness.Validators;
 using FluentValidation;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
-namespace FirstBackend.API.Extensions;
+namespace FirstBackend.API.Configuration.Extensions;
 
 public static class CofigureValidation
 {

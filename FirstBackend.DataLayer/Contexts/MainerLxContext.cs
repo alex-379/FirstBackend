@@ -1,5 +1,5 @@
-﻿using FirstBackend.Core.Constants;
-using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Core.Dtos;
+using FirstBackend.DataLayer.Configuration.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirstBackend.DataLayer.Contexts;
@@ -12,62 +12,6 @@ public class MainerLxContext(DbContextOptions<MainerLxContext> options) : DbCont
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .Entity<DeviceDto>()
-            .HasMany(d => d.Orders)
-            .WithMany(o => o.Devices);
-
-        modelBuilder
-            .Entity<OrderDto>()
-            .HasOne(o => o.Customer)
-            .WithMany(u => u.Orders);
-
-        modelBuilder
-            .Entity<UserDto>()
-            .HasIndex(u => u.Id).IsUnique();
-
-        modelBuilder
-            .Entity<UserDto>()
-            .Property(u => u.Name).IsRequired().HasMaxLength(DatabasesProperties.UserNameLength);
-
-        modelBuilder
-            .Entity<UserDto>()
-            .Property(u => u.Mail).IsRequired().HasMaxLength(DatabasesProperties.MailLength);
-
-        modelBuilder
-            .Entity<UserDto>()
-            .HasIndex(u => u.Mail).IsUnique();
-
-        modelBuilder
-            .Entity<UserDto>()
-            .Property(u => u.Password).IsRequired().HasMaxLength(DatabasesProperties.PasswordLength);
-
-        modelBuilder
-            .Entity<UserDto>()
-            .Property(u => u.Role).IsRequired();
-
-        modelBuilder
-            .Entity<OrderDto>()
-            .HasIndex(o => o.Id).IsUnique();
-
-        modelBuilder
-            .Entity<OrderDto>()
-            .Property(o => o.Description).IsRequired().HasMaxLength(DatabasesProperties.DeviceNameLength);
-
-        modelBuilder
-            .Entity<DeviceDto>()
-            .HasIndex(d => d.Id).IsUnique();
-
-        modelBuilder
-            .Entity<DeviceDto>()
-            .Property(d => d.Name).IsRequired().HasMaxLength(DatabasesProperties.DeviceNameLength);
-
-        modelBuilder
-            .Entity<DeviceDto>()
-            .Property(d => d.Type).IsRequired();
-
-        modelBuilder
-            .Entity<DeviceDto>()
-            .Property(d => d.Address).IsRequired().HasMaxLength(DatabasesProperties.DeviceAddressLength);
+        modelBuilder.ApplyConfigurationsForEntitiesInContext();
     }
 }

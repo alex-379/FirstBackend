@@ -1,6 +1,7 @@
 ﻿using FirstBackend.DataLayer.Contexts;
 using Microsoft.EntityFrameworkCore;
-namespace FirstBackend.API.Extensions;
+
+namespace FirstBackend.API.Configuration.Extensions;
 
 public static class ConfigureDataBases
 {
@@ -8,13 +9,13 @@ public static class ConfigureDataBases
     {
         services.AddDbContext<MainerLxContext>(
             options => options
-                .UseNpgsql(configuration.GetConnectionString("MainerLxDb"))
+                .UseNpgsql(configuration["DatabaseSettings:MainerLxDb"])
                 .UseSnakeCaseNamingConvention()
         );
 
         services.AddDbContext<SaltLxContext>(
             options => options
-                .UseNpgsql(configuration.GetConnectionString("SaltLxDb"))
+                .UseNpgsql(configuration["DatabaseSettings:SaltLxDb"])
                 .UseSnakeCaseNamingConvention()
         );
     }

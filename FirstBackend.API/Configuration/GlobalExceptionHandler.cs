@@ -28,10 +28,10 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         switch (problemDetails.Type)
         {
-            case nameof(ValidationDataException):
+            case nameof(ConflictException):
                 {
-                    problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
-                    problemDetails.Title = "Ошибка валидации";
+                    problemDetails.Status = StatusCodes.Status409Conflict;
+                    problemDetails.Title = "Конфликт";
                 };
 
                 break;

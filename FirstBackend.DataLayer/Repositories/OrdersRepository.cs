@@ -23,7 +23,8 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository(context)
     {
         _logger.Information("Идём в базу данных и ищем все заказы");
 
-        return [.. _ctx.Orders];
+        return [.. _ctx.Orders
+            .Where(o=>!o.IsDeleted)];
     }
 
     public OrderDto GetOrderById(Guid id)
@@ -33,27 +34,34 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository(context)
         return _ctx.Orders
             .Include(o => o.Customer)
             .Include(o => o.Devices)
-            .FirstOrDefault(o => o.Id == id);
+            .FirstOrDefault(o => o.Id == id
+            && !o.IsDeleted);
     }
 
     public List<OrderDto> GetOrdersByUserId(Guid userId)
     {
         _logger.Information("Идём в базу данных и ищем заказы по ID пользователя {userId}", userId);
 
-        return [.. _ctx.Orders.Where(o => o.Customer.Id == userId)];
+        return [.. _ctx.Orders
+            .Where(o => o.Customer.Id == userId
+                && !o.IsDeleted)];
     }
 
     public List<OrderDto> GetOrdersByDeviceId(Guid deviceId)
     {
         _logger.Information("Идём в базу данных и ищем заказы по ID пользователя {deviceId}", deviceId);
 
-        return [.. _ctx.Orders.Where(o => o.Devices.Any(d => d.Id == deviceId))];
+        return [.. _ctx.Orders
+            .Where(o => !o.IsDeleted
+                && o.Devices
+                .Any(d => d.Id == deviceId)
+            )];
     }
 
-    public void DeleteOrder(OrderDto order)
+    public void UpdateOrder(OrderDto order)
     {
-        _logger.Information("Идём в базу данных и удаляем заказ с ID {id}", order.Id);
-        _ctx.Orders.Remove(order);
+        _logger.Information("Идём в базу данных и обновляем заказ с ID {id}", order.Id);
+        _ctx.Orders.Update(order);
         _ctx.SaveChanges();
     }
 }
