@@ -1,6 +1,7 @@
 ﻿using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
@@ -42,6 +43,15 @@ public class UsersRepository(MainerLxContext context) : BaseRepository(context),
         return _ctx.Users
             .FirstOrDefault(u => u.Mail == mail
                 && !u.IsDeleted);
+    }
+
+    public UserDto GetUserByOrderId(Guid orderId)
+    {
+        _logger.Information("Идём в базу данных и ищем пользователя по ID заказа {orderId}", orderId);
+
+        return _ctx.Users
+            .FirstOrDefault(u => u.Orders
+            .Any(o => o.Id == orderId));
     }
 
     public void UpdateUser(UserDto user)

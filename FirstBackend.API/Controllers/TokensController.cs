@@ -13,7 +13,7 @@ namespace FirstBackend.API.Controllers;
 public class TokensController(ITokensService tokensService) : Controller
 {
     private readonly ITokensService _tokenService = tokensService;
-    private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
+    private readonly Serilog.ILogger _logger = Log.ForContext<TokensController>();
 
     [HttpPost]
     [Route("refresh")]
@@ -25,7 +25,8 @@ public class TokensController(ITokensService tokensService) : Controller
         return Ok(authenticatedResponse);
     }
 
-    [HttpPost, Authorize]
+    [Authorize(Roles = "Administrator")]
+    [HttpPost]
     [Route("revoke")]
     public ActionResult Revoke()
     {

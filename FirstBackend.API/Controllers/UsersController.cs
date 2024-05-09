@@ -9,6 +9,7 @@ using Serilog;
 
 namespace FirstBackend.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("/api/users")]
 public class UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService, ITokensService tokensService) : Controller
@@ -28,33 +29,34 @@ public class UsersController(IUsersService usersService, IDevicesService devices
         return Ok(_usersService.GetAllUsers());
     }
 
-    [Authorize(Roles = "Administrator")]
     [HttpGet("{id}")]
     public ActionResult<UserFullResponse> GetUserById(Guid id)
     {
+        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information($"Получаем пользователя по ID {id}");
 
         return Ok(_usersService.GetUserById(id));
     }
 
-    [Authorize(Roles = "Administrator")]
     [HttpGet("{userId}/devices")]
     public ActionResult<List<DeviceResponse>> GetDevicesByUserId(Guid userId)
     {
+        _usersService.CheckUserRights(userId, HttpContext);
         _logger.Information($"Получаем устройства по ID пользователя {userId}");
 
         return Ok(_devicesService.GetDevicesByUserId(userId));
     }
 
-    [Authorize(Roles = "Administrator")]
     [HttpGet("{userId}/orders")]
     public ActionResult<List<OrderResponse>> GetOrdersByUserId(Guid userId)
     {
+        _usersService.CheckUserRights(userId, HttpContext);
         _logger.Information($"Получаем заказы по ID пользователя {userId}");
 
         return Ok(_ordersService.GetOrdersByUserId(userId));
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
     {
@@ -64,6 +66,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
         return Ok(id);
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public ActionResult<AuthenticatedResponse> Login([FromBody] LoginUserRequest request)
     {
@@ -73,42 +76,40 @@ public class UsersController(IUsersService usersService, IDevicesService devices
         return Ok(authenticatedResponse);
     }
 
-    [Authorize]
     [HttpPut("{id}")]
     public ActionResult UpdateUserData([FromRoute] Guid id, [FromBody] UpdateUserDataRequest request)
     {
+        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information($"Обновляем данные пользователя с ID {id}");
         _usersService.UpdateUser(id, request);
 
         return NoContent();
     }
 
-    [Authorize]
     [HttpDelete("{id}")]
     public ActionResult DeleteUserById(Guid id)
     {
+        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information($"Удаляем пользователя с ID {id}");
         _usersService.DeleteUserById(id);
 
         return NoContent();
     }
 
-    [Authorize]
     [HttpPatch("{id}/password")]
     public ActionResult UpdateUserPassword([FromRoute] Guid id, [FromBody] UpdateUserPasswordRequest request)
     {
-        var authorizationHeader = HttpContext.Request.Headers.Authorization;
-        var accessToken = _tokensService.GetAccessToken(authorizationHeader);
+        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information($"Обновляем пароль пользователя с ID {id}");
-        var authenticatedResponse = _usersService.UpdateUserPassword(id, request, accessToken);
+        _usersService.UpdateUserPassword(id, request);
 
-        return Ok(authenticatedResponse);
+        return NoContent();
     }
 
-    [Authorize]
     [HttpPatch("{id}/mail")]
     public ActionResult UpdateUserMail([FromRoute] Guid id, [FromBody] UpdateUserMailRequest request)
     {
+        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information($"Обновляем email пользователя с ID {id}");
         _usersService.UpdateUserMail(id, request);
 

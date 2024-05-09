@@ -7,6 +7,7 @@ using Serilog;
 
 namespace FirstBackend.API.Controllers;
 
+[Authorize(Roles = "Administrator")]
 [ApiController]
 [Route("/api/devices")]
 public class DevicesController(IDevicesService deviceService) : Controller
@@ -14,7 +15,6 @@ public class DevicesController(IDevicesService deviceService) : Controller
     private readonly IDevicesService _deviceService = deviceService;
     private readonly Serilog.ILogger _logger = Log.ForContext<DevicesController>();
 
-    [Authorize(Roles = "Administrator")]
     [HttpGet]
     public ActionResult<List<DeviceResponse>> GetAllDevices()
     {
@@ -23,7 +23,6 @@ public class DevicesController(IDevicesService deviceService) : Controller
         return Ok(_deviceService.GetAllDevices());
     }
 
-    [Authorize(Roles = "Administrator")]
     [HttpGet("{id}")]
     public ActionResult<DeviceFullResponse> GetDeviceById(Guid id)
     {
@@ -32,7 +31,6 @@ public class DevicesController(IDevicesService deviceService) : Controller
         return Ok(_deviceService.GetDeviceById(id));
     }
 
-    [Authorize(Roles = "Administrator")]
     [HttpPost]
     public ActionResult<Guid> CreateDevice([FromBody] CreateDeviceRequest request)
     {
@@ -42,7 +40,6 @@ public class DevicesController(IDevicesService deviceService) : Controller
         return Ok(id);
     }
 
-    [Authorize(Roles = "Administrator")]
     [HttpDelete("{id}")]
     public ActionResult DeleteDeviceById(Guid id)
     {

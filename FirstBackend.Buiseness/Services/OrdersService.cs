@@ -25,7 +25,7 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
 
         if (devices.Count != request.Devices.Count)
         {
-            throw new ConflictException("Не все устройста есть в базе");
+            throw new NotFoundException("Не все устройста есть в базе");
         }
 
         var order = _mapper.Map<OrderDto>(request);

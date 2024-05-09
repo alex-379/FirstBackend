@@ -8,7 +8,7 @@ namespace FirstBackend.DataLayer.Repositories;
 public class SaltsRepository(SaltLxContext context) : ISaltsRepository
 {
     private readonly SaltLxContext _ctx = context;
-    private readonly ILogger _logger = Log.ForContext<UsersRepository>();
+    private readonly ILogger _logger = Log.ForContext<SaltsRepository>();
 
     public void AddSalt(SaltDto salt)
     {

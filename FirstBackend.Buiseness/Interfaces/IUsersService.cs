@@ -1,5 +1,6 @@
 ﻿using FirstBackend.Buiseness.Models.Users.Requests;
 using FirstBackend.Buiseness.Models.Users.Responses;
+using Microsoft.AspNetCore.Http;
 
 namespace FirstBackend.Buiseness.Interfaces;
 
@@ -11,6 +12,8 @@ public interface IUsersService
     UserFullResponse GetUserById(Guid id);
     void UpdateUser(Guid userId, UpdateUserDataRequest request);
     void DeleteUserById(Guid id);
-    AuthenticatedResponse UpdateUserPassword(Guid userId, UpdateUserPasswordRequest request, string accessToken);
+    void UpdateUserPassword(Guid userId, UpdateUserPasswordRequest request);
     void UpdateUserMail(Guid userId, UpdateUserMailRequest request);
+    void CheckUserRights(Guid id, HttpContext httpContext);
+    Guid GetUserIdByOrderId(Guid orderId);
 }

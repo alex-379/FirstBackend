@@ -1,17 +1,20 @@
 ﻿using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Buiseness.Models.Orders.Requests;
 using FirstBackend.Buiseness.Models.Orders.Responses;
+using FirstBackend.Buiseness.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 namespace FirstBackend.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("/api/orders")]
-public class OrdersController(IOrdersService ordersService) : Controller
+public class OrdersController(IOrdersService ordersService, IUsersService usersService) : Controller
 {
     private readonly IOrdersService _ordersService = ordersService;
+    private readonly IUsersService _usersService = usersService;
     private readonly Serilog.ILogger _logger = Log.ForContext<OrdersController>();
 
     [Authorize(Roles = "Administrator")]
@@ -32,7 +35,7 @@ public class OrdersController(IOrdersService ordersService) : Controller
         return Ok(_ordersService.GetOrderById(id));
     }
 
-    [HttpPost, Authorize]
+    [HttpPost]
     public ActionResult<Guid> CreateOrder([FromBody] CreateOrderRequest request)
     {
         _logger.Information("Создаём заказ");
@@ -41,10 +44,11 @@ public class OrdersController(IOrdersService ordersService) : Controller
         return Ok(id);
     }
 
-    [Authorize]
     [HttpDelete("{id}")]
     public ActionResult DeleteOrderById(Guid id)
     {
+        var userId = _usersService.GetUserIdByOrderId(id);
+        _usersService.CheckUserRights(userId, HttpContext);
         _logger.Information($"Удаляем заказ с ID {id}");
         _ordersService.DeleteOrderById(id);
 

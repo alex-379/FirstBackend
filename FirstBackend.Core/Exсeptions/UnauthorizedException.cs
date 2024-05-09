@@ -1,5 +1,5 @@
 ﻿namespace FirstBackend.Core.Exсeptions;
 
-public class UnauthorizedException(string message) : Exception(message)
+public class UnauthorizedException(string message = "Доступ запрещён") : Exception(message)
 {
 }

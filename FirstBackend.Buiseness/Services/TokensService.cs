@@ -5,7 +5,6 @@ using FirstBackend.Buiseness.Models.Users.Responses;
 using FirstBackend.Core.Exсeptions;
 using FirstBackend.DataLayer.Interfaces;
 using Microsoft.IdentityModel.Tokens;
-using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -18,7 +17,7 @@ namespace FirstBackend.Buiseness.Services
         private readonly SecretSettings _secret = secret;
         private readonly JwtToken _jwt = jwt;
         private readonly IUsersRepository _usersRepository = usersRepository;
-        private readonly ILogger _logger = Log.ForContext<UsersService>();
+
         public string GenerateAccessToken(IEnumerable<Claim> claims)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret.SecretToken));
@@ -57,9 +56,10 @@ namespace FirstBackend.Buiseness.Services
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
+            if (securityToken is not JwtSecurityToken jwtSecurityToken
+                || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new SecurityTokenException("Invalid token");
+                throw new UnauthenticatedException("Ошибка проверки токена пользователя");
             }
 
             return principal;
@@ -72,7 +72,7 @@ namespace FirstBackend.Buiseness.Services
             var user = _usersRepository.GetUserByMail(mail);
             if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                throw new UnauthorizedException("Ошибка проверки токена пользователя");
+                throw new UnauthenticatedException("Ошибка проверки токена пользователя");
             }
 
             var newAccessToken = GenerateAccessToken(principal.Claims);
@@ -105,5 +105,27 @@ namespace FirstBackend.Buiseness.Services
 
             return accessToken;
         }
+
+        //public AuthenticatedResponse Refresh(RefreshTokenRequest request)
+        //{
+        //    var principal = GetPrincipalFromToken(request.AccessToken);
+        //    var mail = principal.FindFirst(ClaimTypes.Email).Value;
+        //    var user = _usersRepository.GetUserByMail(mail);
+        //    if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+        //    {
+        //        throw new UnauthorizedException("Ошибка проверки токена пользователя");
+        //    }
+
+        //    var newAccessToken = GenerateAccessToken(principal.Claims);
+        //    var newRefreshToken = GenerateRefreshToken();
+        //    user.RefreshToken = newRefreshToken;
+        //    _usersRepository.UpdateUser(user);
+
+        //    return new AuthenticatedResponse()
+        //    {
+        //        Token = newAccessToken,
+        //        RefreshToken = newRefreshToken,
+        //    };
+        //}
     }
 }

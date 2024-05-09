@@ -8,5 +8,6 @@ public interface IUsersRepository
     List<UserDto> GetAllUsers();
     UserDto GetUserById(Guid id);
     UserDto GetUserByMail(string mail);
+    UserDto GetUserByOrderId(Guid orderId);
     void UpdateUser(UserDto user);
 }

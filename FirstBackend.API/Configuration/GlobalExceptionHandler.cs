@@ -44,15 +44,15 @@ public class GlobalExceptionHandler : IExceptionHandler
 
                 break;
 
-            case nameof(BadRequestException):
+            case nameof(UnauthorizedException):
                 {
-                    problemDetails.Status = StatusCodes.Status400BadRequest;
-                    problemDetails.Title = "Некорректные входные данные";
+                    problemDetails.Status = StatusCodes.Status403Forbidden;
+                    problemDetails.Title = "Не пройдена авторизация";
                 };
 
                 break;
 
-            case nameof(UnauthorizedException):
+            case nameof(UnauthenticatedException):
                 {
                     problemDetails.Status = StatusCodes.Status401Unauthorized;
                     problemDetails.Title = "Неверные аутентификационные данные";

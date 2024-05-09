@@ -14,7 +14,7 @@ public class DevicesService(IDevicesRepository devicesRepository, IOrdersReposit
     private readonly IDevicesRepository _devicesRepository = devicesRepository;
     private readonly IOrdersRepository _ordersRepository = ordersRepository;
     private readonly IMapper _mapper = mapper;
-    private readonly ILogger _logger = Log.ForContext<OrdersService>();
+    private readonly ILogger _logger = Log.ForContext<DevicesService>();
 
     public Guid AddDevice(CreateDeviceRequest request)
     {
