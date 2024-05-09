@@ -1,0 +1,3 @@
+1. Enviroment variables - ConfigureEnviroments
+2. CheckUserRights (? HttpContext через nuget swagger, static async)
+3. ModelBuilderExtensions - entities
