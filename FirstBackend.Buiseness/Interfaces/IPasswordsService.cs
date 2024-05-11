@@ -2,7 +2,7 @@
 {
     public interface IPasswordsService
     {
-        string HashPasword(string password, out byte[] salt);
-        bool VerifyPassword(string password, string hash, byte[] salt);
+        (string hash, string salt) HashPasword(string password);
+        bool VerifyPassword(string password, string hash, string salt);
     }
 }

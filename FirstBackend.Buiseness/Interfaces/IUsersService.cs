@@ -14,6 +14,7 @@ public interface IUsersService
     void DeleteUserById(Guid id);
     void UpdateUserPassword(Guid userId, UpdateUserPasswordRequest request);
     void UpdateUserMail(Guid userId, UpdateUserMailRequest request);
+    void UpdateUserRole(Guid userId, UpdateUserRoleRequest request);
     void CheckUserRights(Guid id, HttpContext httpContext);
     Guid GetUserIdByOrderId(Guid orderId);
 }

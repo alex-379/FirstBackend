@@ -115,4 +115,14 @@ public class UsersController(IUsersService usersService, IDevicesService devices
 
         return NoContent();
     }
+
+    [Authorize(Roles = "Administrator")]
+    [HttpPatch("{id}/role")]
+    public ActionResult UpdateUserRole([FromRoute] Guid id, [FromBody] UpdateUserRoleRequest request)
+    {
+        _logger.Information($"Обновляем email пользователя с ID {id}");
+        _usersService.UpdateUserRole(id, request);
+
+        return NoContent();
+    }
 }

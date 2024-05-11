@@ -1,7 +1,6 @@
 ﻿using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
@@ -32,7 +31,7 @@ public class UsersRepository(MainerLxContext context) : BaseRepository(context),
         _logger.Information("Идём в базу данных и ищем пользователя по ID {id}", id);
 
         return _ctx.Users
-            .FirstOrDefault(u => u.Id == id 
+            .FirstOrDefault(u => u.Id == id
                 && !u.IsDeleted);
     }
 

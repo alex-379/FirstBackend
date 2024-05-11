@@ -1,5 +1,8 @@
 1. Enviroment variables - ConfigureEnviroments
 2. CheckUserRights (? HttpContext через nuget swagger, static async)
 3. ModelBuilderExtensions - entities
-4. Refresh token (access token expired)
+4. Refresh token (access token expired), HttpPost?
 5. Обработка exceptions на UI
+
+salt
+40 минута

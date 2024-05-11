@@ -1,6 +1,7 @@
 ﻿using FirstBackend.Buiseness.Configuration;
 using FirstBackend.Buiseness.Interfaces;
 using FirstBackend.Core.Constants;
+using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -11,10 +12,10 @@ public class PasswordsService(SecretSettings secret) : IPasswordsService
     private readonly SecretSettings _secret = secret;
     private readonly HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
 
-    public string HashPasword(string password, out byte[] salt)
+    public (string hash, string salt) HashPasword(string password)
     {
         password = $"{password}{_secret.SecretPassword}";
-        salt = RandomNumberGenerator.GetBytes(PasswordSettings.KeySize);
+        var salt = RandomNumberGenerator.GetBytes(PasswordSettings.KeySize);
         var hash = Rfc2898DeriveBytes.Pbkdf2(
             Encoding.UTF8.GetBytes(password),
             salt,
@@ -22,13 +23,13 @@ public class PasswordsService(SecretSettings secret) : IPasswordsService
             hashAlgorithm,
             PasswordSettings.KeySize);
 
-        return Convert.ToHexString(hash);
+        return (Convert.ToHexString(hash), Convert.ToHexString(salt));
     }
 
-    public bool VerifyPassword(string password, string hash, byte[] salt)
+    public bool VerifyPassword(string password, string hash, string salt)
     {
         password = $"{password}{_secret.SecretPassword}";
-        var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, PasswordSettings.Iterations, hashAlgorithm, PasswordSettings.KeySize);
+        var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, Convert.FromHexString(salt), PasswordSettings.Iterations, hashAlgorithm, PasswordSettings.KeySize);
 
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
     }

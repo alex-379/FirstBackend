@@ -10,5 +10,4 @@ public interface ITokensService
     string GenerateRefreshToken();
     AuthenticatedResponse Refresh(RefreshTokenRequest request);
     void Revoke(string mail);
-    string GetAccessToken(string authorizationHeader);
 }

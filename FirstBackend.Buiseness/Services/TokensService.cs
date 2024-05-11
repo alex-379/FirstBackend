@@ -94,38 +94,5 @@ namespace FirstBackend.Buiseness.Services
             user.RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified);
             _usersRepository.UpdateUser(user);
         }
-
-        public string GetAccessToken(string authorizationHeader)
-        {
-            string accessToken = string.Empty;
-            if (authorizationHeader.ToString().StartsWith("Bearer"))
-            {
-                accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
-            }
-
-            return accessToken;
-        }
-
-        //public AuthenticatedResponse Refresh(RefreshTokenRequest request)
-        //{
-        //    var principal = GetPrincipalFromToken(request.AccessToken);
-        //    var mail = principal.FindFirst(ClaimTypes.Email).Value;
-        //    var user = _usersRepository.GetUserByMail(mail);
-        //    if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-        //    {
-        //        throw new UnauthorizedException("Ошибка проверки токена пользователя");
-        //    }
-
-        //    var newAccessToken = GenerateAccessToken(principal.Claims);
-        //    var newRefreshToken = GenerateRefreshToken();
-        //    user.RefreshToken = newRefreshToken;
-        //    _usersRepository.UpdateUser(user);
-
-        //    return new AuthenticatedResponse()
-        //    {
-        //        Token = newAccessToken,
-        //        RefreshToken = newRefreshToken,
-        //    };
-        //}
     }
 }
