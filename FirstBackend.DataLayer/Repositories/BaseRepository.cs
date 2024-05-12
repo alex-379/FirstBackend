@@ -1,8 +1,6 @@
-﻿using FirstBackend.DataLayer.Contexts;
+﻿namespace FirstBackend.DataLayer.Repositories;
 
-namespace FirstBackend.DataLayer.Repositories;
-
-public class BaseRepository(MainerLxContext context)
+public class BaseRepository<TDbContext>(TDbContext context)
 {
-    protected readonly MainerLxContext _ctx = context;
+    protected readonly TDbContext _ctx = context;
 }

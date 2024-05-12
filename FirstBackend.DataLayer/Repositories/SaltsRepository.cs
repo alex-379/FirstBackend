@@ -1,13 +1,13 @@
-﻿using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Core.Constants.Logs.DataLayer;
+using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
 using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
 
-public class SaltsRepository(SaltLxContext context) : ISaltsRepository
+public class SaltsRepository(SaltLxContext context) : BaseRepository<SaltLxContext>(context), ISaltsRepository
 {
-    private readonly SaltLxContext _ctx = context;
     private readonly ILogger _logger = Log.ForContext<SaltsRepository>();
 
     public void AddSalt(SaltDto salt)
@@ -15,12 +15,12 @@ public class SaltsRepository(SaltLxContext context) : ISaltsRepository
 
         _ctx.Salts.Add(salt);
         _ctx.SaveChanges();
-        _logger.Information("Вносим в базу данных соль пользователя с ID {id}", salt.UserId);
+        _logger.Information(SaltsRepositoryLogs.AddSalt, salt.UserId);
     }
 
     public SaltDto GetSaltByUserId(Guid userId)
     {
-        _logger.Information("Идём в базу данных и ищем соль по ID пользователя {userId}", userId);
+        _logger.Information(SaltsRepositoryLogs.GetSaltByUserId, userId);
 
         return _ctx.Salts
             .FirstOrDefault(s => s.UserId == userId);
@@ -30,13 +30,13 @@ public class SaltsRepository(SaltLxContext context) : ISaltsRepository
     {
         _ctx.Salts.Update(salt);
         _ctx.SaveChanges();
-        _logger.Information("Обновляем в базе данных соль пользователя с ID {id}", salt.UserId);
+        _logger.Information(SaltsRepositoryLogs.UpdateSalt, salt.UserId);
     }
 
     public void DeleteSalt(SaltDto salt)
     {
         _ctx.Salts.Remove(salt);
         _ctx.SaveChanges();
-        _logger.Information("Удаляем из базы данных соль пользователя с ID {id}", salt.UserId);
+        _logger.Information(SaltsRepositoryLogs.DeleteSalt, salt.UserId);
     }
 }

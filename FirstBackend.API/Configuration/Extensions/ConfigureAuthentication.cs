@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FirstBackend.Core.Constants;
 
 namespace FirstBackend.API.Configuration.Extensions;
 
@@ -21,9 +22,9 @@ public static class ConfigureAuthentication
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration["JwtToken:ValidIssuer"],
-                ValidAudience = configuration["JwtToken:ValidAudience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecretSettings:SecretToken"]))
+                ValidIssuer = configuration[ConfigurationSettings.ValidIssuer],
+                ValidAudience = configuration[ConfigurationSettings.ValidAudience],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration[ConfigurationSettings.IssuerSigningKey]))
             };
         });
     }

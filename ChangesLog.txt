@@ -4,5 +4,4 @@
 4. Refresh token (access token expired), HttpPost?
 5. Обработка exceptions на UI
 
-salt
-40 минута
+packages xunit

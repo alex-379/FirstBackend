@@ -1,6 +1,6 @@
 using FirstBackend.API.Configuration;
 using FirstBackend.API.Configuration.Extensions;
-using FirstBackend.Buiseness.Configuration;
+using FirstBackend.Business.Configuration;
 using FirstBackend.DataLayer.Configuration;
 using Serilog;
 

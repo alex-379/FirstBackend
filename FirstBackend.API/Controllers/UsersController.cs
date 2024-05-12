@@ -1,8 +1,9 @@
-﻿using FirstBackend.Buiseness.Interfaces;
-using FirstBackend.Buiseness.Models.Devices.Responses;
-using FirstBackend.Buiseness.Models.Orders.Responses;
-using FirstBackend.Buiseness.Models.Users.Requests;
-using FirstBackend.Buiseness.Models.Users.Responses;
+﻿using FirstBackend.Business.Interfaces;
+using FirstBackend.Business.Models.Devices.Responses;
+using FirstBackend.Business.Models.Orders.Responses;
+using FirstBackend.Business.Models.Users.Requests;
+using FirstBackend.Business.Models.Users.Responses;
+using FirstBackend.Core.Constants.Logs.API;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -12,19 +13,18 @@ namespace FirstBackend.API.Controllers;
 [Authorize]
 [ApiController]
 [Route("/api/users")]
-public class UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService, ITokensService tokensService) : Controller
+public class UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService) : Controller
 {
     private readonly IUsersService _usersService = usersService;
     private readonly IDevicesService _devicesService = devicesService;
     private readonly IOrdersService _ordersService = ordersService;
-    private readonly ITokensService _tokensService = tokensService;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
     [Authorize(Roles = "Administrator")]
     [HttpGet]
     public ActionResult<List<UserResponse>> GetAllUsers()
     {
-        _logger.Information($"Получаем всех пользователей");
+        _logger.Information(UsersControllerLogs.GetAllUsers);
 
         return Ok(_usersService.GetAllUsers());
     }
@@ -33,7 +33,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     public ActionResult<UserFullResponse> GetUserById(Guid id)
     {
         _usersService.CheckUserRights(id, HttpContext);
-        _logger.Information($"Получаем пользователя по ID {id}");
+        _logger.Information(UsersControllerLogs.GetUserById, id);
 
         return Ok(_usersService.GetUserById(id));
     }
@@ -42,7 +42,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     public ActionResult<List<DeviceResponse>> GetDevicesByUserId(Guid userId)
     {
         _usersService.CheckUserRights(userId, HttpContext);
-        _logger.Information($"Получаем устройства по ID пользователя {userId}");
+        _logger.Information(UsersControllerLogs.GetDevicesByUserId, userId);
 
         return Ok(_devicesService.GetDevicesByUserId(userId));
     }
@@ -51,7 +51,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     public ActionResult<List<OrderResponse>> GetOrdersByUserId(Guid userId)
     {
         _usersService.CheckUserRights(userId, HttpContext);
-        _logger.Information($"Получаем заказы по ID пользователя {userId}");
+        _logger.Information(UsersControllerLogs.GetOrdersByUserId, userId);
 
         return Ok(_ordersService.GetOrdersByUserId(userId));
     }
@@ -60,7 +60,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     [HttpPost]
     public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
     {
-        _logger.Information($"Создаём пользователя с логином {request.Name}, почтой {request.Mail}");
+        _logger.Information(UsersControllerLogs.CreateUser, request.Name, request.Mail);
         var id = _usersService.AddUser(request);
 
         return Ok(id);
@@ -70,7 +70,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     [HttpPost("login")]
     public ActionResult<AuthenticatedResponse> Login([FromBody] LoginUserRequest request)
     {
-        _logger.Information($"Авторизация пользователя");
+        _logger.Information(UsersControllerLogs.Login);
         var authenticatedResponse = _usersService.LoginUser(request);
 
         return Ok(authenticatedResponse);
@@ -80,7 +80,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     public ActionResult UpdateUserData([FromRoute] Guid id, [FromBody] UpdateUserDataRequest request)
     {
         _usersService.CheckUserRights(id, HttpContext);
-        _logger.Information($"Обновляем данные пользователя с ID {id}");
+        _logger.Information(UsersControllerLogs.UpdateUserData, id);
         _usersService.UpdateUser(id, request);
 
         return NoContent();
@@ -90,7 +90,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     public ActionResult DeleteUserById(Guid id)
     {
         _usersService.CheckUserRights(id, HttpContext);
-        _logger.Information($"Удаляем пользователя с ID {id}");
+        _logger.Information(UsersControllerLogs.DeleteUserById, id);
         _usersService.DeleteUserById(id);
 
         return NoContent();
@@ -100,7 +100,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     public ActionResult UpdateUserPassword([FromRoute] Guid id, [FromBody] UpdateUserPasswordRequest request)
     {
         _usersService.CheckUserRights(id, HttpContext);
-        _logger.Information($"Обновляем пароль пользователя с ID {id}");
+        _logger.Information(UsersControllerLogs.UpdateUserPassword, id);
         _usersService.UpdateUserPassword(id, request);
 
         return NoContent();
@@ -110,7 +110,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     public ActionResult UpdateUserMail([FromRoute] Guid id, [FromBody] UpdateUserMailRequest request)
     {
         _usersService.CheckUserRights(id, HttpContext);
-        _logger.Information($"Обновляем email пользователя с ID {id}");
+        _logger.Information(UsersControllerLogs.UpdateUserMail, id);
         _usersService.UpdateUserMail(id, request);
 
         return NoContent();
@@ -120,7 +120,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     [HttpPatch("{id}/role")]
     public ActionResult UpdateUserRole([FromRoute] Guid id, [FromBody] UpdateUserRoleRequest request)
     {
-        _logger.Information($"Обновляем email пользователя с ID {id}");
+        _logger.Information(UsersControllerLogs.UpdateUserRole, id);
         _usersService.UpdateUserRole(id, request);
 
         return NoContent();

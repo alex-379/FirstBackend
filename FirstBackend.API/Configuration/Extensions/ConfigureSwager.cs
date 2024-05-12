@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using FirstBackend.Core.Constants;
+using Microsoft.OpenApi.Models;
 
 namespace FirstBackend.API.Configuration.Extensions;
 
@@ -8,19 +9,19 @@ public static class ConfigureSwager
     {
         services.AddSwaggerGen(opt =>
         {
-            opt.SwaggerDoc(configuration["OpenApiSettings:Version"],
-                new OpenApiInfo { Title = configuration["OpenApiSettings:Title"],
-                                  Version = configuration["OpenApiSettings:Version"] 
+            opt.SwaggerDoc(configuration[ConfigurationSettings.OpenApiVersion],
+                new OpenApiInfo { Title = configuration[ConfigurationSettings.OpenApiTitle],
+                                  Version = configuration[ConfigurationSettings.OpenApiVersion] 
                 });
 
-            opt.AddSecurityDefinition(configuration["OpenApiSettings:SecurityScheme"], new OpenApiSecurityScheme
+            opt.AddSecurityDefinition(configuration[ConfigurationSettings.OpenApiSecurityScheme], new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
-                Description = configuration["OpenApiSettings:Description"],
-                Name = configuration["OpenApiSettings:Name"],
+                Description = configuration[ConfigurationSettings.OpenApiDescription],
+                Name = configuration[ConfigurationSettings.OpenApiName],
                 Type = SecuritySchemeType.Http,
-                BearerFormat = configuration["OpenApiSettings:BearerFormat"],
-                Scheme = configuration["OpenApiSettings:SecurityScheme"]
+                BearerFormat = configuration[ConfigurationSettings.OpenApiBearerFormat],
+                Scheme = configuration[ConfigurationSettings.OpenApiSecurityScheme]
             });
 
             opt.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -31,7 +32,7 @@ public static class ConfigureSwager
                     Reference = new OpenApiReference
                     {
                         Type=ReferenceType.SecurityScheme,
-                        Id=configuration["OpenApiSettings:SecurityScheme"]
+                        Id=configuration[ConfigurationSettings.OpenApiSecurityScheme]
                     }
                 },
                 Array.Empty<string>()

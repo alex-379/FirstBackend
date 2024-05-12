@@ -1,4 +1,5 @@
-﻿using FirstBackend.Core.Exсeptions;
+﻿using FirstBackend.Core.Constants.Exceptions;
+using FirstBackend.Core.Exсeptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -15,13 +16,13 @@ public class GlobalExceptionHandler : IExceptionHandler
         CancellationToken cancellationToken)
     {
         _logger.Error(
-            exception, "Exception occurred: {Message}", exception.Message);
+            exception, GlobalExceptions.LoggerError, exception.Message);
 
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
             Type = exception.GetType().Name,
-            Title = "Server error",
+            Title = GlobalExceptions.InternalServerErrorException,
             Detail = exception.Message,
             Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
         };
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler : IExceptionHandler
             case nameof(ConflictException):
                 {
                     problemDetails.Status = StatusCodes.Status409Conflict;
-                    problemDetails.Title = "Конфликт";
+                    problemDetails.Title = GlobalExceptions.ConflictException;
                 };
 
                 break;
@@ -39,7 +40,7 @@ public class GlobalExceptionHandler : IExceptionHandler
             case nameof(NotFoundException):
                 {
                     problemDetails.Status = StatusCodes.Status404NotFound;
-                    problemDetails.Title = "Не найдены данные по запросу";
+                    problemDetails.Title = GlobalExceptions.NotFoundException;
                 };
 
                 break;
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler : IExceptionHandler
             case nameof(UnauthorizedException):
                 {
                     problemDetails.Status = StatusCodes.Status403Forbidden;
-                    problemDetails.Title = "Не пройдена авторизация";
+                    problemDetails.Title = GlobalExceptions.UnauthorizedException;
                 };
 
                 break;
@@ -55,7 +56,7 @@ public class GlobalExceptionHandler : IExceptionHandler
             case nameof(UnauthenticatedException):
                 {
                     problemDetails.Status = StatusCodes.Status401Unauthorized;
-                    problemDetails.Title = "Неверные аутентификационные данные";
+                    problemDetails.Title = GlobalExceptions.UnauthenticatedException;
                 };
 
                 break;

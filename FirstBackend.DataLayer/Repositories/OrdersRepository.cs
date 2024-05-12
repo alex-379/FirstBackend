@@ -1,4 +1,5 @@
-﻿using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Core.Constants.Logs.DataLayer;
+using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
 
-public class OrdersRepository(MainerLxContext context) : BaseRepository(context), IOrdersRepository
+public class OrdersRepository(MainerLxContext context) : BaseRepository<MainerLxContext>(context), IOrdersRepository
 {
     private readonly ILogger _logger = Log.ForContext<OrdersRepository>();
 
@@ -14,22 +15,22 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository(context)
     {
         _ctx.Orders.Add(order);
         _ctx.SaveChanges();
-        _logger.Information("Вносим в базу данных заказ с ID {id}", order.Id);
+        _logger.Information(OrdersRepositoryLogs.AddOrder, order.Id);
 
         return order.Id;
     }
 
-    public List<OrderDto> GetAllOrders()
+    public IEnumerable<OrderDto> GetAllOrders()
     {
-        _logger.Information("Идём в базу данных и ищем все заказы");
+        _logger.Information(OrdersRepositoryLogs.GetAllOrders);
 
-        return [.. _ctx.Orders
-            .Where(o=>!o.IsDeleted)];
+        return _ctx.Orders
+            .Where(o => !o.IsDeleted);
     }
 
     public OrderDto GetOrderById(Guid id)
     {
-        _logger.Information("Идём в базу данных и ищем заказ по ID {id}", id);
+        _logger.Information(OrdersRepositoryLogs.GetOrderById, id);
 
         return _ctx.Orders
             .Include(o => o.Customer)
@@ -38,18 +39,18 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository(context)
             && !o.IsDeleted);
     }
 
-    public List<OrderDto> GetOrdersByUserId(Guid userId)
+    public IEnumerable<OrderDto> GetOrdersByUserId(Guid userId)
     {
-        _logger.Information("Идём в базу данных и ищем заказы по ID пользователя {userId}", userId);
+        _logger.Information(OrdersRepositoryLogs.GetOrdersByUserId, userId);
 
-        return [.. _ctx.Orders
+        return _ctx.Orders
             .Where(o => o.Customer.Id == userId
-                && !o.IsDeleted)];
+                && !o.IsDeleted);
     }
 
-    public List<OrderDto> GetOrdersByDeviceId(Guid deviceId)
+    public IEnumerable<OrderDto> GetOrdersByDeviceId(Guid deviceId)
     {
-        _logger.Information("Идём в базу данных и ищем заказы по ID пользователя {deviceId}", deviceId);
+        _logger.Information(OrdersRepositoryLogs.GetOrdersByDeviceId, deviceId);
 
         return [.. _ctx.Orders
             .Where(o => !o.IsDeleted
@@ -60,7 +61,7 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository(context)
 
     public void UpdateOrder(OrderDto order)
     {
-        _logger.Information("Идём в базу данных и обновляем заказ с ID {id}", order.Id);
+        _logger.Information(OrdersRepositoryLogs.UpdateOrder, order.Id);
         _ctx.Orders.Update(order);
         _ctx.SaveChanges();
     }

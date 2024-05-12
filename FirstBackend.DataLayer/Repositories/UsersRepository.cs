@@ -1,11 +1,12 @@
-﻿using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Core.Constants.Logs.DataLayer;
+using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
 using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
 
-public class UsersRepository(MainerLxContext context) : BaseRepository(context), IUsersRepository
+public class UsersRepository(MainerLxContext context) : BaseRepository<MainerLxContext>(context), IUsersRepository
 {
     private readonly ILogger _logger = Log.ForContext<UsersRepository>();
 
@@ -13,22 +14,22 @@ public class UsersRepository(MainerLxContext context) : BaseRepository(context),
     {
         _ctx.Users.Add(user);
         _ctx.SaveChanges();
-        _logger.Information("Вносим в базу данных пользователя с ID {id}", user.Id);
+        _logger.Information(UsersRepositoryLogs.AddUser, user.Id);
 
         return user.Id;
     }
 
-    public List<UserDto> GetAllUsers()
+    public IEnumerable<UserDto> GetAllUsers()
     {
-        _logger.Information("Идём в базу данных и ищем всех пользователей");
+        _logger.Information(UsersRepositoryLogs.GetAllUsers);
 
-        return [.. _ctx.Users
-            .Where(u=>!u.IsDeleted)];
+        return _ctx.Users
+            .Where(u=>!u.IsDeleted);
     }
 
     public UserDto GetUserById(Guid id)
     {
-        _logger.Information("Идём в базу данных и ищем пользователя по ID {id}", id);
+        _logger.Information(UsersRepositoryLogs.GetUserById, id);
 
         return _ctx.Users
             .FirstOrDefault(u => u.Id == id
@@ -37,7 +38,7 @@ public class UsersRepository(MainerLxContext context) : BaseRepository(context),
 
     public UserDto GetUserByMail(string mail)
     {
-        _logger.Information("Идём в базу данных и ищем пользователя по почте {mail}", mail);
+        _logger.Information(UsersRepositoryLogs.GetUserByMail, mail);
 
         return _ctx.Users
             .FirstOrDefault(u => u.Mail == mail
@@ -46,7 +47,7 @@ public class UsersRepository(MainerLxContext context) : BaseRepository(context),
 
     public UserDto GetUserByOrderId(Guid orderId)
     {
-        _logger.Information("Идём в базу данных и ищем пользователя по ID заказа {orderId}", orderId);
+        _logger.Information(UsersRepositoryLogs.GetUserByOrderId, orderId);
 
         return _ctx.Users
             .FirstOrDefault(u => u.Orders
@@ -55,7 +56,7 @@ public class UsersRepository(MainerLxContext context) : BaseRepository(context),
 
     public void UpdateUser(UserDto user)
     {
-        _logger.Information("Идём в базу данных и обновляем пользователя с ID {id}", user.Id);
+        _logger.Information(UsersRepositoryLogs.UpdateUser, user.Id);
         _ctx.Users.Update(user);
         _ctx.SaveChanges();
     }

@@ -1,6 +1,7 @@
-﻿using FirstBackend.Buiseness.Interfaces;
-using FirstBackend.Buiseness.Models.Devices.Requests;
-using FirstBackend.Buiseness.Models.Devices.Responses;
+﻿using FirstBackend.Business.Interfaces;
+using FirstBackend.Business.Models.Devices.Requests;
+using FirstBackend.Business.Models.Devices.Responses;
+using FirstBackend.Core.Constants.Logs.API;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -18,7 +19,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
     [HttpGet]
     public ActionResult<List<DeviceResponse>> GetAllDevices()
     {
-        _logger.Information($"Получаем всех пользователей");
+        _logger.Information(DevicesControllerLogs.GetAllDevices);
 
         return Ok(_deviceService.GetAllDevices());
     }
@@ -26,7 +27,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
     [HttpGet("{id}")]
     public ActionResult<DeviceFullResponse> GetDeviceById(Guid id)
     {
-        _logger.Information($"Получаем устройство по ID {id}");
+        _logger.Information(DevicesControllerLogs.GetDeviceById, id);
 
         return Ok(_deviceService.GetDeviceById(id));
     }
@@ -34,7 +35,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
     [HttpPost]
     public ActionResult<Guid> CreateDevice([FromBody] CreateDeviceRequest request)
     {
-        _logger.Information("Создаём устройство");
+        _logger.Information(DevicesControllerLogs.CreateDevice);
         var id = _deviceService.AddDevice(request);
 
         return Ok(id);
@@ -43,7 +44,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
     [HttpDelete("{id}")]
     public ActionResult DeleteDeviceById(Guid id)
     {
-        _logger.Information($"Удаляем устройство с ID {id}");
+        _logger.Information(DevicesControllerLogs.DeleteDeviceById, id);
         _deviceService.DeleteDeviceById(id);
 
         return NoContent();

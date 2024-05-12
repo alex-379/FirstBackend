@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstBackend.API", "FirstBackend.API\FirstBackend.API.csproj", "{9A778BF5-A372-4FCE-A2E0-D6D0866CCE6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstBackend.API", "FirstBackend.API\FirstBackend.API.csproj", "{9A778BF5-A372-4FCE-A2E0-D6D0866CCE6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstBackend.Buiseness", "FirstBackend.Buiseness\FirstBackend.Buiseness.csproj", "{D6916161-C53B-40CB-8ED2-9AA726845E55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstBackend.Business", "FirstBackend.Business\FirstBackend.Business.csproj", "{D6916161-C53B-40CB-8ED2-9AA726845E55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstBackend.DataLayer", "FirstBackend.DataLayer\FirstBackend.DataLayer.csproj", "{09CC97B4-66A5-47F3-8AE3-07644F4FD2AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstBackend.DataLayer", "FirstBackend.DataLayer\FirstBackend.DataLayer.csproj", "{09CC97B4-66A5-47F3-8AE3-07644F4FD2AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstBackend.Core", "FirstBackend.Core\FirstBackend.Core.csproj", "{0E926371-C6A6-4309-97FD-8C353F13B24F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstBackend.Core", "FirstBackend.Core\FirstBackend.Core.csproj", "{0E926371-C6A6-4309-97FD-8C353F13B24F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstBackend.Business.Tests", "FirstBackend.Business.Tests\FirstBackend.Business.Tests.csproj", "{D34E24F7-3118-4FB4-938A-BC1C383C3074}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{0E926371-C6A6-4309-97FD-8C353F13B24F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E926371-C6A6-4309-97FD-8C353F13B24F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E926371-C6A6-4309-97FD-8C353F13B24F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D34E24F7-3118-4FB4-938A-BC1C383C3074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D34E24F7-3118-4FB4-938A-BC1C383C3074}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D34E24F7-3118-4FB4-938A-BC1C383C3074}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D34E24F7-3118-4FB4-938A-BC1C383C3074}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

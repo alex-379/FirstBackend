@@ -1,4 +1,4 @@
-﻿using FirstBackend.Buiseness.Models.Users;
+﻿using FirstBackend.Business.Models.Users;
 
 namespace FirstBackend.API.Configuration.Extensions;
 

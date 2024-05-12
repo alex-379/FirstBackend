@@ -1,7 +1,7 @@
-﻿using FirstBackend.Buiseness.Interfaces;
-using FirstBackend.Buiseness.Models.Orders.Requests;
-using FirstBackend.Buiseness.Models.Orders.Responses;
-using FirstBackend.Buiseness.Services;
+﻿using FirstBackend.Business.Interfaces;
+using FirstBackend.Business.Models.Orders.Requests;
+using FirstBackend.Business.Models.Orders.Responses;
+using FirstBackend.Core.Constants.Logs.API;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -21,7 +21,7 @@ public class OrdersController(IOrdersService ordersService, IUsersService usersS
     [HttpGet]
     public ActionResult<List<OrderResponse>> GetAllOrders()
     {
-        _logger.Information($"Получаем все заказы");
+        _logger.Information(OrdersControllerLogs.GetAllOrders);
 
         return Ok(_ordersService.GetAllOrders());
     }
@@ -30,7 +30,7 @@ public class OrdersController(IOrdersService ordersService, IUsersService usersS
     [HttpGet("{id}")]
     public ActionResult<OrderFullResponse> GetOrderById(Guid id)
     {
-        _logger.Information($"Получаем заказ по ID {id}");
+        _logger.Information(OrdersControllerLogs.GetOrderById, id);
 
         return Ok(_ordersService.GetOrderById(id));
     }
@@ -38,7 +38,7 @@ public class OrdersController(IOrdersService ordersService, IUsersService usersS
     [HttpPost]
     public ActionResult<Guid> CreateOrder([FromBody] CreateOrderRequest request)
     {
-        _logger.Information("Создаём заказ");
+        _logger.Information(OrdersControllerLogs.CreateOrder);
         var id = _ordersService.AddOrder(request);
 
         return Ok(id);
@@ -49,7 +49,7 @@ public class OrdersController(IOrdersService ordersService, IUsersService usersS
     {
         var userId = _usersService.GetUserIdByOrderId(id);
         _usersService.CheckUserRights(userId, HttpContext);
-        _logger.Information($"Удаляем заказ с ID {id}");
+        _logger.Information(OrdersControllerLogs.DeleteOrderById, id);
         _ordersService.DeleteOrderById(id);
 
         return NoContent();

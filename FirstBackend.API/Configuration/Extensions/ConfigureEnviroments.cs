@@ -1,4 +1,6 @@
-﻿using FirstBackend.Core.Exсeptions;
+﻿using FirstBackend.Core.Constants;
+using FirstBackend.Core.Constants.Exceptions;
+using FirstBackend.Core.Exсeptions;
 
 namespace FirstBackend.API.Configuration.Extensions;
 
@@ -6,10 +8,10 @@ public static class ConfigureEnviroments
 {
     public static void ReadSettingsFromEnviroment(this IConfiguration configuration)
     {
-        var secretSettings = configuration.GetSection("SecretSettings").GetChildren();
+        var secretSettings = configuration.GetSection(ConfigurationSettings.SecretSettings).GetChildren();
         configuration.ReadSection(secretSettings);
 
-        var databaseSettings = configuration.GetSection("DatabaseSettings").GetChildren();
+        var databaseSettings = configuration.GetSection(ConfigurationSettings.DatabaseSettings).GetChildren();
         configuration.ReadSection(databaseSettings);
     }
 
@@ -18,7 +20,7 @@ public static class ConfigureEnviroments
         foreach (var key in section)
         {
             var value = key.Value;
-            var env = configuration[value] ?? throw new ConfigurationMissingException("Не прописаны переменные окружения");
+            var env = configuration[value] ?? throw new ConfigurationMissingException(ConfigurationExceptions.ConfigurationMissingException);
             key.Value = env;
         }
     }
