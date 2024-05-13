@@ -44,7 +44,7 @@ public class OrdersController(IOrdersService ordersService, IUsersService usersS
         _logger.Information(OrdersControllerLogs.CreateOrder);
         var id = _ordersService.AddOrder(request);
 
-        return Ok(id);
+        return Created($"{ControllersRoutes.Host}{ControllersRoutes.OrdersController}/{id}", id);
     }
 
     public const string a = "";

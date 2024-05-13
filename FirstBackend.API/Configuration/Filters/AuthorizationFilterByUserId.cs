@@ -17,7 +17,6 @@ namespace FirstBackend.API.Configuration.Filters
                 && currentUserId != requestId)
             {
                 throw new UnauthorizedException();
-                //context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
             }
         }
     }

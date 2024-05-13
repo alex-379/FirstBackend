@@ -11,8 +11,10 @@ public class DevicesMappingProfile : Profile
     {
         CreateMap<CreateDeviceRequest, DeviceDto>();
         CreateMap<AddDeviceAtOrderRequest, DevicesOrders>();
-        
+
         CreateMap<DeviceDto, DeviceResponse>();
         CreateMap<DeviceDto, DeviceFullResponse>();
+        CreateMap<DevicesOrders, DeviceForOrderResponse>()
+            .ForMember(d => d.Name, o => o.MapFrom(s => s.Device.Name));
     }
 }

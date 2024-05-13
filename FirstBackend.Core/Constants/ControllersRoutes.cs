@@ -15,4 +15,5 @@ public static class ControllersRoutes
     public const string UserRole = "{id}/role";
     public const string Refresh = "refresh";
     public const string Revoke = "revoke";
+    public const string Host = "https://localhost:7260";
 }

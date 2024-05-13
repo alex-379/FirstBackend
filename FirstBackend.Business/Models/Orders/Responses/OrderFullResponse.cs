@@ -6,5 +6,5 @@ namespace FirstBackend.Business.Models.Orders.Responses;
 public class OrderFullResponse : OrderResponse
 {
     public UserResponse Customer { get; set; }
-    public List<DeviceResponse> Devices { get; set; }
+    public List<DeviceForOrderResponse> Devices { get; set; }
 }

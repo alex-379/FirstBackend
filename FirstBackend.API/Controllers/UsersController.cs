@@ -66,7 +66,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
         _logger.Information(UsersControllerLogs.CreateUser, request.Name, request.Mail);
         var id = _usersService.AddUser(request);
 
-        return Ok(id);
+        return Created($"{ControllersRoutes.Host}{ControllersRoutes.UsersController}/{id}", id);
     }
 
     [AllowAnonymous]

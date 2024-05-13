@@ -1,12 +1,16 @@
 1. Enviroment variables - ConfigureEnviroments
-2. CheckUserRights (? HttpContext через nuget swagger, static async)
-3. ModelBuilderExtensions - entities
-4. Refresh token (access token expired), HttpPost?
-5. Обработка exceptions на UI
-6. Many-to-many with additional value
-7. Что возвращать AuthorizationFilterByOrderId - exceptions или код состояния?
 
+2. AuthorizationFilterByOrderId, Autorize - statusCodes. Что возвращать AuthorizationFilterByOrderId - exceptions или код состояния? Обработка exceptions на UI
+	context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
+
+3. ModelBuilderExtensions - entities
+
+4. Refresh token (access token expired), HttpPost?
+
+5. Xunit - Fixture. 
+
+6. Repository Pattern (DbContext is the UnitOfWork и DbSet is the Repository)
+для тестов - не нужны репозиторные тесты
 
 репозиторные тесты на include
 api - тест response (должны быть именно такие response. Проверка mapper, status codes)
-Created (201, url - информация о созданной сущности)

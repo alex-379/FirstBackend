@@ -40,7 +40,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
         _logger.Information(DevicesControllerLogs.CreateDevice);
         var id = _deviceService.AddDevice(request);
 
-        return Ok(id);
+        return Created($"{ControllersRoutes.Host}{ControllersRoutes.DevicesController}/{id}", id);
     }
 
     [HttpDelete(ControllersRoutes.Id)]
