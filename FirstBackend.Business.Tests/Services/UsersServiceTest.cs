@@ -49,7 +49,7 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
     [Fact]
     public void AddUser_ValidCreateUserRequestSent_GuidReceieved()
     {
-        //arange
+        //arrange
         var validCreateUserRequest = new CreateUserRequest()
         {
             Name = "Test",
@@ -70,7 +70,7 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
     [Fact]
     public void AddUser_CreateUserRequestWithDuplicateMailSent_ConflictErrorReceieved()
     {
-        //arange
+        //arrange
         var mail = "test@test";
         var CreateUserRequestWithDuplicateMail = new CreateUserRequest()
         {
@@ -99,7 +99,7 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
     [Fact]
     public void GetAllUsers_Calles_UsersReceieved()
     {
-        //arange
+        //arrange
         var userMail1 = "test@test";
         var userMail2 = "test2@test";
         var expexted = new List<UserResponse>()
@@ -137,7 +137,7 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
     [Fact]
     public void DeleteUserById_ValidGuidSent_NoErrorsReceieved()
     {
-        //arange
+        //arrange
         var userId = Guid.NewGuid();
         _usersRepositoryMock.Setup(r => r.GetUserById(userId)).Returns(new UserDto());
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _passwordsService, _tokensService, _mapper, _jwt, _contextSalt, _contextMainer);
@@ -154,7 +154,7 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
     [Fact]
     public void DeleteUserById_EmptyGuidSent_UserNotFoundErrorReceieved()
     {
-        //arange
+        //arrange
         var userId = Guid.Empty;
         _usersRepositoryMock.Setup(r => r.GetUserById(userId)).Returns((UserDto)null);
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _passwordsService, _tokensService, _mapper, _jwt, _contextSalt, _contextMainer);

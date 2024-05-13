@@ -9,14 +9,14 @@ using Moq;
 
 namespace FirstBackend.Business.Tests.Services;
 
-public class OrderServiceTest
+public class OrdersServiceTest
 {
     private readonly Mock<IOrdersRepository> _ordersRepositoryMock;
     private readonly Mock<IDevicesRepository> _devicesRepositoryMock;
     private readonly Mock<IUsersRepository> _usersRepositoryMock;
     private readonly Mapper _mapper;
 
-    public OrderServiceTest()
+    public OrdersServiceTest()
     {
         _ordersRepositoryMock = new Mock<IOrdersRepository>();
         _devicesRepositoryMock = new Mock<IDevicesRepository>();
@@ -33,7 +33,7 @@ public class OrderServiceTest
     [Fact]
     public void AddOrderTest_ValidCreateOrderRequestSent_GuidReceieved()
     {
-        //arange
+        //arrange
         var device1 = Guid.NewGuid();
         var device2 = Guid.NewGuid();
         var customer = Guid.NewGuid();

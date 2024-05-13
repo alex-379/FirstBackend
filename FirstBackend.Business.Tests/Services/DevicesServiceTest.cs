@@ -9,13 +9,13 @@ using Moq;
 
 namespace FirstBackend.Business.Tests.Services;
 
-public class DeviceServiceTest
+public class DevicesServiceTest
 {
     private readonly Mock<IDevicesRepository> _devicesRepositoryMock;
     private readonly Mock<IOrdersRepository> _ordersRepositoryMock;
     private readonly Mapper _mapper;
 
-    public DeviceServiceTest()
+    public DevicesServiceTest()
     {
         _devicesRepositoryMock = new Mock<IDevicesRepository>();
         _ordersRepositoryMock = new Mock<IOrdersRepository>();
