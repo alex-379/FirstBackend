@@ -2,9 +2,9 @@
 
 namespace FirstBackend.Business.Tests.Repositories;
 
-public static class TestDataHelper
+public class TestDataHelper
 {
-    public static List<UserDto> GetFakeUserDtoList() =>
+    public virtual List<UserDto> GetFakeUserDtoList() =>
         [
         new()
         {
