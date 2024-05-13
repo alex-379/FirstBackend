@@ -3,6 +3,7 @@ using System;
 using FirstBackend.DataLayer.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FirstBackend.DataLayer.Migrations
 {
     [DbContext(typeof(MainerLxContext))]
-    partial class MainerLxContextModelSnapshot : ModelSnapshot
+    [Migration("20240512171910_AddNumberDevicesAtOrder")]
+    partial class AddNumberDevicesAtOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,29 +60,27 @@ namespace FirstBackend.DataLayer.Migrations
                     b.ToTable("devices", (string)null);
                 });
 
-            modelBuilder.Entity("FirstBackend.Core.Dtos.DevicesOrders", b =>
+            modelBuilder.Entity("FirstBackend.Core.Dtos.DeviceDtoOrderDto", b =>
                 {
-                    b.Property<Guid>("DeviceId")
+                    b.Property<Guid>("DevicesId")
                         .HasColumnType("uuid")
-                        .HasColumnName("device_id");
+                        .HasColumnName("devices_id");
 
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid>("OrdersId")
                         .HasColumnType("uuid")
-                        .HasColumnName("order_id");
+                        .HasColumnName("orders_id");
 
                     b.Property<int>("NumberDevices")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasDefaultValue(1)
                         .HasColumnName("number_devices");
 
-                    b.HasKey("DeviceId", "OrderId")
-                        .HasName("pk_devices_orders");
+                    b.HasKey("DevicesId", "OrdersId")
+                        .HasName("pk_device_dto_order_dto");
 
-                    b.HasIndex("OrderId")
-                        .HasDatabaseName("ix_devices_orders_order_id");
+                    b.HasIndex("OrdersId")
+                        .HasDatabaseName("ix_device_dto_order_dto_orders_id");
 
-                    b.ToTable("devices_orders", (string)null);
+                    b.ToTable("device_dto_order_dto", (string)null);
                 });
 
             modelBuilder.Entity("FirstBackend.Core.Dtos.OrderDto", b =>
@@ -163,25 +164,21 @@ namespace FirstBackend.DataLayer.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("FirstBackend.Core.Dtos.DevicesOrders", b =>
+            modelBuilder.Entity("FirstBackend.Core.Dtos.DeviceDtoOrderDto", b =>
                 {
-                    b.HasOne("FirstBackend.Core.Dtos.DeviceDto", "Device")
-                        .WithMany("DevicesOrders")
-                        .HasForeignKey("DeviceId")
+                    b.HasOne("FirstBackend.Core.Dtos.DeviceDto", null)
+                        .WithMany()
+                        .HasForeignKey("DevicesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_devices_orders_devices_device_id");
+                        .HasConstraintName("fk_device_dto_order_dto_devices_devices_id");
 
-                    b.HasOne("FirstBackend.Core.Dtos.OrderDto", "Order")
-                        .WithMany("DevicesOrders")
-                        .HasForeignKey("OrderId")
+                    b.HasOne("FirstBackend.Core.Dtos.OrderDto", null)
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_devices_orders_orders_order_id");
-
-                    b.Navigation("Device");
-
-                    b.Navigation("Order");
+                        .HasConstraintName("fk_device_dto_order_dto_orders_orders_id");
                 });
 
             modelBuilder.Entity("FirstBackend.Core.Dtos.OrderDto", b =>
@@ -192,16 +189,6 @@ namespace FirstBackend.DataLayer.Migrations
                         .HasConstraintName("fk_orders_users_customer_id");
 
                     b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("FirstBackend.Core.Dtos.DeviceDto", b =>
-                {
-                    b.Navigation("DevicesOrders");
-                });
-
-            modelBuilder.Entity("FirstBackend.Core.Dtos.OrderDto", b =>
-                {
-                    b.Navigation("DevicesOrders");
                 });
 
             modelBuilder.Entity("FirstBackend.Core.Dtos.UserDto", b =>

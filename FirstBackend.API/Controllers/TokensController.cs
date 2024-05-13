@@ -1,7 +1,9 @@
 ﻿using FirstBackend.Business.Interfaces;
 using FirstBackend.Business.Models.Tokens.Requests;
 using FirstBackend.Business.Models.Users.Responses;
+using FirstBackend.Core.Constants;
 using FirstBackend.Core.Constants.Logs.API;
+using FirstBackend.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -9,7 +11,7 @@ using System.Security.Claims;
 
 namespace FirstBackend.API.Controllers;
 
-[Route("api/tokens")]
+[Route(ControllersRoutes.TokensController)]
 [ApiController]
 public class TokensController(ITokensService tokensService) : Controller
 {
@@ -17,7 +19,7 @@ public class TokensController(ITokensService tokensService) : Controller
     private readonly Serilog.ILogger _logger = Log.ForContext<TokensController>();
 
     [HttpPost]
-    [Route("refresh")]
+    [Route(ControllersRoutes.Refresh)]
     public ActionResult<AuthenticatedResponse> Refresh([FromBody] RefreshTokenRequest request)
     {
         _logger.Information(TokensControllerLogs.Refresh);
@@ -26,9 +28,9 @@ public class TokensController(ITokensService tokensService) : Controller
         return Ok(authenticatedResponse);
     }
 
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
     [HttpPost]
-    [Route("revoke")]
+    [Route(ControllersRoutes.Revoke)]
     public ActionResult Revoke()
     {
         var mail = User.FindFirst(ClaimTypes.Email).Value;

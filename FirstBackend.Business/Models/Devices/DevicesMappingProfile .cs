@@ -10,7 +10,8 @@ public class DevicesMappingProfile : Profile
     public DevicesMappingProfile()
     {
         CreateMap<CreateDeviceRequest, DeviceDto>();
-
+        CreateMap<AddDeviceAtOrderRequest, DevicesOrders>();
+        
         CreateMap<DeviceDto, DeviceResponse>();
         CreateMap<DeviceDto, DeviceFullResponse>();
     }

@@ -1,7 +1,10 @@
-﻿using FirstBackend.Business.Interfaces;
+﻿using FirstBackend.API.Configuration.Filters;
+using FirstBackend.Business.Interfaces;
 using FirstBackend.Business.Models.Orders.Requests;
 using FirstBackend.Business.Models.Orders.Responses;
+using FirstBackend.Core.Constants;
 using FirstBackend.Core.Constants.Logs.API;
+using FirstBackend.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -10,14 +13,14 @@ namespace FirstBackend.API.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("/api/orders")]
+[Route(ControllersRoutes.OrdersController)]
 public class OrdersController(IOrdersService ordersService, IUsersService usersService) : Controller
 {
     private readonly IOrdersService _ordersService = ordersService;
     private readonly IUsersService _usersService = usersService;
     private readonly Serilog.ILogger _logger = Log.ForContext<OrdersController>();
-
-    [Authorize(Roles = "Administrator")]
+    
+    [Authorize(Roles = nameof(UserRole.Administrator))]
     [HttpGet]
     public ActionResult<List<OrderResponse>> GetAllOrders()
     {
@@ -26,8 +29,8 @@ public class OrdersController(IOrdersService ordersService, IUsersService usersS
         return Ok(_ordersService.GetAllOrders());
     }
 
-    [Authorize(Roles = "Administrator")]
-    [HttpGet("{id}")]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
+    [HttpGet(ControllersRoutes.Id)]
     public ActionResult<OrderFullResponse> GetOrderById(Guid id)
     {
         _logger.Information(OrdersControllerLogs.GetOrderById, id);
@@ -44,11 +47,12 @@ public class OrdersController(IOrdersService ordersService, IUsersService usersS
         return Ok(id);
     }
 
-    [HttpDelete("{id}")]
+    public const string a = "";
+
+    [TypeFilter(typeof(AuthorizationFilterByOrderId))]
+    [HttpDelete(ControllersRoutes.Id)]
     public ActionResult DeleteOrderById(Guid id)
     {
-        var userId = _usersService.GetUserIdByOrderId(id);
-        _usersService.CheckUserRights(userId, HttpContext);
         _logger.Information(OrdersControllerLogs.DeleteOrderById, id);
         _ordersService.DeleteOrderById(id);
 

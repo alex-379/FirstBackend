@@ -2,6 +2,7 @@
 using FirstBackend.Core.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace FirstBackend.DataLayer.Configuration.MainerLxDatabase;
 
@@ -11,9 +12,6 @@ public class DeviceDtoConfiguration : IEntityTypeConfiguration<DeviceDto>
     {
         builder
             .HasKey(d => d.Id);
-        builder
-            .HasMany(d => d.Orders)
-            .WithMany(o => o.Devices);
         builder
             .Property(d => d.Name)
             .IsRequired()

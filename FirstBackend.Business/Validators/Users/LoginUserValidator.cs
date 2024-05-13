@@ -1,7 +1,8 @@
 ﻿using FirstBackend.Business.Models.Users.Requests;
+using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators;
+namespace FirstBackend.Business.Validators.Users;
 
 public class LoginUserValidator : AbstractValidator<LoginUserRequest>
 {
@@ -9,9 +10,9 @@ public class LoginUserValidator : AbstractValidator<LoginUserRequest>
     {
         RuleFor(r => r.Mail)
             .NotEmpty()
-            .WithMessage("Требуется ввести e-mail");
+            .WithMessage(UsersValidators.Mail);
         RuleFor(r => r.Password)
             .NotEmpty()
-            .WithMessage("Требуется ввести пароль");
+            .WithMessage(UsersValidators.Mail);
     }
 }

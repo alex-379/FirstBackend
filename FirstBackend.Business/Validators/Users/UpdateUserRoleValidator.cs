@@ -1,7 +1,8 @@
 ﻿using FirstBackend.Business.Models.Users.Requests;
+using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators;
+namespace FirstBackend.Business.Validators.Users;
 
 public class UpdateUserRoleValidator : AbstractValidator<UpdateUserRoleRequest>
 {
@@ -9,6 +10,6 @@ public class UpdateUserRoleValidator : AbstractValidator<UpdateUserRoleRequest>
     {
         RuleFor(r => r.Role)
             .IsInEnum()
-            .WithMessage("Неправильная роль");
+            .WithMessage(UsersValidators.Role);
     }
 }

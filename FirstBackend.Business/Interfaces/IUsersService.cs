@@ -1,6 +1,5 @@
 ﻿using FirstBackend.Business.Models.Users.Requests;
 using FirstBackend.Business.Models.Users.Responses;
-using Microsoft.AspNetCore.Http;
 
 namespace FirstBackend.Business.Interfaces;
 
@@ -15,6 +14,5 @@ public interface IUsersService
     void UpdateUserPassword(Guid userId, UpdateUserPasswordRequest request);
     void UpdateUserMail(Guid userId, UpdateUserMailRequest request);
     void UpdateUserRole(Guid userId, UpdateUserRoleRequest request);
-    void CheckUserRights(Guid id, HttpContext httpContext);
     Guid GetUserIdByOrderId(Guid orderId);
 }

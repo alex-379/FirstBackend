@@ -21,14 +21,10 @@ public class DbContextFixture : IDisposable
 
         ContextMainer = new MainerLxContext(optionsMainer);
         ContextSalt = new SaltLxContext(optionsSalt);
-        ContextMainer.Database.EnsureCreated();
-        ContextSalt.Database.EnsureCreated();
     }
 
     public void Dispose()
     {
-        ContextMainer.Database.EnsureDeleted();
-        ContextSalt.Database.EnsureDeleted();
         ContextMainer.Dispose();
         ContextSalt.Dispose();
         GC.SuppressFinalize(this);

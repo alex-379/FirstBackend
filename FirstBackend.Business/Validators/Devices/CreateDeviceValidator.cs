@@ -1,7 +1,8 @@
 ﻿using FirstBackend.Business.Models.Devices.Requests;
+using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators;
+namespace FirstBackend.Business.Validators.Devices;
 
 public class CreateDeviceValidator : AbstractValidator<CreateDeviceRequest>
 {
@@ -9,12 +10,12 @@ public class CreateDeviceValidator : AbstractValidator<CreateDeviceRequest>
     {
         RuleFor(r => r.Name)
             .NotEmpty()
-            .WithMessage("Требуется ввести имя устройства");
+            .WithMessage(DevicesValidators.Name);
         RuleFor(r => r.Type)
             .IsInEnum()
-            .WithMessage("Неправильный тип устройства");
+            .WithMessage(DevicesValidators.Type);
         RuleFor(r => r.Address)
             .NotEmpty()
-            .WithMessage("Требуется ввести адрес устройства");
+            .WithMessage(DevicesValidators.Address);
     }
 }

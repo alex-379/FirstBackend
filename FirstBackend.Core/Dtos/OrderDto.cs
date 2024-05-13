@@ -6,4 +6,5 @@ public class OrderDto : IdContainer
     public UserDto Customer { get; set; }
     public bool IsDeleted { get; set; }
     public List<DeviceDto> Devices { get; set; }
+    public List<DevicesOrders> DevicesOrders { get; set; }
 }

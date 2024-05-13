@@ -10,7 +10,6 @@ using FirstBackend.Core.Enums;
 using FirstBackend.Core.Exсeptions;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Serilog;
 using System.Security.Claims;
 
@@ -82,7 +81,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         UserDto user = _mapper.Map<UserDto>(request);
 
         _logger.Information(UsersServiceLogs.CheckUserByMail);
-        var userDb = _usersRepository.GetUserByMail(user.Mail.ToLower()) ?? throw new UnauthenticatedException();
+        var userDb = _usersRepository.GetUserByMail(user.Mail.ToLower())
+            ?? throw new UnauthenticatedException();
 
         _logger.Information(UsersServiceLogs.CheckUserPassword);
         var salt = _saltsRepository.GetSaltByUserId(userDb.Id).Salt;
@@ -107,7 +107,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
 
         return new AuthenticatedResponse
         {
-            Token = accessToken,
+            AccessToken = accessToken,
             RefreshToken = refreshToken
         };
     }
@@ -123,7 +123,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     public UserFullResponse GetUserById(Guid id)
     {
         _logger.Information(UsersServiceLogs.GetUserById);
-        var user = _usersRepository.GetUserById(id) ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, id));
+        var user = _usersRepository.GetUserById(id)
+            ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, id));
         var userResponse = _mapper.Map<UserFullResponse>(user);
 
         return userResponse;
@@ -132,7 +133,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     public void UpdateUser(Guid userId, UpdateUserDataRequest request)
     {
         _logger.Information(UsersServiceLogs.CheckUserById, userId);
-        var user = _usersRepository.GetUserById(userId) ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, userId));
+        var user = _usersRepository.GetUserById(userId)
+            ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, userId));
         _logger.Information(UsersServiceLogs.UpdateUserData, userId);
         user.Name = request.Name.ToLower();
         _logger.Information(UsersServiceLogs.UpdateUserById, userId);
@@ -142,7 +144,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     public void UpdateUserPassword(Guid userId, UpdateUserPasswordRequest request)
     {
         _logger.Information(UsersServiceLogs.CheckUserById, userId);
-        var user = _usersRepository.GetUserById(userId) ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, userId));
+        var user = _usersRepository.GetUserById(userId)
+            ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, userId));
         _logger.Information(UsersServiceLogs.UpdateUserPassword, userId);
         user.Password = request.Password;
         var (hash, salt) = _passwordsService.HashPasword(user.Password);
@@ -178,7 +181,12 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     public void UpdateUserMail(Guid userId, UpdateUserMailRequest request)
     {
         _logger.Information(UsersServiceLogs.CheckUserById, userId);
-        var user = _usersRepository.GetUserById(userId) ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, userId));
+        var user = _usersRepository.GetUserById(userId)
+            ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, userId));
+        if (_usersRepository.GetUserByMail(request.Mail.ToLower()) is not null)
+        {
+            throw new ConflictException(UsersServiceExceptions.ConflictException);
+        }
         _logger.Information(UsersServiceLogs.UpdateUserMail, userId);
         user.Mail = request.Mail.ToLower();
         _logger.Information(UsersServiceLogs.UpdateUserById, userId);
@@ -188,7 +196,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     public void UpdateUserRole(Guid userId, UpdateUserRoleRequest request)
     {
         _logger.Information(UsersServiceLogs.CheckUserById, userId);
-        var user = _usersRepository.GetUserById(userId) ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, userId));
+        var user = _usersRepository.GetUserById(userId)
+            ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, userId));
         _logger.Information(UsersServiceLogs.UpdateUserRole, userId);
         user.Role = request.Role;
         _logger.Information(UsersServiceLogs.UpdateUserById, userId);
@@ -198,7 +207,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     public void DeleteUserById(Guid id)
     {
         _logger.Information(UsersServiceLogs.CheckUserById, id);
-        var user = _usersRepository.GetUserById(id) ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, id));
+        var user = _usersRepository.GetUserById(id)
+            ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, id));
         _logger.Information(UsersServiceLogs.BeginTransaction, _ctxMainer);
         using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
         _logger.Information(UsersServiceLogs.BeginTransaction, _ctxSalt);
@@ -212,7 +222,7 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
 
             _logger.Information(UsersServiceLogs.GetSaltByUserId, id);
             var salt = _saltsRepository.GetSaltByUserId(user.Id);
-            _logger.Information(UsersServiceLogs.DeleteSalt,user.Id);
+            _logger.Information(UsersServiceLogs.DeleteSalt, user.Id);
             _saltsRepository.DeleteSalt(salt);
             transactionMainerContext.Commit();
             _logger.Information(UsersServiceLogs.CommitTransaction);
@@ -227,21 +237,11 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         }
     }
 
-    public void CheckUserRights(Guid id, HttpContext httpContext)
-    {
-        var currentUserId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var currentRole = httpContext.User.FindFirstValue(ClaimTypes.Role);
-        if (currentRole == UserRole.Client.ToString()
-            && currentUserId != id.ToString())
-        {
-            throw new UnauthorizedException();
-        }
-    }
-
     public Guid GetUserIdByOrderId(Guid orderId)
     {
         _logger.Information(UsersServiceLogs.GetUserByOrderId, orderId);
-        var user = _usersRepository.GetUserByOrderId(orderId) ?? throw new NotFoundException(string.Format(OrdersServiceExceptions.NotFoundException, orderId));
+        var user = _usersRepository.GetUserByOrderId(orderId)
+            ?? throw new NotFoundException(string.Format(OrdersServiceExceptions.NotFoundException, orderId));
 
         return user.Id;
     }

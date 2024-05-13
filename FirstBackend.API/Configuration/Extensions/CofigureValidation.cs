@@ -1,4 +1,4 @@
-﻿using FirstBackend.Business.Validators;
+﻿using FirstBackend.Business.Validators.Users;
 using FluentValidation;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 

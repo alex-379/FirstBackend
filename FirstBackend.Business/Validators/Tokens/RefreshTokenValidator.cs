@@ -1,7 +1,8 @@
 ﻿using FirstBackend.Business.Models.Tokens.Requests;
+using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators;
+namespace FirstBackend.Business.Validators.Tokens;
 
 public class RefreshTokenValidator : AbstractValidator<RefreshTokenRequest>
 {
@@ -9,9 +10,9 @@ public class RefreshTokenValidator : AbstractValidator<RefreshTokenRequest>
     {
         RuleFor(r => r.AccessToken)
             .NotEmpty()
-            .WithMessage("Требуется передать AccessToken");
+            .WithMessage(TokensValidators.AccessToken);
         RuleFor(r => r.RefreshToken)
             .NotEmpty()
-            .WithMessage("Требуется передать RefreshToken");
+            .WithMessage(TokensValidators.RefreshToken);
     }
 }

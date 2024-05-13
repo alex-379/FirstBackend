@@ -1,15 +1,9 @@
 ﻿using AutoMapper;
-using FirstBackend.Business.Configuration;
-using FirstBackend.Business.Interfaces;
 using FirstBackend.Business.Models.Devices;
 using FirstBackend.Business.Models.Devices.Requests;
-using FirstBackend.Business.Models.Users;
-using FirstBackend.Business.Models.Users.Requests;
 using FirstBackend.Business.Services;
-using FirstBackend.Business.Tests.Fixture;
 using FirstBackend.Core.Dtos;
 using FirstBackend.Core.Enums;
-using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
 using Moq;
 
@@ -31,11 +25,10 @@ public class DeviceServiceTest
         });
 
         _mapper = new Mapper(config);
-
     }
 
     [Fact]
-    public void AddDeviceTest_CreateDeviceRequestSent_GuidReceieved()
+    public void AddDeviceTest_ValidCreateDeviceRequestSent_GuidReceieved()
     {
         //arange
         var validCreateDeviceRequest = new CreateDeviceRequest()
@@ -53,6 +46,5 @@ public class DeviceServiceTest
 
         //assert
         Assert.Equal(expectedGuid, actual);
-        //_usersRepositoryMock.Verify(r => r.AddUser(It.IsAny<UserDto>()), Times.Once);
     }
 }

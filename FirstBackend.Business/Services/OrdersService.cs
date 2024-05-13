@@ -23,8 +23,9 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
     public Guid AddOrder(CreateOrderRequest request)
     {
         var devices = _devicesRepository.GetAllDevices()
-            .Where(o => request.Devices
-            .Contains(o.Id))
+            .Where(d => request.Devices
+                .Select(o => o.DeviceId)
+                .Contains(d.Id))
             .ToList();
 
         if (devices.Count != request.Devices.Count)
@@ -34,7 +35,9 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
 
         var order = _mapper.Map<OrderDto>(request);
         order.Devices = devices;
-        order.Customer = _usersRepository.GetUserById(request.Customer);
+        order.Customer = _usersRepository.GetUserById(request.Customer)
+            ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, request.Customer));
+        order.DevicesOrders = _mapper.Map<List<DevicesOrders>>(request.Devices);
         _logger.Information(OrdersServiceLogs.AddOrder, order.Id);
         order.Id = _ordersRepository.AddOrder(order);
 
@@ -52,7 +55,8 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
     public OrderFullResponse GetOrderById(Guid id)
     {
         _logger.Information(OrdersServiceLogs.GetOrderById, id);
-        var order = _ordersRepository.GetOrderById(id) ?? throw new NotFoundException(string.Format(OrdersServiceExceptions.NotFoundException, id));
+        var order = _ordersRepository.GetOrderById(id)
+            ?? throw new NotFoundException(string.Format(OrdersServiceExceptions.NotFoundException, id));
         var orderResponse = _mapper.Map<OrderFullResponse>(order);
 
         return orderResponse;
@@ -70,7 +74,8 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
     public void DeleteOrderById(Guid id)
     {
         _logger.Information(OrdersServiceLogs.CheckOrderById, id);
-        var order = _ordersRepository.GetOrderById(id) ?? throw new NotFoundException(string.Format(OrdersServiceExceptions.NotFoundException, id));
+        var order = _ordersRepository.GetOrderById(id)
+            ?? throw new NotFoundException(string.Format(OrdersServiceExceptions.NotFoundException, id));
         _logger.Information(OrdersServiceLogs.SetIsDeletedOrderById, id);
         order.IsDeleted = true;
         _logger.Information(OrdersServiceLogs.UpdateOrderById, id);

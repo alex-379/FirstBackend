@@ -9,4 +9,5 @@ public class DeviceDto : IdContainer
     public string Address { get; set; }
     public bool IsDeleted { get; set; }
     public List<OrderDto> Orders { get; set; }
+    public List<DevicesOrders> DevicesOrders { get; set; }
 }

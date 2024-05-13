@@ -3,5 +3,10 @@
 3. ModelBuilderExtensions - entities
 4. Refresh token (access token expired), HttpPost?
 5. Обработка exceptions на UI
+6. Many-to-many with additional value
+7. Что возвращать AuthorizationFilterByOrderId - exceptions или код состояния?
 
-packages xunit
+
+репозиторные тесты на include
+api - тест response (должны быть именно такие response. Проверка mapper, status codes)
+Created (201, url - информация о созданной сущности)

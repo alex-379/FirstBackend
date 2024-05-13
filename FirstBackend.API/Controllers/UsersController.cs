@@ -1,9 +1,12 @@
-﻿using FirstBackend.Business.Interfaces;
+﻿using FirstBackend.API.Configuration.Filters;
+using FirstBackend.Business.Interfaces;
 using FirstBackend.Business.Models.Devices.Responses;
 using FirstBackend.Business.Models.Orders.Responses;
 using FirstBackend.Business.Models.Users.Requests;
 using FirstBackend.Business.Models.Users.Responses;
+using FirstBackend.Core.Constants;
 using FirstBackend.Core.Constants.Logs.API;
+using FirstBackend.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -12,7 +15,7 @@ namespace FirstBackend.API.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("/api/users")]
+[Route(ControllersRoutes.UsersController)]
 public class UsersController(IUsersService usersService, IDevicesService devicesService, IOrdersService ordersService) : Controller
 {
     private readonly IUsersService _usersService = usersService;
@@ -20,7 +23,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     private readonly IOrdersService _ordersService = ordersService;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
     [HttpGet]
     public ActionResult<List<UserResponse>> GetAllUsers()
     {
@@ -29,28 +32,28 @@ public class UsersController(IUsersService usersService, IDevicesService devices
         return Ok(_usersService.GetAllUsers());
     }
 
-    [HttpGet("{id}")]
+    [AuthorizationFilterByUserId]
+    [HttpGet(ControllersRoutes.Id)]
     public ActionResult<UserFullResponse> GetUserById(Guid id)
     {
-        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information(UsersControllerLogs.GetUserById, id);
 
         return Ok(_usersService.GetUserById(id));
     }
 
-    [HttpGet("{userId}/devices")]
+    [AuthorizationFilterByUserId]
+    [HttpGet(ControllersRoutes.DevicesByUserId)]
     public ActionResult<List<DeviceResponse>> GetDevicesByUserId(Guid userId)
     {
-        _usersService.CheckUserRights(userId, HttpContext);
         _logger.Information(UsersControllerLogs.GetDevicesByUserId, userId);
 
         return Ok(_devicesService.GetDevicesByUserId(userId));
     }
 
-    [HttpGet("{userId}/orders")]
+    [AuthorizationFilterByUserId]
+    [HttpGet(ControllersRoutes.OrdersByUserId)]
     public ActionResult<List<OrderResponse>> GetOrdersByUserId(Guid userId)
     {
-        _usersService.CheckUserRights(userId, HttpContext);
         _logger.Information(UsersControllerLogs.GetOrdersByUserId, userId);
 
         return Ok(_ordersService.GetOrdersByUserId(userId));
@@ -67,7 +70,7 @@ public class UsersController(IUsersService usersService, IDevicesService devices
     }
 
     [AllowAnonymous]
-    [HttpPost("login")]
+    [HttpPost(ControllersRoutes.Login)]
     public ActionResult<AuthenticatedResponse> Login([FromBody] LoginUserRequest request)
     {
         _logger.Information(UsersControllerLogs.Login);
@@ -76,48 +79,48 @@ public class UsersController(IUsersService usersService, IDevicesService devices
         return Ok(authenticatedResponse);
     }
 
-    [HttpPut("{id}")]
+    [AuthorizationFilterByUserId]
+    [HttpPut(ControllersRoutes.Id)]
     public ActionResult UpdateUserData([FromRoute] Guid id, [FromBody] UpdateUserDataRequest request)
     {
-        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information(UsersControllerLogs.UpdateUserData, id);
         _usersService.UpdateUser(id, request);
 
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [AuthorizationFilterByUserId]
+    [HttpDelete(ControllersRoutes.Id)]
     public ActionResult DeleteUserById(Guid id)
     {
-        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information(UsersControllerLogs.DeleteUserById, id);
         _usersService.DeleteUserById(id);
 
         return NoContent();
     }
 
-    [HttpPatch("{id}/password")]
+    [AuthorizationFilterByUserId]
+    [HttpPatch(ControllersRoutes.UserPassword)]
     public ActionResult UpdateUserPassword([FromRoute] Guid id, [FromBody] UpdateUserPasswordRequest request)
     {
-        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information(UsersControllerLogs.UpdateUserPassword, id);
         _usersService.UpdateUserPassword(id, request);
 
         return NoContent();
     }
 
-    [HttpPatch("{id}/mail")]
+    [AuthorizationFilterByUserId]
+    [HttpPatch(ControllersRoutes.UserMail)]
     public ActionResult UpdateUserMail([FromRoute] Guid id, [FromBody] UpdateUserMailRequest request)
     {
-        _usersService.CheckUserRights(id, HttpContext);
         _logger.Information(UsersControllerLogs.UpdateUserMail, id);
         _usersService.UpdateUserMail(id, request);
 
         return NoContent();
     }
 
-    [Authorize(Roles = "Administrator")]
-    [HttpPatch("{id}/role")]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
+    [HttpPatch(ControllersRoutes.UserRole)]
     public ActionResult UpdateUserRole([FromRoute] Guid id, [FromBody] UpdateUserRoleRequest request)
     {
         _logger.Information(UsersControllerLogs.UpdateUserRole, id);

@@ -83,7 +83,7 @@ namespace FirstBackend.Business.Services
 
             return new AuthenticatedResponse()
             {
-                Token = newAccessToken,
+                AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
             };
         }

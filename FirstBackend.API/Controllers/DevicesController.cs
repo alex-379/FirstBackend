@@ -1,16 +1,18 @@
 ﻿using FirstBackend.Business.Interfaces;
 using FirstBackend.Business.Models.Devices.Requests;
 using FirstBackend.Business.Models.Devices.Responses;
+using FirstBackend.Core.Constants;
 using FirstBackend.Core.Constants.Logs.API;
+using FirstBackend.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 namespace FirstBackend.API.Controllers;
 
-[Authorize(Roles = "Administrator")]
+[Authorize(Roles = nameof(UserRole.Administrator))]
 [ApiController]
-[Route("/api/devices")]
+[Route(ControllersRoutes.DevicesController)]
 public class DevicesController(IDevicesService deviceService) : Controller
 {
     private readonly IDevicesService _deviceService = deviceService;
@@ -24,7 +26,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
         return Ok(_deviceService.GetAllDevices());
     }
 
-    [HttpGet("{id}")]
+    [HttpGet(ControllersRoutes.Id)]
     public ActionResult<DeviceFullResponse> GetDeviceById(Guid id)
     {
         _logger.Information(DevicesControllerLogs.GetDeviceById, id);
@@ -41,7 +43,7 @@ public class DevicesController(IDevicesService deviceService) : Controller
         return Ok(id);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete(ControllersRoutes.Id)]
     public ActionResult DeleteDeviceById(Guid id)
     {
         _logger.Information(DevicesControllerLogs.DeleteDeviceById, id);
