@@ -1,6 +1,6 @@
 ﻿using FirstBackend.Core.Dtos;
 
-namespace FirstBackend.Business.Tests;
+namespace FirstBackend.DataLayer.Tests;
 
 public static class TestsData
 {

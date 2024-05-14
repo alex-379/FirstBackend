@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstBackend.DataLayer", "F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstBackend.Core", "FirstBackend.Core\FirstBackend.Core.csproj", "{0E926371-C6A6-4309-97FD-8C353F13B24F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstBackend.Business.Tests", "FirstBackend.Business.Tests\FirstBackend.Business.Tests.csproj", "{D34E24F7-3118-4FB4-938A-BC1C383C3074}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstBackend.Business.Tests", "FirstBackend.Business.Tests\FirstBackend.Business.Tests.csproj", "{D34E24F7-3118-4FB4-938A-BC1C383C3074}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstBackend.DataLayer.Tests", "FirstBackend.DataLayer.Tests\FirstBackend.DataLayer.Tests.csproj", "{F50BA6AB-C971-4F47-959F-4A6DA25AED34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{D34E24F7-3118-4FB4-938A-BC1C383C3074}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D34E24F7-3118-4FB4-938A-BC1C383C3074}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D34E24F7-3118-4FB4-938A-BC1C383C3074}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F50BA6AB-C971-4F47-959F-4A6DA25AED34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F50BA6AB-C971-4F47-959F-4A6DA25AED34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F50BA6AB-C971-4F47-959F-4A6DA25AED34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F50BA6AB-C971-4F47-959F-4A6DA25AED34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

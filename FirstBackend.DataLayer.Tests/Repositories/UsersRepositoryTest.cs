@@ -4,7 +4,7 @@ using MockQueryable.Moq;
 using Moq;
 using Moq.EntityFrameworkCore;
 
-namespace FirstBackend.Business.Tests.Repositories;
+namespace FirstBackend.DataLayer.Tests.Repositories;
 
 public class UsersRepositoryTest
 {
