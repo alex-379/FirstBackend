@@ -4,9 +4,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FirstBackend.DataLayer.Contexts;
 
-public class SaltLxContext(DbContextOptions<SaltLxContext> options) : DbContext(options)
+public class SaltLxContext : DbContext
 {
-    public DbSet<SaltDto> Salts { get; set; }
+    public SaltLxContext(DbContextOptions<SaltLxContext> options) : base(options)
+    {
+    }
+
+    public SaltLxContext()
+    {
+    }
+
+    public virtual DbSet<SaltDto> Salts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

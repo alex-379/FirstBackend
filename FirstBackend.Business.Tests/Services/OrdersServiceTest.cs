@@ -49,8 +49,7 @@ public class OrdersServiceTest
                 new()
                 {
                     DeviceId = device2,
-                }],
-            Customer = customer
+                }]
         };
 
         var expectedDevices = new List<DeviceDto>()
@@ -64,7 +63,7 @@ public class OrdersServiceTest
                 Id = device2,
             }
         };
-        _devicesRepositoryMock.Setup(r => r.GetAllDevices()).Returns(expectedDevices);
+        _devicesRepositoryMock.Setup(r => r.GetDevices()).Returns(expectedDevices);
 
         var expectedCustomer = new UserDto()
         {
@@ -77,7 +76,7 @@ public class OrdersServiceTest
         var sut = new OrdersService(_ordersRepositoryMock.Object, _devicesRepositoryMock.Object, _usersRepositoryMock.Object, _mapper);
 
         //act
-        var actual = sut.AddOrder(validCreateOrderRequest);
+        var actual = sut.AddOrder(validCreateOrderRequest, customer);
 
         //assert
         Assert.Equal(expectedGuid, actual);

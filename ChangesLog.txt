@@ -1,16 +1,6 @@
-1. Enviroment variables - ConfigureEnviroments
+Тесты
+репозиторные тесты на include, на softDeleted
+service tests – работа сервисных методов, сервисной логики
+api - тест response (должны быть именно запрошенные response. Проверка mapper, response status codes, validation)
 
-2. AuthorizationFilterByOrderId, Autorize - statusCodes. Что возвращать AuthorizationFilterByOrderId - exceptions или код состояния? Обработка exceptions на UI
-	context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
-
-3. ModelBuilderExtensions - entities
-
-4. Refresh token (access token expired), HttpPost?
-
-5. Xunit - Fixture. 
-
-6. Repository Pattern (DbContext is the UnitOfWork и DbSet is the Repository)
-для тестов - не нужны репозиторные тесты
-
-репозиторные тесты на include
-api - тест response (должны быть именно такие response. Проверка mapper, status codes)
+1. Транзакции - tests moq (null), TransactionsRepository, scoped

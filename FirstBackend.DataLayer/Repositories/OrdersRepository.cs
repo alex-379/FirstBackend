@@ -20,9 +20,9 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository<MainerLx
         return order.Id;
     }
 
-    public IEnumerable<OrderDto> GetAllOrders()
+    public IEnumerable<OrderDto> GetOrders()
     {
-        _logger.Information(OrdersRepositoryLogs.GetAllOrders);
+        _logger.Information(OrdersRepositoryLogs.GetOrders);
 
         return _ctx.Orders
             .Where(o => !o.IsDeleted);
@@ -46,17 +46,6 @@ public class OrdersRepository(MainerLxContext context) : BaseRepository<MainerLx
         return _ctx.Orders
             .Where(o => o.Customer.Id == userId
                 && !o.IsDeleted);
-    }
-
-    public IEnumerable<OrderDto> GetOrdersByDeviceId(Guid deviceId)
-    {
-        _logger.Information(OrdersRepositoryLogs.GetOrdersByDeviceId, deviceId);
-
-        return [.. _ctx.Orders
-            .Where(o => !o.IsDeleted
-                && o.Devices
-                .Any(d => d.Id == deviceId)
-            )];
     }
 
     public void UpdateOrder(OrderDto order)

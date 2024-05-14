@@ -4,15 +4,13 @@ public static class UsersServiceLogs
 {
     public const string SetRoleClient = "Устанавливаем роль Клиент";
     public const string SetLowerRegister = "Переводим почту и имя в нижний регистр";
-    public const string BeginTransaction = "Начало транзакции для базы данных {_ctx}]";
     public const string AddUser = "Обращаемся к методу репозитория Создание нового пользователя";
     public const string CompleteUser = "Создан новый пользователь с ID {id}";
     public const string AddSalt = "Обращаемся к методу репозитория Добавление соли для пользователя";
-    public const string CommitTransaction = "Подтверждение транзакции для базы данных {_ctx}]";
     public const string CheckUserByMail = "Проверяем есть ли пользователь в базе данных";
     public const string CheckUserById = "Проверяем существует ли пользователь с ID {id}";
     public const string CheckUserPassword = "Проверка аутентификационных данных";
-    public const string GetAllUsers = "Обращаемся к методу репозитория Получение всех пользователей";
+    public const string GetUsers = "Обращаемся к методу репозитория Получение всех пользователей";
     public const string GetUserById = "Обращаемся к методу репозитория Получение пользователя по ID {id}";
     public const string UpdateUserData = "Обновляем данные пользователя с ID {id} из запроса";
     public const string UpdateUserPassword = "Обновляем пароль пользователя с ID {id} из запроса";

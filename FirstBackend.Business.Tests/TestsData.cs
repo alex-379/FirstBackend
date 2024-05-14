@@ -1,10 +1,10 @@
 ﻿using FirstBackend.Core.Dtos;
 
-namespace FirstBackend.Business.Tests.Repositories;
+namespace FirstBackend.Business.Tests;
 
-public class TestDataHelper
+public static class TestsData
 {
-    public virtual List<UserDto> GetFakeUserDtoList() =>
+    public static IEnumerable<UserDto> GetFakeUserDtoEnumerable() =>
         [
         new()
         {

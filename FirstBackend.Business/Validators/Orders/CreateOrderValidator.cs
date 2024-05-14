@@ -14,8 +14,5 @@ public class CreateOrderValidator : AbstractValidator<CreateOrderRequest>
         RuleFor(r => r.Devices)
             .NotEmpty()
             .WithMessage(OrdersValidators.Devices);
-        RuleFor(r => r.Customer)
-            .NotEmpty()
-            .WithMessage(OrdersValidators.Customer);
     }
 }

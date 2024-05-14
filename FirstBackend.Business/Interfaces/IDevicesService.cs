@@ -5,7 +5,7 @@ namespace FirstBackend.Business.Interfaces;
 
 public interface IDevicesService
 {
-    List<DeviceResponse> GetAllDevices();
+    List<DeviceResponse> GetDevices();
     DeviceFullResponse GetDeviceById(Guid id);
     List<DeviceResponse> GetDevicesByUserId(Guid userId);
     Guid AddDevice(CreateDeviceRequest request);

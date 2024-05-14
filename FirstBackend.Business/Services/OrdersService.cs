@@ -20,9 +20,9 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
     private readonly IMapper _mapper = mapper;
     private readonly ILogger _logger = Log.ForContext<OrdersService>();
 
-    public Guid AddOrder(CreateOrderRequest request)
+    public Guid AddOrder(CreateOrderRequest request, Guid customerId)
     {
-        var devices = _devicesRepository.GetAllDevices()
+        var devices = _devicesRepository.GetDevices()
             .Where(d => request.Devices
                 .Select(o => o.DeviceId)
                 .Contains(d.Id))
@@ -35,8 +35,8 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
 
         var order = _mapper.Map<OrderDto>(request);
         order.Devices = devices;
-        order.Customer = _usersRepository.GetUserById(request.Customer)
-            ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, request.Customer));
+        order.Customer = _usersRepository.GetUserById(customerId)
+            ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, customerId));
         order.DevicesOrders = _mapper.Map<List<DevicesOrders>>(request.Devices);
         _logger.Information(OrdersServiceLogs.AddOrder, order.Id);
         order.Id = _ordersRepository.AddOrder(order);
@@ -44,10 +44,10 @@ public class OrdersService(IOrdersRepository ordersRepository, IDevicesRepositor
         return order.Id;
     }
 
-    public List<OrderResponse> GetAllOrders()
+    public List<OrderResponse> GetOrders()
     {
-        _logger.Information(OrdersServiceLogs.GetAllOrders);
-        var orders = _mapper.Map<List<OrderResponse>>(_ordersRepository.GetAllOrders());
+        _logger.Information(OrdersServiceLogs.GetOrders);
+        var orders = _mapper.Map<List<OrderResponse>>(_ordersRepository.GetOrders());
 
         return orders;
     }

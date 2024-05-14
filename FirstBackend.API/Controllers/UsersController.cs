@@ -25,11 +25,11 @@ public class UsersController(IUsersService usersService, IDevicesService devices
 
     [Authorize(Roles = nameof(UserRole.Administrator))]
     [HttpGet]
-    public ActionResult<List<UserResponse>> GetAllUsers()
+    public ActionResult<List<UserResponse>> GetUsers()
     {
-        _logger.Information(UsersControllerLogs.GetAllUsers);
+        _logger.Information(UsersControllerLogs.GetUsers);
 
-        return Ok(_usersService.GetAllUsers());
+        return Ok(_usersService.GetUsers());
     }
 
     [AuthorizationFilterByUserId]

@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using FirstBackend.Business.Configuration;
-using FirstBackend.Business.Services;
-using FirstBackend.Business.Tests.Fixture;
-using FirstBackend.Core.Dtos;
+﻿using FirstBackend.Core.Constants.Tests;
 using FirstBackend.DataLayer.Contexts;
-using FirstBackend.DataLayer.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using FirstBackend.DataLayer.Repositories;
 using Moq;
 using Moq.EntityFrameworkCore;
 
@@ -13,23 +8,21 @@ namespace FirstBackend.Business.Tests.Repositories;
 
 public class UsersRepositoryTest()
 {
-    //private readonly MainerLxContext _contextMainer = fixture.ContextMainer;
-    //private readonly SaltLxContext _contextSalt = fixture.ContextSalt;
-
     [Fact]
-    public void GetEmployees_WhenCalled_ReturnsEmployeeListAsync()
+    public void GetUsers_Called_ReturnsUserDtoEnumerable()
     {
         //arrange
+        var expexted = TestsDataConstants.NumberUsers;
         var mainerLxContextMock = new Mock<MainerLxContext>();
         mainerLxContextMock.Setup(x => x.Users)
-            .ReturnsDbSet(TestDataHelper.GetFakeUserDtoList());
+            .ReturnsDbSet(TestsData.GetFakeUserDtoEnumerable());
 
         //act
-        //EmployeesController employeesController = new(employeeContextMock.Object);
-        //var employees = (employeesController.GetEmployees()).Value;
+        var usersRepository = new UsersRepository(mainerLxContextMock.Object);
+        var actual = usersRepository.GetUsers();
 
         //assert
-        //Assert.NotNull(employees);
-        //Assert.Equal(2, employees.Count());
+        Assert.NotNull(actual);
+        Assert.Equal(expexted, actual.Count());
     }
 }

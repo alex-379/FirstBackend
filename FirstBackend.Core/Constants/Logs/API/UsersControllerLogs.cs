@@ -2,7 +2,7 @@
 
 public static class UsersControllerLogs
 {
-    public const string GetAllUsers = "Получаем всех пользователей";
+    public const string GetUsers = "Получаем всех пользователей";
     public const string GetUserById = "Получаем пользователя по ID {id}";
     public const string GetDevicesByUserId = "Получаем устройства по ID пользователя {userId}";
     public const string GetOrdersByUserId = "Получаем заказы по ID пользователя {userId}";

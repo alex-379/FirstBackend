@@ -8,25 +8,25 @@ using FirstBackend.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Security.Claims;
 
 namespace FirstBackend.API.Controllers;
 
 [Authorize]
 [ApiController]
 [Route(ControllersRoutes.OrdersController)]
-public class OrdersController(IOrdersService ordersService, IUsersService usersService) : Controller
+public class OrdersController(IOrdersService ordersService) : Controller
 {
     private readonly IOrdersService _ordersService = ordersService;
-    private readonly IUsersService _usersService = usersService;
     private readonly Serilog.ILogger _logger = Log.ForContext<OrdersController>();
-    
+
     [Authorize(Roles = nameof(UserRole.Administrator))]
     [HttpGet]
-    public ActionResult<List<OrderResponse>> GetAllOrders()
+    public ActionResult<List<OrderResponse>> GetOrders()
     {
-        _logger.Information(OrdersControllerLogs.GetAllOrders);
+        _logger.Information(OrdersControllerLogs.GetOrders);
 
-        return Ok(_ordersService.GetAllOrders());
+        return Ok(_ordersService.GetOrders());
     }
 
     [Authorize(Roles = nameof(UserRole.Administrator))]
@@ -42,12 +42,11 @@ public class OrdersController(IOrdersService ordersService, IUsersService usersS
     public ActionResult<Guid> CreateOrder([FromBody] CreateOrderRequest request)
     {
         _logger.Information(OrdersControllerLogs.CreateOrder);
-        var id = _ordersService.AddOrder(request);
+        var currentUserId = new Guid(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var id = _ordersService.AddOrder(request, currentUserId);
 
         return Created($"{ControllersRoutes.Host}{ControllersRoutes.OrdersController}/{id}", id);
     }
-
-    public const string a = "";
 
     [TypeFilter(typeof(AuthorizationFilterByOrderId))]
     [HttpDelete(ControllersRoutes.Id)]

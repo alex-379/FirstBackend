@@ -5,7 +5,6 @@ using FirstBackend.Business.Models.Users;
 using FirstBackend.Business.Models.Users.Requests;
 using FirstBackend.Business.Models.Users.Responses;
 using FirstBackend.Business.Services;
-using FirstBackend.Business.Tests.Fixture;
 using FirstBackend.Core.Constants.Exceptions.Business;
 using FirstBackend.Core.Dtos;
 using FirstBackend.Core.Exñeptions;
@@ -16,22 +15,26 @@ using Moq;
 
 namespace FirstBackend.Business.Tests.Services;
 
-public class UsersServiceTest : IClassFixture<DbContextFixture>
+public class UsersServiceTest
 {
     private readonly Mock<IUsersRepository> _usersRepositoryMock;
     private readonly Mock<ISaltsRepository> _saltsRepositoryMock;
+    private readonly Mock<IOrdersRepository> _ordersRepositoryMock;
+    private readonly Mock<ITransactionsRepository<MainerLxContext>> _transactionMainerLxRepository;
+    private readonly Mock<ITransactionsRepository<SaltLxContext>> _transactionSaltLxRepository;
     private readonly SecretSettings _secret;
     private readonly JwtToken _jwt;
     private readonly IPasswordsService _passwordsService;
     private readonly ITokensService _tokensService;
     private readonly Mapper _mapper;
-    private readonly SaltLxContext _contextSalt;
-    private readonly MainerLxContext _contextMainer;
 
-    public UsersServiceTest(DbContextFixture fixture)
+    public UsersServiceTest()
     {
         _usersRepositoryMock = new Mock<IUsersRepository>();
         _saltsRepositoryMock = new Mock<ISaltsRepository>();
+        _ordersRepositoryMock = new Mock<IOrdersRepository>();
+        _transactionMainerLxRepository = new Mock<ITransactionsRepository<MainerLxContext>>();
+        _transactionSaltLxRepository = new Mock<ITransactionsRepository<SaltLxContext>>();
         _secret = new SecretSettings();
         _jwt = new JwtToken();
         _passwordsService = new PasswordsService(_secret);
@@ -42,8 +45,6 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
         });
 
         _mapper = new Mapper(config);
-        _contextSalt = fixture.ContextSalt;
-        _contextMainer = fixture.ContextMainer;
     }
 
     [Fact]
@@ -58,7 +59,9 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
         };
         var expectedGuid = Guid.NewGuid();
         _usersRepositoryMock.Setup(r => r.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
-        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _passwordsService, _tokensService, _mapper, _jwt, _contextSalt, _contextMainer);
+        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
+            _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
+            _passwordsService, _tokensService, _mapper, _jwt);
 
         //act
         var actual = sut.AddUser(validCreateUserRequest);
@@ -85,7 +88,9 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
         _usersRepositoryMock.Setup(r => r.GetUserByMail(mail)).Returns(expectedUser);
         var expectedGuid = Guid.NewGuid();
         _usersRepositoryMock.Setup(r => r.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
-        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _passwordsService, _tokensService, _mapper, _jwt, _contextSalt, _contextMainer);
+        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
+            _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
+            _passwordsService, _tokensService, _mapper, _jwt);
 
         //act
         Action act = () => sut.AddUser(CreateUserRequestWithDuplicateMail);
@@ -97,7 +102,7 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
     }
 
     [Fact]
-    public void GetAllUsers_Calles_UsersReceieved()
+    public void GetUsers_Calles_UsersReceieved()
     {
         //arrange
         var userMail1 = "test@test";
@@ -124,11 +129,13 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
                 Mail = userMail2,
             },
         };
-        _usersRepositoryMock.Setup(r => r.GetAllUsers()).Returns(expectedUsers);
-        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _passwordsService, _tokensService, _mapper, _jwt, _contextSalt, _contextMainer);
+        _usersRepositoryMock.Setup(r => r.GetUsers()).Returns(expectedUsers);
+        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
+            _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
+            _passwordsService, _tokensService, _mapper, _jwt);
 
         //act
-        var actual = sut.GetAllUsers();
+        var actual = sut.GetUsers();
 
         //assert
         actual.Should().BeEquivalentTo(expexted);
@@ -140,7 +147,9 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
         //arrange
         var userId = Guid.NewGuid();
         _usersRepositoryMock.Setup(r => r.GetUserById(userId)).Returns(new UserDto());
-        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _passwordsService, _tokensService, _mapper, _jwt, _contextSalt, _contextMainer);
+        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
+            _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
+            _passwordsService, _tokensService, _mapper, _jwt);
 
         //act
         sut.DeleteUserById(userId);
@@ -157,7 +166,9 @@ public class UsersServiceTest : IClassFixture<DbContextFixture>
         //arrange
         var userId = Guid.Empty;
         _usersRepositoryMock.Setup(r => r.GetUserById(userId)).Returns((UserDto)null);
-        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _passwordsService, _tokensService, _mapper, _jwt, _contextSalt, _contextMainer);
+        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
+            _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
+            _passwordsService, _tokensService, _mapper, _jwt);
 
         //act
         Action act = () => sut.DeleteUserById(userId);

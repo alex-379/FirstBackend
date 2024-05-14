@@ -19,9 +19,9 @@ public class DevicesRepository(MainerLxContext context) : BaseRepository<MainerL
 
         return device.Id;
     }
-    public IEnumerable<DeviceDto> GetAllDevices()
+    public IEnumerable<DeviceDto> GetDevices()
     {
-        _logger.Information(DevicesRepositoryLogs.GetAllDevices);
+        _logger.Information(DevicesRepositoryLogs.GetDevices);
 
         return _ctx.Devices
             .Where(d => !d.IsDeleted);
@@ -53,5 +53,15 @@ public class DevicesRepository(MainerLxContext context) : BaseRepository<MainerL
         _logger.Information(DevicesRepositoryLogs.UpdateDevice, device.Id);
         _ctx.Devices.Update(device);
         _ctx.SaveChanges();
+    }
+
+    public IEnumerable<OrderDto> GetOrdersByDeviceId(Guid deviceId)
+    {
+        _logger.Information(DevicesRepositoryLogs.GetOrdersByDeviceId, deviceId);
+
+        return _ctx.Devices
+            .FirstOrDefault(d => d.Id == deviceId
+                && !d.IsDeleted).Orders;
+
     }
 }

@@ -12,6 +12,7 @@ namespace FirstBackend.DataLayer.Configuration
             services.AddScoped<IOrdersRepository, OrdersRepository>();
             services.AddScoped<IDevicesRepository, DevicesRepository>();
             services.AddScoped<ISaltsRepository, SaltsRepository>();
+            services.AddScoped(typeof(ITransactionsRepository<>), typeof(TransactionsRepository<>));
         }
     }
 }

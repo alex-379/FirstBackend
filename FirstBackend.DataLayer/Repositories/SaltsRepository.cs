@@ -12,7 +12,6 @@ public class SaltsRepository(SaltLxContext context) : BaseRepository<SaltLxConte
 
     public void AddSalt(SaltDto salt)
     {
-
         _ctx.Salts.Add(salt);
         _ctx.SaveChanges();
         _logger.Information(SaltsRepositoryLogs.AddSalt, salt.UserId);

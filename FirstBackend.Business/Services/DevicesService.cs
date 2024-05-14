@@ -27,10 +27,10 @@ public class DevicesService(IDevicesRepository devicesRepository, IOrdersReposit
         return device.Id;
     }
 
-    public List<DeviceResponse> GetAllDevices()
+    public List<DeviceResponse> GetDevices()
     {
-        _logger.Information(DevicesServiceLogs.GetAllDevices);
-        var devices = _mapper.Map<List<DeviceResponse>>(_devicesRepository.GetAllDevices());
+        _logger.Information(DevicesServiceLogs.GetDevices);
+        var devices = _mapper.Map<List<DeviceResponse>>(_devicesRepository.GetDevices());
 
         return devices;
     }
@@ -40,7 +40,7 @@ public class DevicesService(IDevicesRepository devicesRepository, IOrdersReposit
         _logger.Information(DevicesServiceLogs.GetDeviceById, id);
         var device = _devicesRepository.GetDeviceById(id) ?? throw new NotFoundException(string.Format(DevicesServiceExceptions.NotFoundException, id));
         var devicerResponse = _mapper.Map<DeviceFullResponse>(device);
-        devicerResponse.NumberOrders = _ordersRepository.GetOrdersByDeviceId(id).ToList().Count;
+        devicerResponse.NumberOrders = _devicesRepository.GetOrdersByDeviceId(id).ToList().Count;
 
         return devicerResponse;
     }

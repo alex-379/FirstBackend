@@ -19,12 +19,12 @@ public class UsersRepository(MainerLxContext context) : BaseRepository<MainerLxC
         return user.Id;
     }
 
-    public IEnumerable<UserDto> GetAllUsers()
+    public IEnumerable<UserDto> GetUsers()
     {
-        _logger.Information(UsersRepositoryLogs.GetAllUsers);
+        _logger.Information(UsersRepositoryLogs.GetUsers);
 
         return _ctx.Users
-            .Where(u=>!u.IsDeleted);
+            .Where(u => !u.IsDeleted);
     }
 
     public UserDto GetUserById(Guid id)
@@ -43,15 +43,6 @@ public class UsersRepository(MainerLxContext context) : BaseRepository<MainerLxC
         return _ctx.Users
             .FirstOrDefault(u => u.Mail == mail
                 && !u.IsDeleted);
-    }
-
-    public UserDto GetUserByOrderId(Guid orderId)
-    {
-        _logger.Information(UsersRepositoryLogs.GetUserByOrderId, orderId);
-
-        return _ctx.Users
-            .FirstOrDefault(u => u.Orders
-            .Any(o => o.Id == orderId));
     }
 
     public void UpdateUser(UserDto user)

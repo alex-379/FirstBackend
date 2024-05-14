@@ -19,11 +19,11 @@ public class DevicesController(IDevicesService deviceService) : Controller
     private readonly Serilog.ILogger _logger = Log.ForContext<DevicesController>();
 
     [HttpGet]
-    public ActionResult<List<DeviceResponse>> GetAllDevices()
+    public ActionResult<List<DeviceResponse>> GetDevices()
     {
-        _logger.Information(DevicesControllerLogs.GetAllDevices);
+        _logger.Information(DevicesControllerLogs.GetDevices);
 
-        return Ok(_deviceService.GetAllDevices());
+        return Ok(_deviceService.GetDevices());
     }
 
     [HttpGet(ControllersRoutes.Id)]

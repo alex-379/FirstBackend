@@ -15,18 +15,19 @@ using System.Security.Claims;
 
 namespace FirstBackend.Business.Services;
 
-public class UsersService(IUsersRepository usersRepository, ISaltsRepository saltsRepository, IPasswordsService passwordsService, ITokensService tokensService, IMapper mapper, JwtToken jwt,
-    SaltLxContext contextSalt, MainerLxContext contextMainer)
-    : IUsersService
+public class UsersService(IUsersRepository usersRepository, ISaltsRepository saltsRepository, IOrdersRepository ordersRepository,
+    ITransactionsRepository<MainerLxContext> transactionMainerLxRepository, ITransactionsRepository<SaltLxContext> transactionSaltLxRepository,
+    IPasswordsService passwordsService, ITokensService tokensService, IMapper mapper, JwtToken jwt) : IUsersService
 {
     private readonly IUsersRepository _usersRepository = usersRepository;
     private readonly ISaltsRepository _saltsRepository = saltsRepository;
+    private readonly IOrdersRepository _ordersRepository = ordersRepository;
+    private readonly ITransactionsRepository<MainerLxContext> _transactionMainerLxRepository = transactionMainerLxRepository;
+    private readonly ITransactionsRepository<SaltLxContext> _transactionSaltLxRepository = transactionSaltLxRepository;
     private readonly IPasswordsService _passwordsService = passwordsService;
     private readonly ITokensService _tokensService = tokensService;
     private readonly IMapper _mapper = mapper;
     private readonly JwtToken _jwt = jwt;
-    private readonly SaltLxContext _ctxSalt = contextSalt;
-    private readonly MainerLxContext _ctxMainer = contextMainer;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
 
     public Guid AddUser(CreateUserRequest request)
@@ -43,10 +44,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         user.Name = user.Name.ToLower();
         var (hash, salt) = _passwordsService.HashPasword(user.Password);
         user.Password = hash;
-        _logger.Information(UsersServiceLogs.BeginTransaction, _ctxMainer);
-        using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
-        _logger.Information(UsersServiceLogs.BeginTransaction, _ctxSalt);
-        using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
+        using var transactionMainerLxContext = _transactionMainerLxRepository.BeginTransaction();
+        using var transactionSaltLxContext = _transactionSaltLxRepository.BeginTransaction();
         try
         {
             _logger.Information(UsersServiceLogs.AddUser);
@@ -61,15 +60,13 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
 
             _logger.Information(UsersServiceLogs.AddSalt);
             _saltsRepository.AddSalt(saltDto);
-            transactionMainerContext.Commit();
-            _logger.Information(UsersServiceLogs.CommitTransaction);
-            transactionSaltContext.Commit();
-            _logger.Information(UsersServiceLogs.CommitTransaction);
+            _transactionMainerLxRepository.CommitTransaction(transactionMainerLxContext);
+            _transactionSaltLxRepository.CommitTransaction(transactionSaltLxContext);
         }
         catch (Exception ex)
         {
-            transactionMainerContext.Rollback();
-            transactionSaltContext.Rollback();
+            transactionMainerLxContext.Rollback();
+            transactionSaltLxContext.Rollback();
             Log.Error(ex.Message);
         }
 
@@ -112,10 +109,10 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         };
     }
 
-    public List<UserResponse> GetAllUsers()
+    public List<UserResponse> GetUsers()
     {
-        _logger.Information(UsersServiceLogs.GetAllUsers);
-        var users = _mapper.Map<List<UserResponse>>(_usersRepository.GetAllUsers());
+        _logger.Information(UsersServiceLogs.GetUsers);
+        var users = _mapper.Map<List<UserResponse>>(_usersRepository.GetUsers());
 
         return users;
     }
@@ -150,10 +147,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         user.Password = request.Password;
         var (hash, salt) = _passwordsService.HashPasword(user.Password);
         user.Password = hash;
-        _logger.Information(UsersServiceLogs.BeginTransaction, _ctxMainer);
-        using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
-        _logger.Information(UsersServiceLogs.BeginTransaction, _ctxSalt);
-        using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
+        using var transactionMainerLxContext = _transactionMainerLxRepository.BeginTransaction();
+        using var transactionSaltLxContext = _transactionSaltLxRepository.BeginTransaction();
         try
         {
             _logger.Information(UsersServiceLogs.UpdateUserById, userId);
@@ -165,15 +160,13 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
             _logger.Information(UsersServiceLogs.UpdateSalt);
             _saltsRepository.UpdateSalt(saltDb);
             _logger.Information(UsersServiceLogs.CompleteSalt, userId);
-            transactionMainerContext.Commit();
-            _logger.Information(UsersServiceLogs.CommitTransaction);
-            transactionSaltContext.Commit();
-            _logger.Information(UsersServiceLogs.CommitTransaction);
+            _transactionMainerLxRepository.CommitTransaction(transactionMainerLxContext);
+            _transactionSaltLxRepository.CommitTransaction(transactionSaltLxContext);
         }
         catch (Exception ex)
         {
-            transactionMainerContext.Rollback();
-            transactionSaltContext.Rollback();
+            transactionMainerLxContext.Rollback();
+            transactionSaltLxContext.Rollback();
             Log.Error(ex.Message);
         }
     }
@@ -209,10 +202,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
         _logger.Information(UsersServiceLogs.CheckUserById, id);
         var user = _usersRepository.GetUserById(id)
             ?? throw new NotFoundException(string.Format(UsersServiceExceptions.NotFoundException, id));
-        _logger.Information(UsersServiceLogs.BeginTransaction, _ctxMainer);
-        using var transactionMainerContext = _ctxMainer.Database.BeginTransaction();
-        _logger.Information(UsersServiceLogs.BeginTransaction, _ctxSalt);
-        using var transactionSaltContext = _ctxSalt.Database.BeginTransaction();
+        using var transactionMainerLxContext = _transactionMainerLxRepository.BeginTransaction();
+        using var transactionSaltLxContext = _transactionSaltLxRepository.BeginTransaction();
         try
         {
             _logger.Information(UsersServiceLogs.SetIsDeletedUserById, id);
@@ -224,15 +215,13 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
             var salt = _saltsRepository.GetSaltByUserId(user.Id);
             _logger.Information(UsersServiceLogs.DeleteSalt, user.Id);
             _saltsRepository.DeleteSalt(salt);
-            transactionMainerContext.Commit();
-            _logger.Information(UsersServiceLogs.CommitTransaction);
-            transactionSaltContext.Commit();
-            _logger.Information(UsersServiceLogs.CommitTransaction);
+            _transactionMainerLxRepository.CommitTransaction(transactionMainerLxContext);
+            _transactionSaltLxRepository.CommitTransaction(transactionSaltLxContext);
         }
         catch (Exception ex)
         {
-            transactionMainerContext.Rollback();
-            transactionSaltContext.Rollback();
+            transactionMainerLxContext.Rollback();
+            transactionSaltLxContext.Rollback();
             Log.Error(ex.Message);
         }
     }
@@ -240,9 +229,8 @@ public class UsersService(IUsersRepository usersRepository, ISaltsRepository sal
     public Guid GetUserIdByOrderId(Guid orderId)
     {
         _logger.Information(UsersServiceLogs.GetUserByOrderId, orderId);
-        var user = _usersRepository.GetUserByOrderId(orderId)
-            ?? throw new NotFoundException(string.Format(OrdersServiceExceptions.NotFoundException, orderId));
+        var order = _ordersRepository.GetOrderById(orderId) ?? throw new NotFoundException(string.Format(OrdersServiceExceptions.NotFoundException, orderId));
 
-        return user.Id;
+        return order.Customer.Id;
     }
 }

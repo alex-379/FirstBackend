@@ -7,7 +7,7 @@ public interface IUsersService
 {
     Guid AddUser(CreateUserRequest request);
     AuthenticatedResponse LoginUser(LoginUserRequest request);
-    List<UserResponse> GetAllUsers();
+    List<UserResponse> GetUsers();
     UserFullResponse GetUserById(Guid id);
     void UpdateUser(Guid userId, UpdateUserDataRequest request);
     void DeleteUserById(Guid id);

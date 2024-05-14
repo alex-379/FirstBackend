@@ -4,11 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FirstBackend.DataLayer.Contexts;
 
-public class MainerLxContext(DbContextOptions<MainerLxContext> options) : DbContext(options)
+public class MainerLxContext : DbContext
 {
-    public DbSet<UserDto> Users { get; set; }
-    public DbSet<DeviceDto> Devices { get; set; }
-    public DbSet<OrderDto> Orders { get; set; }
+    public MainerLxContext(DbContextOptions<MainerLxContext> options) : base(options)
+    {
+    }
+
+    public MainerLxContext()
+    {
+    }
+
+    public virtual DbSet<UserDto> Users { get; set; }
+    public virtual DbSet<DeviceDto> Devices { get; set; }
+    public virtual DbSet<OrderDto> Orders { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

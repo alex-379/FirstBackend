@@ -1,6 +1,8 @@
-﻿namespace FirstBackend.DataLayer.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
 
-public class BaseRepository<TDbContext>(TDbContext context)
+namespace FirstBackend.DataLayer.Repositories;
+
+public class BaseRepository<TDbContext>(TDbContext context) where TDbContext : DbContext
 {
     protected readonly TDbContext _ctx = context;
 }
