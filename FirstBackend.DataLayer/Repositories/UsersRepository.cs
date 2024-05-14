@@ -30,6 +30,7 @@ public class UsersRepository(MainerLxContext context) : BaseRepository<MainerLxC
     public UserDto GetUserById(Guid id)
     {
         _logger.Information(UsersRepositoryLogs.GetUserById, id);
+        var a = _ctx.Users;
 
         return _ctx.Users
             .FirstOrDefault(u => u.Id == id
