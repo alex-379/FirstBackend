@@ -1,24 +1,19 @@
 ﻿using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Repositories;
-using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using Moq.EntityFrameworkCore;
-using System.Collections.Generic;
-using Xunit.Sdk;
 
 namespace FirstBackend.DataLayer.Tests.Repositories;
 
 public class UsersRepositoryTest
 {
     private readonly Mock<MainerLxContext> _mainerLxContextMock;
-    private readonly Mock<DbSet<UserDto>> _usersSetMock;
 
     public UsersRepositoryTest()
     {
         _mainerLxContextMock = new Mock<MainerLxContext>();
-        _usersSetMock = new Mock<DbSet<UserDto>>();
     }
 
     [Fact]
@@ -101,7 +96,7 @@ public class UsersRepositoryTest
     public void UpdateUser_UserDtoSent_NoErrorsReceieved()
     {
         //arrange
-        var userDto = TestsData.GetFakeUserDto();
+        var userDto = TestsData.GetFakeUserDtoList()[0];
         var mock = Enumerable.Empty<UserDto>().BuildMock().BuildMockDbSet();
         _mainerLxContextMock.Setup(x => x.Users.Update(userDto))
             .Returns(mock.Object.Update(userDto));

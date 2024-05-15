@@ -3,11 +3,14 @@
 service tests – работа сервисных методов, сервисной логики
 api - тест response (должны быть именно запрошенные response. Проверка mapper, response status codes, validation)
 
-1. Транзакции - tests moq (null), TransactionsRepository, scoped
+1. Транзакции - , TransactionsRepository, scoped
+Тесты - TransactionsRepository UnitTests, tests moq (null)
 2. https://github.com/CodeMazeBlog/CodeMazeGuides/blob/main/dotnet-testing/EFCoreMocking/EFCoreMocking/Data/EmployeeDataContext.cs
 public virtual DbSet<UserDto> Users { get; set; } = default!;
 что такое default?
 3. Какой фреймворк используют Moq, NSubstitute, and FakeItEasy mocking frameworks
+4. UsersRepositoryTests
+
 
 
 
