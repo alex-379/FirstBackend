@@ -19,4 +19,11 @@ public static class TestsData
             Mail = "test401@test.ru",
         }
         ];
+
+    public static UserDto GetFakeUserDto() =>
+        new()
+        {
+            Name = "testuser03",
+            Mail = "test03@test.ru",
+        };
 }

@@ -7,9 +7,8 @@ api - тест response (должны быть именно запрошенны
 2. https://github.com/CodeMazeBlog/CodeMazeGuides/blob/main/dotnet-testing/EFCoreMocking/EFCoreMocking/Data/EmployeeDataContext.cs
 public virtual DbSet<UserDto> Users { get; set; } = default!;
 что такое default?
+3. Какой фреймворк используют Moq, NSubstitute, and FakeItEasy mocking frameworks
 
 
-FirstOrDefault - MockQueryable
-Moq.EntityFrameworkCore
-MockQueryable 
-Moq, NSubstitute, and FakeItEasy
+
+Should().BeLowerCased();
