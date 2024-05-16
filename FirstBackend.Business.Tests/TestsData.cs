@@ -6,9 +6,6 @@ using FirstBackend.Business.Models.Users.Requests;
 using FirstBackend.Business.Models.Users.Responses;
 using FirstBackend.Core.Dtos;
 using FirstBackend.Core.Enums;
-using FluentAssertions.Common;
-using System;
-using System.Xml.Linq;
 
 namespace FirstBackend.Business.Tests;
 
@@ -123,14 +120,14 @@ public static class TestsData
             Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab10"),
             Description = "Заказ №666",
             Customer = new()
-            { 
+            {
                 Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
             },
             DevicesOrders = [
                 new()
-                { 
+                {
                     Device = new()
-                    { 
+                    {
                         Name = "Radeon"
                     },
                     NumberDevices = 2
@@ -161,7 +158,7 @@ public static class TestsData
                     DeviceId = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab70"),
                     NumberDevices = 10,
                 }]
-    };
+        };
 
     public static List<DeviceDto> GetFakeListDeviceDto() =>
         [
@@ -200,7 +197,7 @@ public static class TestsData
             Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
             Description = "Заказ тестовый 6",
             Customer = new()
-            { 
+            {
                 Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab88"),
             }
         },
@@ -226,7 +223,7 @@ public static class TestsData
         },
         Devices = [
             new()
-            { 
+            {
                 Name = "Radeon",
                 NumberDevices = 2
             },
@@ -299,5 +296,5 @@ public static class TestsData
                     }
                 }
                 ]
-    };
+        };
 }

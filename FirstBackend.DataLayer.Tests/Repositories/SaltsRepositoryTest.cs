@@ -1,8 +1,6 @@
 ﻿using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.Serialization;
 using MockQueryable.Moq;
 using Moq;
 

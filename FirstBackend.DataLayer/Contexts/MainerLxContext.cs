@@ -14,9 +14,9 @@ public class MainerLxContext : DbContext
     {
     }
 
-    public virtual DbSet<UserDto> Users { get; set; }
-    public virtual DbSet<DeviceDto> Devices { get; set; }
-    public virtual DbSet<OrderDto> Orders { get; set; }
+    public virtual DbSet<UserDto> Users { get; set; } = default;
+    public virtual DbSet<DeviceDto> Devices { get; set; } = default;
+    public virtual DbSet<OrderDto> Orders { get; set; } = default;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

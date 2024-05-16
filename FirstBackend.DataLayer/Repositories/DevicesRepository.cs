@@ -19,6 +19,7 @@ public class DevicesRepository(MainerLxContext context) : BaseRepository<MainerL
 
         return device.Id;
     }
+
     public IEnumerable<DeviceDto> GetDevices()
     {
         _logger.Information(DevicesRepositoryLogs.GetDevices);

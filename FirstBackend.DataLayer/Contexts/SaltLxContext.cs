@@ -14,7 +14,7 @@ public class SaltLxContext : DbContext
     {
     }
 
-    public virtual DbSet<SaltDto> Salts { get; set; }
+    public virtual DbSet<SaltDto> Salts { get; set; } = default;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

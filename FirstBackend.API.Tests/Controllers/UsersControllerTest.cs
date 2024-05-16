@@ -1,12 +1,9 @@
 ﻿using FirstBackend.API.Controllers;
 using FirstBackend.Business.Interfaces;
-using FirstBackend.Business.Models.Devices.Responses;
 using FirstBackend.Business.Models.Users.Requests;
 using FirstBackend.Business.Models.Users.Responses;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Moq;
 
 namespace FirstBackend.API.Tests.Controllers;
@@ -91,16 +88,16 @@ public class UsersControllerTest
     public void CreateUser_CreateUserRequestSent_CreatedResultReceieved()
     {
         //arrange
-        var createdUserRequest = new CreateUserRequest();
-        _usersServiceMock.Setup(x => x.AddUser(createdUserRequest)).Returns(new Guid());
+        var createUserRequest = new CreateUserRequest();
+        _usersServiceMock.Setup(x => x.AddUser(createUserRequest)).Returns(new Guid());
         var sut = new UsersController(_usersServiceMock.Object, _devicesServiceMock.Object, _ordersServiceMock.Object);
 
         //act
-        var actual = sut.CreateUser(createdUserRequest);
+        var actual = sut.CreateUser(createUserRequest);
 
         //assert
         actual.Result.Should().BeOfType<CreatedResult>();
-        _usersServiceMock.Verify(m => m.AddUser(createdUserRequest), Times.Once);
+        _usersServiceMock.Verify(m => m.AddUser(createUserRequest), Times.Once);
     }
 
     [Fact]
@@ -132,7 +129,75 @@ public class UsersControllerTest
         var actual = sut.UpdateUserData(userId, updateUserDataRequest);
 
         //assert
-        //actual.Result.Should().BeOfType<CreatedResult>();
-        //_usersServiceMock.Verify(m => m.LoginUser(loginUserRequest), Times.Once);
+        actual.Should().BeOfType<NoContentResult>();
+        _usersServiceMock.Verify(m => m.UpdateUser(userId, updateUserDataRequest), Times.Once);
+    }
+
+
+    [Fact]
+    public void DeleteUserById_GuidSent_NoContentResultReceieved()
+    {
+        //arrange
+        var userId = new Guid();
+        _usersServiceMock.Setup(x => x.DeleteUserById(userId));
+        var sut = new UsersController(_usersServiceMock.Object, _devicesServiceMock.Object, _ordersServiceMock.Object);
+
+        //act
+        var actual = sut.DeleteUserById(userId);
+
+        //assert
+        actual.Should().BeOfType<NoContentResult>();
+        _usersServiceMock.Verify(m => m.DeleteUserById(userId), Times.Once);
+    }
+
+    [Fact]
+    public void UpdateUserPassword_GuidAndUpdateUserDataRequestSent_NoContentResultReceieved()
+    {
+        //arrange
+        var userId = new Guid();
+        var updateUserPasswordRequest = new UpdateUserPasswordRequest();
+        _usersServiceMock.Setup(x => x.UpdateUserPassword(userId, updateUserPasswordRequest));
+        var sut = new UsersController(_usersServiceMock.Object, _devicesServiceMock.Object, _ordersServiceMock.Object);
+
+        //act
+        var actual = sut.UpdateUserPassword(userId, updateUserPasswordRequest);
+
+        //assert
+        actual.Should().BeOfType<NoContentResult>();
+        _usersServiceMock.Verify(m => m.UpdateUserPassword(userId, updateUserPasswordRequest), Times.Once);
+    }
+
+    [Fact]
+    public void UpdateUserMail_GuidAndUpdateUserMailRequestSent_NoContentResultReceieved()
+    {
+        //arrange
+        var userId = new Guid();
+        var updateUserMailRequest = new UpdateUserMailRequest();
+        _usersServiceMock.Setup(x => x.UpdateUserMail(userId, updateUserMailRequest));
+        var sut = new UsersController(_usersServiceMock.Object, _devicesServiceMock.Object, _ordersServiceMock.Object);
+
+        //act
+        var actual = sut.UpdateUserMail(userId, updateUserMailRequest);
+
+        //assert
+        actual.Should().BeOfType<NoContentResult>();
+        _usersServiceMock.Verify(m => m.UpdateUserMail(userId, updateUserMailRequest), Times.Once);
+    }
+
+    [Fact]
+    public void UpdateUserRole_GuidAndUpdateUserRoleRequestSent_NoContentResultReceieved()
+    {
+        //arrange
+        var userId = new Guid();
+        var updateUserRoleRequest = new UpdateUserRoleRequest();
+        _usersServiceMock.Setup(x => x.UpdateUserRole(userId, updateUserRoleRequest));
+        var sut = new UsersController(_usersServiceMock.Object, _devicesServiceMock.Object, _ordersServiceMock.Object);
+
+        //act
+        var actual = sut.UpdateUserRole(userId, updateUserRoleRequest);
+
+        //assert
+        actual.Should().BeOfType<NoContentResult>();
+        _usersServiceMock.Verify(m => m.UpdateUserRole(userId, updateUserRoleRequest), Times.Once);
     }
 }

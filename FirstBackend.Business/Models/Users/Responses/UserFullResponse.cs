@@ -1,5 +1,4 @@
-﻿using FirstBackend.Business.Models.Devices.Responses;
-using FirstBackend.Business.Models.Orders.Responses;
+﻿using FirstBackend.Business.Models.Orders.Responses;
 
 namespace FirstBackend.Business.Models.Users.Responses;
 

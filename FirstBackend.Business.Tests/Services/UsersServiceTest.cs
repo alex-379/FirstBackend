@@ -11,6 +11,7 @@ using FirstBackend.Core.Exñeptions;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore.Storage;
 using Moq;
 
 namespace FirstBackend.Business.Tests.Services;
@@ -55,7 +56,11 @@ public class UsersServiceTest
         //arrange
         var createUserRequest = TestsData.GetFakeCreateUserRequest();
         var expectedGuid = Guid.NewGuid();
+        _transactionMainerLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
+        _transactionSaltLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
         _usersRepositoryMock.Setup(x => x.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
+        _transactionMainerLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
+        _transactionSaltLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
             _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
             _passwordsService, _tokensService, _mapper, _jwt);
@@ -65,7 +70,11 @@ public class UsersServiceTest
 
         //assert
         Assert.Equal(expectedGuid, actual);
+        _transactionMainerLxRepository.Verify(m => m.BeginTransaction(), Times.Once);
+        _transactionSaltLxRepository.Verify(m => m.BeginTransaction(), Times.Once);
         _usersRepositoryMock.Verify(m => m.AddUser(It.IsAny<UserDto>()), Times.Once);
+        _transactionMainerLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Once);
+        _transactionSaltLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Once);
     }
 
     [Fact]
@@ -237,7 +246,11 @@ public class UsersServiceTest
         var userId = Guid.NewGuid();
         var updateUserPasswordRequest = TestsData.GetFakeUpdateUserPasswordRequest();
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns(new UserDto());
+        _transactionMainerLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
+        _transactionSaltLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
         _saltsRepositoryMock.Setup(x => x.GetSaltByUserId(userId)).Returns(new SaltDto());
+        _transactionMainerLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
+        _transactionSaltLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
             _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
             _passwordsService, _tokensService, _mapper, _jwt);
@@ -247,9 +260,13 @@ public class UsersServiceTest
 
         //assert
         _usersRepositoryMock.Verify(m => m.GetUserById(userId), Times.Once);
+        _transactionMainerLxRepository.Verify(m => m.BeginTransaction(), Times.Once);
+        _transactionSaltLxRepository.Verify(m => m.BeginTransaction(), Times.Once);
         _usersRepositoryMock.Verify(m => m.UpdateUser(It.IsAny<UserDto>()), Times.Once);
         _saltsRepositoryMock.Verify(m => m.GetSaltByUserId(userId), Times.Once);
         _saltsRepositoryMock.Verify(m => m.UpdateSalt(It.IsAny<SaltDto>()), Times.Once);
+        _transactionMainerLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Once);
+        _transactionSaltLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Once);
     }
 
     [Fact]
@@ -259,7 +276,11 @@ public class UsersServiceTest
         var userId = Guid.Empty;
         var updateUserPasswordRequest = TestsData.GetFakeUpdateUserPasswordRequest();
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns((UserDto)null);
+        _transactionMainerLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
+        _transactionSaltLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
         _saltsRepositoryMock.Setup(x => x.GetSaltByUserId(userId)).Returns(new SaltDto());
+        _transactionMainerLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
+        _transactionSaltLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
             _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
             _passwordsService, _tokensService, _mapper, _jwt);
@@ -271,9 +292,13 @@ public class UsersServiceTest
         act.Should().Throw<NotFoundException>()
             .WithMessage(string.Format(UsersServiceExceptions.NotFoundException, userId));
         _usersRepositoryMock.Verify(m => m.GetUserById(userId), Times.Once);
+        _transactionMainerLxRepository.Verify(m => m.BeginTransaction(), Times.Never);
+        _transactionSaltLxRepository.Verify(m => m.BeginTransaction(), Times.Never);
         _usersRepositoryMock.Verify(m => m.UpdateUser(It.IsAny<UserDto>()), Times.Never);
         _saltsRepositoryMock.Verify(m => m.GetSaltByUserId(userId), Times.Never);
         _saltsRepositoryMock.Verify(m => m.UpdateSalt(It.IsAny<SaltDto>()), Times.Never);
+        _transactionMainerLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Never);
+        _transactionSaltLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Never);
     }
 
     [Fact]
@@ -387,7 +412,11 @@ public class UsersServiceTest
         var userDto = TestsData.GetFakeUserDto();
         var saltDto = TestsData.GetFakeSaltDto();
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns(userDto);
+        _transactionMainerLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
+        _transactionSaltLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
         _saltsRepositoryMock.Setup(x => x.GetSaltByUserId(userDto.Id)).Returns(saltDto);
+        _transactionMainerLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
+        _transactionSaltLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
             _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
             _passwordsService, _tokensService, _mapper, _jwt);
@@ -397,9 +426,13 @@ public class UsersServiceTest
 
         //assert
         _usersRepositoryMock.Verify(m => m.GetUserById(userId), Times.Once);
+        _transactionMainerLxRepository.Verify(m => m.BeginTransaction(), Times.Once);
+        _transactionSaltLxRepository.Verify(m => m.BeginTransaction(), Times.Once);
         _usersRepositoryMock.Verify(m => m.UpdateUser(userDto), Times.Once);
         _saltsRepositoryMock.Verify(m => m.GetSaltByUserId(userDto.Id), Times.Once);
         _saltsRepositoryMock.Verify(m => m.DeleteSalt(saltDto), Times.Once);
+        _transactionMainerLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Once);
+        _transactionSaltLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Once);
     }
 
     [Fact]
@@ -408,7 +441,11 @@ public class UsersServiceTest
         //arrange
         var userId = Guid.Empty;
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns((UserDto)null);
+        _transactionMainerLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
+        _transactionSaltLxRepository.Setup(x => x.BeginTransaction()).Returns(It.IsAny<IDbContextTransaction>());
         _saltsRepositoryMock.Setup(x => x.GetSaltByUserId(It.IsAny<Guid>())).Returns(new SaltDto());
+        _transactionMainerLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
+        _transactionSaltLxRepository.Setup(x => x.CommitTransaction(It.IsAny<IDbContextTransaction>()));
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
             _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
             _passwordsService, _tokensService, _mapper, _jwt);
@@ -420,9 +457,13 @@ public class UsersServiceTest
         act.Should().Throw<NotFoundException>()
             .WithMessage(string.Format(UsersServiceExceptions.NotFoundException, userId));
         _usersRepositoryMock.Verify(m => m.GetUserById(userId), Times.Once);
+        _transactionMainerLxRepository.Verify(m => m.BeginTransaction(), Times.Never);
+        _transactionSaltLxRepository.Verify(m => m.BeginTransaction(), Times.Never);
         _usersRepositoryMock.Verify(m => m.UpdateUser(It.IsAny<UserDto>()), Times.Never);
         _saltsRepositoryMock.Verify(m => m.GetSaltByUserId(It.IsAny<Guid>()), Times.Never);
         _saltsRepositoryMock.Verify(m => m.DeleteSalt(It.IsAny<SaltDto>()), Times.Never);
+        _transactionMainerLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Never);
+        _transactionSaltLxRepository.Verify(m => m.CommitTransaction(It.IsAny<IDbContextTransaction>()), Times.Never);
     }
 
     [Fact]

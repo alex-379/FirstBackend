@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FirstBackend.Core.Constants;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using FirstBackend.Core.Constants;
 
 namespace FirstBackend.API.Configuration.Extensions;
 

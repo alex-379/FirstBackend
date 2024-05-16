@@ -10,8 +10,10 @@ public static class ConfigureSwager
         services.AddSwaggerGen(opt =>
         {
             opt.SwaggerDoc(configuration[ConfigurationSettings.OpenApiVersion],
-                new OpenApiInfo { Title = configuration[ConfigurationSettings.OpenApiTitle],
-                                  Version = configuration[ConfigurationSettings.OpenApiVersion] 
+                new OpenApiInfo
+                {
+                    Title = configuration[ConfigurationSettings.OpenApiTitle],
+                    Version = configuration[ConfigurationSettings.OpenApiVersion]
                 });
 
             opt.AddSecurityDefinition(configuration[ConfigurationSettings.OpenApiSecurityScheme], new OpenApiSecurityScheme
