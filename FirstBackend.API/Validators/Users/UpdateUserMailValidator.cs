@@ -2,7 +2,7 @@
 using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators.Users;
+namespace FirstBackend.API.Validators.Users;
 
 public class UpdateUserMailValidator : AbstractValidator<UpdateUserMailRequest>
 {

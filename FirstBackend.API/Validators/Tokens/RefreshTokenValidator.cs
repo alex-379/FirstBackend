@@ -2,7 +2,7 @@
 using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators.Tokens;
+namespace FirstBackend.API.Validators.Tokens;
 
 public class RefreshTokenValidator : AbstractValidator<RefreshTokenRequest>
 {

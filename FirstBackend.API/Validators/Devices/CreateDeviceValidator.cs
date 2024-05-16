@@ -2,7 +2,7 @@
 using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators.Devices;
+namespace FirstBackend.API.Validators.Devices;
 
 public class CreateDeviceValidator : AbstractValidator<CreateDeviceRequest>
 {

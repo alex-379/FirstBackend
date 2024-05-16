@@ -16,6 +16,8 @@ public class OrdersMappingProfile : Profile
         CreateMap<OrderDto, OrderResponse>();
         CreateMap<OrderDto, OrderFullResponse>()
             .ForMember(d => d.Devices, o => o.MapFrom(s => s.DevicesOrders));
+        CreateMap<OrderDto, OrderResponseForUser>()
+            .ForMember(d => d.Devices, o => o.MapFrom(s => s.DevicesOrders));
         CreateMap<OrderDto, OrdersByUserResponse>();
     }
 }

@@ -1,6 +1,4 @@
 Тесты
-репозиторные тесты на include, на softDeleted
-service tests – работа сервисных методов, сервисной логики
 api - тест response (должны быть именно запрошенные response. Проверка mapper, response status codes, validation)
 
 1. Транзакции - , TransactionsRepository, scoped

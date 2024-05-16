@@ -1,7 +1,7 @@
 ﻿using FirstBackend.Business.Models.Users.Requests;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators.Users;
+namespace FirstBackend.API.Validators.Users;
 
 public class UpdateUserPasswordValidator : AbstractValidator<UpdateUserPasswordRequest>
 {

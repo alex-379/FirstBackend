@@ -1,4 +1,3 @@
-using FirstBackend.API.Configuration;
 using FirstBackend.API.Configuration.Extensions;
 using FirstBackend.Business.Configuration;
 using FirstBackend.DataLayer.Configuration;

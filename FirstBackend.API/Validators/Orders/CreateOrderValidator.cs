@@ -2,7 +2,7 @@
 using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators.Orders;
+namespace FirstBackend.API.Validators.Orders;
 
 public class CreateOrderValidator : AbstractValidator<CreateOrderRequest>
 {

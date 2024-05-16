@@ -2,6 +2,7 @@
 using FirstBackend.Core.Dtos;
 using FirstBackend.DataLayer.Contexts;
 using FirstBackend.DataLayer.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace FirstBackend.DataLayer.Repositories;
@@ -30,9 +31,10 @@ public class UsersRepository(MainerLxContext context) : BaseRepository<MainerLxC
     public UserDto GetUserById(Guid id)
     {
         _logger.Information(UsersRepositoryLogs.GetUserById, id);
-        var a = _ctx.Users;
 
         return _ctx.Users
+            .Include(u => u.Orders)
+            .ThenInclude(o => o.Devices)
             .FirstOrDefault(u => u.Id == id
                 && !u.IsDeleted);
     }

@@ -3,7 +3,7 @@ using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 using FluentValidation.Validators;
 
-namespace FirstBackend.Business.Validators;
+namespace FirstBackend.API.Validators;
 
 public static class CustomRules
 {

@@ -2,7 +2,7 @@
 using FirstBackend.Core.Constants.ValidatorsMessages;
 using FluentValidation;
 
-namespace FirstBackend.Business.Validators.Users;
+namespace FirstBackend.API.Validators.Users;
 
 public class CreateUserValidator : AbstractValidator<CreateUserRequest>
 {
@@ -13,7 +13,7 @@ public class CreateUserValidator : AbstractValidator<CreateUserRequest>
            .WithMessage(UsersValidators.Name);
         RuleFor(r => r.Mail)
             .EmailAddress()
-            .WithMessage(UsersValidators.Password);
+            .WithMessage(UsersValidators.Mail);
         RuleFor(r => r.Password)
             .MatchPasswordRule();
     }
