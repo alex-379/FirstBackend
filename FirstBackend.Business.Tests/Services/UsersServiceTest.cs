@@ -133,7 +133,7 @@ public class UsersServiceTest
     }
 
     [Fact]
-    public void GetUsers_Calles_UsersReceieved()
+    public void GetUsers_Calles_ListUserResponseReceieved()
     {
         //arrange
         var expected = TestsData.GetFakeListUserResponse();
@@ -152,7 +152,7 @@ public class UsersServiceTest
     }
 
     [Fact]
-    public void GetUserById_GuidSent_UsersReceieved()
+    public void GetUserById_GuidSent_UserFullResponseReceieved()
     {
         //arrange
         var expected = TestsData.GetFakeUserFullResponse();
@@ -175,7 +175,7 @@ public class UsersServiceTest
     public void GetUserByIdNoUser_EmptyGuidSent_UserNotFoundErrorReceieved()
     {
         //arrange
-        var userId = Guid.NewGuid();
+        var userId = Guid.Empty;
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns((UserDto)null);
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
             _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
@@ -213,7 +213,7 @@ public class UsersServiceTest
     public void UpdateUserNoUser_EmptyGuidAndUpdateUserDataRequestSent_UserNotFoundErrorReceieved()
     {
         //arrange
-        var userId = Guid.NewGuid();
+        var userId = Guid.Empty;
         var updateUserDataRequest = TestsData.GetFakeUpdateUserDataRequest();
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns((UserDto)null);
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
@@ -256,7 +256,7 @@ public class UsersServiceTest
     public void UpdateUserPasswordNoUser_EmptyGuidAndUpdateUserPasswordRequestSent_UserNotFoundErrorReceieved()
     {
         //arrange
-        var userId = Guid.NewGuid();
+        var userId = Guid.Empty;
         var updateUserPasswordRequest = TestsData.GetFakeUpdateUserPasswordRequest();
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns((UserDto)null);
         _saltsRepositoryMock.Setup(x => x.GetSaltByUserId(userId)).Returns(new SaltDto());
@@ -299,7 +299,7 @@ public class UsersServiceTest
     public void UpdateUserMailNoUser_EmptyGuidAndUpdateUserMailRequestSent_UserNotFoundErrorReceieved()
     {
         //arrange
-        var userId = Guid.NewGuid();
+        var userId = Guid.Empty;
         var updateUserMailRequest = TestsData.GetFakeUpdateUserMailRequest();
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns((UserDto)null);
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
@@ -362,7 +362,7 @@ public class UsersServiceTest
     public void UpdateUserRoleNoUser_EmptyGuidAndUpdateUserRoleRequestSent_UserNotFoundErrorReceieved()
     {
         //arrange
-        var userId = Guid.NewGuid();
+        var userId = Guid.Empty;
         var updateUserRoleRequest = TestsData.GetFakeUpdateUserRoleRequest();
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns((UserDto)null);
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
@@ -408,6 +408,7 @@ public class UsersServiceTest
         //arrange
         var userId = Guid.Empty;
         _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns((UserDto)null);
+        _saltsRepositoryMock.Setup(x => x.GetSaltByUserId(It.IsAny<Guid>())).Returns(new SaltDto());
         var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
             _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
             _passwordsService, _tokensService, _mapper, _jwt);
@@ -420,5 +421,46 @@ public class UsersServiceTest
             .WithMessage(string.Format(UsersServiceExceptions.NotFoundException, userId));
         _usersRepositoryMock.Verify(m => m.GetUserById(userId), Times.Once);
         _usersRepositoryMock.Verify(m => m.UpdateUser(It.IsAny<UserDto>()), Times.Never);
+        _saltsRepositoryMock.Verify(m => m.GetSaltByUserId(It.IsAny<Guid>()), Times.Never);
+        _saltsRepositoryMock.Verify(m => m.DeleteSalt(It.IsAny<SaltDto>()), Times.Never);
+    }
+
+    [Fact]
+    public void GetUserIdByOrderId_GuidOrderSent_GuidUserReceieved()
+    {
+        //arrange
+        var expectedGuid = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65");
+        var orderId = Guid.NewGuid();
+        var orderDto = TestsData.GetFakeOrderDto();
+        _ordersRepositoryMock.Setup(x => x.GetOrderById(orderId)).Returns(orderDto);
+        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
+            _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
+            _passwordsService, _tokensService, _mapper, _jwt);
+
+        //act
+        var actual = sut.GetUserIdByOrderId(orderId);
+
+        //assert
+        actual.Should().Be(expectedGuid);
+        _ordersRepositoryMock.Verify(m => m.GetOrderById(orderId), Times.Once);
+    }
+
+    [Fact]
+    public void GetUserIdByOrderIdNoOrder_EmptyGuidOrderSent_OrderNotFoundErrorReceieved()
+    {
+        //arrange
+        var orderId = Guid.Empty;
+        _ordersRepositoryMock.Setup(x => x.GetOrderById(orderId)).Returns((OrderDto)null);
+        var sut = new UsersService(_usersRepositoryMock.Object, _saltsRepositoryMock.Object, _ordersRepositoryMock.Object,
+            _transactionMainerLxRepository.Object, _transactionSaltLxRepository.Object,
+            _passwordsService, _tokensService, _mapper, _jwt);
+
+        //act
+        Action act = () => sut.GetUserIdByOrderId(orderId);
+
+        //assert
+        act.Should().Throw<NotFoundException>()
+            .WithMessage(string.Format(OrdersServiceExceptions.NotFoundException, orderId));
+        _ordersRepositoryMock.Verify(m => m.GetOrderById(orderId), Times.Once);
     }
 }

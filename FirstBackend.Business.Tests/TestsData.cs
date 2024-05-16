@@ -1,7 +1,14 @@
-﻿using FirstBackend.Business.Models.Users.Requests;
+﻿using FirstBackend.Business.Models.Devices.Requests;
+using FirstBackend.Business.Models.Devices.Responses;
+using FirstBackend.Business.Models.Orders.Requests;
+using FirstBackend.Business.Models.Orders.Responses;
+using FirstBackend.Business.Models.Users.Requests;
 using FirstBackend.Business.Models.Users.Responses;
 using FirstBackend.Core.Dtos;
 using FirstBackend.Core.Enums;
+using FluentAssertions.Common;
+using System;
+using System.Xml.Linq;
 
 namespace FirstBackend.Business.Tests;
 
@@ -109,4 +116,188 @@ public static class TestsData
         {
             Role = UserRole.Administrator,
         };
+
+    public static OrderDto GetFakeOrderDto() =>
+        new()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab10"),
+            Description = "Заказ №666",
+            Customer = new()
+            { 
+                Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
+            },
+            DevicesOrders = [
+                new()
+                { 
+                    Device = new()
+                    { 
+                        Name = "Radeon"
+                    },
+                    NumberDevices = 2
+                },
+                new()
+                {
+                    Device = new()
+                    {
+                        Name = "Lenovo"
+                    },
+                    NumberDevices = 10
+                }
+                ]
+        };
+
+    public static CreateOrderRequest GetFakeCreateOrderRequest() =>
+        new()
+        {
+            Description = "TestOrder",
+            Devices = [
+                new ()
+                {
+                    DeviceId = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
+                    NumberDevices = 1,
+                },
+                new ()
+                {
+                    DeviceId = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab70"),
+                    NumberDevices = 10,
+                }]
+    };
+
+    public static List<DeviceDto> GetFakeListDeviceDto() =>
+        [
+        new ()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
+            Name = "TestDevice",
+            Type = DeviceType.Laptop,
+        },
+        new ()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab70"),
+            Name = "TestDevice2",
+            Type = DeviceType.PC,
+        }
+        ];
+
+    public static List<OrderResponse> GetFakeListOrderResponse() =>
+        [
+        new ()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
+            Description = "Заказ тестовый 6"
+        },
+        new ()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab70"),
+            Description = "Заказ тестовый 10"
+        }
+        ];
+
+    public static List<OrderDto> GetFakeListOrderDto() =>
+        [
+        new ()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
+            Description = "Заказ тестовый 6",
+            Customer = new()
+            { 
+                Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab88"),
+            }
+        },
+        new ()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab70"),
+            Description = "Заказ тестовый 10",
+            Customer = new()
+            {
+                Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab88"),
+            }
+        }
+        ];
+
+    public static OrderFullResponse GetFakeOrderFullResponse() =>
+    new()
+    {
+        Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab10"),
+        Description = "Заказ №666",
+        Customer = new()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
+        },
+        Devices = [
+            new()
+            { 
+                Name = "Radeon",
+                NumberDevices = 2
+            },
+            new()
+            {
+                Name = "Lenovo",
+                NumberDevices = 10
+            }
+            ]
+    };
+
+    public static CreateDeviceRequest GetFakeCreateDeviceRequest() =>
+        new()
+        {
+            Name = "TestDevice",
+            Type = DeviceType.Laptop,
+            Address = "Khabarovsk"
+        };
+
+    public static List<DeviceResponse> GetFakeListDeviceResponse() =>
+        [
+        new()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
+            Name = "TestDevice",
+            Type = DeviceType.Laptop,
+        },
+        new()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab70"),
+            Name = "TestDevice2",
+            Type = DeviceType.PC,
+        }
+        ];
+
+    public static DeviceFullResponse GetFakeDeviceFullResponse() =>
+        new()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab70"),
+            Name = "TestDevice",
+            Type = DeviceType.Laptop,
+            Address = "Khabarovsk",
+            NumberOrders = 2
+        };
+
+    public static DeviceDto GetFakeDeviceDto() =>
+        new()
+        {
+            Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab70"),
+            Name = "TestDevice",
+            Type = DeviceType.Laptop,
+            Address = "Khabarovsk",
+            Orders = [
+                new()
+                {
+                    Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab65"),
+                    Description = "Заказ тестовый 6",
+                    Customer = new()
+                    {
+                        Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab88"),
+                    }
+                },
+                new()
+                {
+                    Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab70"),
+                    Description = "Заказ тестовый 10",
+                    Customer = new()
+                    {
+                        Id = new Guid("865179f5-1adb-4788-9fed-b9a57ce9ab88"),
+                    }
+                }
+                ]
+    };
 }
