@@ -8,8 +8,3 @@ public virtual DbSet<UserDto> Users { get; set; } = default!;
 что такое default?
 3. Какой фреймворк используют Moq, NSubstitute, and FakeItEasy mocking frameworks
 4. UsersRepositoryTests
-
-
-
-
-Should().BeLowerCased();
